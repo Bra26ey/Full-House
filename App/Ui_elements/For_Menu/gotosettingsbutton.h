@@ -1,9 +1,11 @@
 #ifndef GOTOSETTINGSBUTTON_H
 #define GOTOSETTINGSBUTTON_H
 
+#include <QPushButton>
 
-class GoToSettingsButton
-{
+class GoToSettingsButton: public QPushButton {
+    Q_OBJECT
+
 public:
     GoToSettingsButton();
 };

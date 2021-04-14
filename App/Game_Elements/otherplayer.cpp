@@ -8,6 +8,7 @@ OtherPlayer::~OtherPlayer() {
     delete Chips;
     delete[] Cards;
     delete PlayerInfo;
+    delete mTexture;
 }
 
 void OtherPlayer::DisplayInfo() {

@@ -1,9 +1,10 @@
 #ifndef LOGINBUTTON_H
 #define LOGINBUTTON_H
 
+#include <QPushButton>
 
-class LoginButton
-{
+class LoginButton: public QPushButton {
+    Q_OBJECT
 public:
     LoginButton();
 };

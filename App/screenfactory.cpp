@@ -1,6 +1,10 @@
 #include "screenfactory.h"
 #include "loginfragment.h"
 #include "registrationfragment.h"
+#include "menufragment.h"
+#include "settingsfragment.h"
+#include "gamesearchfragment.h"
+#include "gamefragment.h"
 
 
 using namespace screens;
@@ -21,9 +25,20 @@ BaseFragment* ScreensFactory::create(QString tag) {
     }
     if (tag == REGISTRATION_TAG) {
         return new RegistrationFragment;
-    } else {
-        return nullptr;
     }
+    if (tag == MAIN_TAG) {
+        return new MenuFragment;
+    }
+    if (tag == SETTINGS_TAG) {
+        return new SettingsFragment;
+    }
+    if (tag == SEARCH_TAG) {
+        return new GameSearchFragment;
+    }
+    if (tag == GAME_TAG) {
+        return new GameFragment;
+    }
+    return nullptr;
 }
 
 QString ScreensFactory::createStart() {

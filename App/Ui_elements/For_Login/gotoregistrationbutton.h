@@ -1,11 +1,12 @@
-#ifndef REGISTRATIONBUTTON_H
-#define REGISTRATIONBUTTON_H
+#ifndef GOTOREGISTRATIONBUTTON_H
+#define GOTOREGISTRATIONBUTTON_H
 
+#include <QPushButton>
 
-class RegistrationButton
-{
+class GoToRegistrationButton: public QPushButton {
+    Q_OBJECT
 public:
-    RegistrationButton();
+    GoToRegistrationButton();
 };
 
-#endif // REGISTRATIONBUTTON_H
+#endif // GOTOREGISTRATIONBUTTON_H

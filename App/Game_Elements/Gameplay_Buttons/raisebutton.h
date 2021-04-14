@@ -1,9 +1,10 @@
 #ifndef RAISEBUTTON_H
 #define RAISEBUTTON_H
 
+#include <QPushButton>
 
-class RaiseButton
-{
+class RaiseButton: public QPushButton {
+    Q_OBJECT
 public:
     RaiseButton();
 };

@@ -1,9 +1,10 @@
 #ifndef MUTEBUTTON_H
 #define MUTEBUTTON_H
 
+#include <QPushButton>
 
-class MuteButton
-{
+class MuteButton: public QPushButton {
+    Q_OBJECT
 public:
     MuteButton();
 };

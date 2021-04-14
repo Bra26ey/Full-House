@@ -1,9 +1,15 @@
 #ifndef OTHERPLAYER_H
 #define OTHERPLAYER_H
 
-#include <QWidget>
-#include <QLabel>
+#include "card.h"
+#include "chips.h"
+#include "playerinfolabel.h"
+
+
 #include <QPair>
+#include <QLabel>
+#include <QWidget>
+#include <QPixmap>
 
 
 class OtherPlayer: public QWidget {
@@ -19,8 +25,10 @@ protected:
     QPair<QWidget, QWidget> *Cards;
     QLabel *PlayerInfo;
 
+
 private:
-    size_t TextureId;
+    QPixmap *mTexture;
+    size_t mTextureId;
 };
 
 #endif // OTHERPLAYER_H

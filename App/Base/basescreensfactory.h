@@ -11,8 +11,8 @@ public:
     BaseScreensFactory();
     virtual ~BaseScreensFactory();
 
-    virtual BaseFragment* create(QString tag);
-    virtual QString createStart();
+    virtual BaseFragment* create(QString tag) = 0;
+    virtual QString createStart() = 0;
 };
 
 #endif // BASESCREENSFACTORY_H

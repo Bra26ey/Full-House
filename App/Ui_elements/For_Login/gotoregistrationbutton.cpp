@@ -1,6 +1,6 @@
 #include "gotoregistrationbutton.h"
 
-RegistrationButton::RegistrationButton()
+GoToRegistrationButton::GoToRegistrationButton()
 {
 
 }

@@ -8,6 +8,10 @@ public:
     Player();
     ~Player();
     void DisplayCards();
+
+private:
+    size_t mTextureId;
+    QPixmap *mTexture;
 };
 
 #endif // PLAYER_H

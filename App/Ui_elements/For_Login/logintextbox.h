@@ -1,9 +1,11 @@
 #ifndef LOGINTEXTBOX_H
 #define LOGINTEXTBOX_H
 
+#include <QLineEdit>
 
-class LoginTextBox
-{
+class LoginTextBox: public QLineEdit {
+    Q_OBJECT
+
 public:
     LoginTextBox();
 };
