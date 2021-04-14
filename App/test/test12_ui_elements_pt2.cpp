@@ -51,7 +51,7 @@ TEST(textboxes, test1) {
 
     auto txt1 = new LoginTextBox;
     ASSERT_NO_THROW(txt1->show());
-    ASSERT_NO_THROW(TestBody())
+    ASSERT_NO_THROW(TestBody());
 
 
 }
