@@ -10,6 +10,4 @@ TEST(main_function, test1) {
     QApplication a(argc, argv);
     MainWindow w;
     ASSERT_NO_THROW(w.show());
-    ASSERT_EQ(a.exec(), 0);
-    ASSERT_NO_THROW(a.quit());
 }
