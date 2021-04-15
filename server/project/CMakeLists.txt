@@ -4,9 +4,11 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 include_directories(include)
 
-set(SERVER_SRC src/server.cpp)
+file(GLOB SERVER_SRC "src/*.cpp")
 
-add_executable(server_programm src/main.c)
-target_link_libraries(server_programm ${Boost_LIBRARIES})
+add_library(server_lib SHARED ${SERVER_SRC})
+
+add_executable(server_target src/main.c)
+target_link_libraries(server_target ${Boost_LIBRARIES})
 
 add_subdirectory(tests)
