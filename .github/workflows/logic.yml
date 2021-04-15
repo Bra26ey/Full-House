@@ -25,7 +25,7 @@ jobs:
           sudo cmake CMakeLists.txt
 
       - name: build
-        working-directory: ${{runner.workspace}}/logic
+        working-directory: ${{runner.workspace}}/Full-House/logic
         shell: bash
         run: |
           mkdir build
@@ -34,7 +34,7 @@ jobs:
           make
 
       - name: test
-        working-directory: ${{runner.workspace}}/logic/build
+        working-directory: ${{runner.workspace}}/Full-House/logic/build
         shell: bash
         run: ctest -V -R
 
