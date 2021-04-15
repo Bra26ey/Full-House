@@ -1,0 +1,5 @@
+[logic/GameEntities/HandProcess.h:19]: (style) The class 'HandProcess' does not have a constructor although it has private member variables.
+[logic/GameEntities/HandProcess.h:40]: (style) Unused private function: 'HandProcess::ShuffleDeck'
+[logic/GameEntities/HandProcess.h:41]: (style) Unused private function: 'HandProcess::GameStage'
+[logic/Player/Player.h:25]: (style) Unused private function: 'Player::Sort'
+(information) Too many #ifdef configurations - cppcheck only checks 12 configurations. Use --force to check all configurations. For more details, use --enable=information.
