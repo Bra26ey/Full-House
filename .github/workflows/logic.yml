@@ -32,10 +32,13 @@ jobs:
           cd build
           cmake ..
           make
+
       - name: test
         working-directory: ${{runner.workspace}}/Full-House/logic
         shell: bash
-        run: ctest -V -R
+        run: |
+          cd build
+          ./tests
 
       - name: ci coverage
         uses: codecov/codecov-action@v1
