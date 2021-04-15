@@ -24,6 +24,9 @@ message(${GTEST_INCLUDE_DIRS})
 
 add_executable(tests
         tests/main.cpp
+        tests/GameEntities.cpp
+        tests/Player.cpp
+        tests/Utilities.cpp
         )
 
 target_link_libraries(tests ${GTEST_LIBRARIES} pthread MyLib)
