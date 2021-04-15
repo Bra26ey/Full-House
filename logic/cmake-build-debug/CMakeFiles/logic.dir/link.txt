@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/logic.dir/main.cpp.o CMakeFiles/logic.dir/Player/Player.cpp.o CMakeFiles/logic.dir/Player/HumanPlayer.cpp.o CMakeFiles/logic.dir/GameEntities/HandProcess.cpp.o CMakeFiles/logic.dir/GameEntities/Card.cpp.o -o logic 

@@ -1,0 +1,5 @@
+/home/aleksandr/techn/Full-House/logic/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/aleksandr/techn/Full-House/logic/cmake-build-debug/CMakeFiles/logic.dir
+/home/aleksandr/techn/Full-House/logic/cmake-build-debug/CMakeFiles/test.dir
+/home/aleksandr/techn/Full-House/logic/cmake-build-debug/CMakeFiles/tests.dir
+/home/aleksandr/techn/Full-House/logic/cmake-build-debug/CMakeFiles/edit_cache.dir
