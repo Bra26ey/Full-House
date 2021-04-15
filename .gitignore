@@ -1,0 +1,7 @@
+/cmake-build
+/build/
+/.idea
+/database/build/
+/database/build
+/build
+*.out
