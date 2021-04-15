@@ -25,6 +25,7 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 enable_testing()
 add_subdirectory(test)
 
+find_package(Qt5Widgets)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
@@ -96,13 +97,9 @@ add_library(MyLib SHARED ${PROJECT_SOURCES})
 target_link_libraries(MyLib Qt${QT_VERSION_MAJOR}::Widgets)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(UiTest
-
-    )
+    qt_add_executable(UiTest)
 else()
-        add_executable(UiTest
-
-        )
+    add_executable(UiTest)
 endif()
 
-target_link_libraries(UiTest PRIVATE Qt${QT_VERSION_MAJOR}::Widgets MyLib)
+target_link_libraries(UiTest PRIVATE MyLib)
