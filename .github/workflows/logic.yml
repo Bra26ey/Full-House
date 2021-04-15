@@ -18,25 +18,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create WD
-        working-directory: ${{runner.workspace}}/Full-House/logic
+      - name: install gtest
+          run: |
+            sudo apt-get install libgtest-dev
+            cd /usr/src/gtest
+            sudo cmake CMakeLists.txt
+
+      - name: build
+        working-directory: ${{runner.workspace}}/logic
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: mkdir build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
 
-
-      - name: Build cmake
-        working-directory: ${{runner.workspace}}/Full-House/logic/build
+      - name: test
+        working-directory: ${{runner.workspace}}/logic/build
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: cmake ..
-
-
-      - name: Build make
-        working-directory: ${{runner.workspace}}/Full-House/logic/build
-        shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: make
+        run: ctest -V -R
 
       - name: cppcheck
         uses: deep5050/cppcheck-action@master
@@ -44,11 +44,6 @@ jobs:
           exclude_check: ./build
           enable : warning,style ,performance,portability,unusedFunction,missingInclude
           inconclusive : disable
-
-      - name: Test
-        working-directory: ${{runner.workspace}}/Full-House/logic/build
-        shell: bash
-        run: ctest
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
