@@ -1,0 +1,70 @@
+name: publish
+on: push
+env:
+  build_type: release
+
+jobs:
+  build:
+    name: build project and run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: install gtest
+        run: |
+          sudo apt-get install libgtest-dev
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+          
+      - name: install valgrind
+        run: sudo apt-get install valgrind
+
+      - name: install boost
+        run: sudo apt-get install libboost-all-dev
+
+      - name: build
+        working-directory: ${{runner.workspace}}/Full-House
+        shell: bash
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+      - name: test
+        working-directory: ${{runner.workspace}}/Full-House/build
+        shell: bash
+        run: ctest -V -R
+
+      - name: run successive program
+        working-directory: ${{runner.workspace}}/Full-House/build/project
+        shell: bash
+        run: ./successive_program ../../project/tests/data/stress/test6/in.txt
+
+      - name: run parallel program
+        working-directory: ${{runner.workspace}}/Full-House/build/project
+        shell: bash
+        run: ./parallel_program ../../project/tests/data/stress/test6/in.txt
+
+      - name: memcheck
+        working-directory: ${{runner.workspace}}/Full-House/build
+        shell: bash
+        run: valgrind ctest
+
+      - name: ci coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+  lintets:
+    name: cppcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+          
+      - name: run cppcheck
+        uses: deep5050/cppcheck-action@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          enable: all
