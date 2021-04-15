@@ -18,40 +18,39 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create WD
+      - name: install gtest
+        run: |
+          sudo apt-get install libgtest-dev
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+
+      - name: build
         working-directory: ${{runner.workspace}}/Full-House/logic
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: mkdir build
-
-
-      - name: Build cmake
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+      - name: test
         working-directory: ${{runner.workspace}}/Full-House/logic/build
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: cmake ..
+        run: ctest -V -R
 
+      - name: ci coverage
+          uses: codecov/codecov-action@v1
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            fail_ci_if_error: true
 
-      - name: Build make
-        working-directory: ${{runner.workspace}}/Full-House/logic/build
-        shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: make
+  lintets:
+    name: cppcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-      - name: cppcheck
-        uses: deep5050/cppcheck-action@master
+      - name: run cppcheck
+        uses: deep5050/cppcheck-action@main
         with:
-          exclude_check: ./build
-          enable : warning,style ,performance,portability,unusedFunction,missingInclude
-          inconclusive : disable
-
-      - name: Test
-        working-directory: ${{runner.workspace}}/Full-House/logic/build
-        shell: bash
-        run: ctest
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          enable: all
