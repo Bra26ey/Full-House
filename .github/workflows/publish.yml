@@ -23,31 +23,41 @@ jobs:
       - name: install boost
         run: sudo apt-get install libboost-all-dev
 
-      - name: build
+      - name: build server
         working-directory: ${{runner.workspace}}/Full-House
         shell: bash
         run: |
-          mkdir build
-          cd build
+          mkdir server/build
+          cd server/build
           cmake ..
           make
-      - name: test
-        working-directory: ${{runner.workspace}}/Full-House/build
+
+      - name: build client
+        working-directory: ${{runner.workspace}}/Full-House
+        shell: bash
+        run: |
+          mkdir client/build
+          cd client/build
+          cmake ..
+          make
+
+      - name: test server
+        working-directory: ${{runner.workspace}}/Full-House/server/build
         shell: bash
         run: ctest -V -R
 
-      - name: run successive program
-        working-directory: ${{runner.workspace}}/Full-House/build/project
+      - name: test client
+        working-directory: ${{runner.workspace}}/Full-House/client/build
         shell: bash
-        run: ./successive_program ../../project/tests/data/stress/test6/in.txt
+        run: ctest -V -R
 
-      - name: run parallel program
-        working-directory: ${{runner.workspace}}/Full-House/build/project
+      - name: memcheck server
+        working-directory: ${{runner.workspace}}/Full-House/server/build
         shell: bash
-        run: ./parallel_program ../../project/tests/data/stress/test6/in.txt
+        run: valgrind ctest
 
-      - name: memcheck
-        working-directory: ${{runner.workspace}}/Full-House/build
+      - name: memcheck client
+        working-directory: ${{runner.workspace}}/Full-House/client/build
         shell: bash
         run: valgrind ctest
 

@@ -15,7 +15,7 @@ target_link_libraries(
     tests
     ${GTEST_BOTH_LIBRARIES}
     stdc++fs
-    target
+    server_target
 )
 
 add_test(
