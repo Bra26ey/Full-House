@@ -5,12 +5,15 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(Player Utilities GameEntities)
 
+
+add_library(MyLib SHARED
+                         Player/Player.cpp Player/HumanPlayer.cpp Player/HumanPlayer.h Player/Player.h Player/PlayerInterface.h Player/Profile.h
+                         GameEntities/HandProcess.cpp GameEntities/Card.cpp GameEntities/Board.h GameEntities/Card.h GameEntities/HandProcess.h
+                         Utilities/FileLogger.cpp Utilities/FileLogger.h Utilities/HandConfiguration.h Utilities/Logger.h)
+
 add_executable(logic
-        main.cpp
-        Player/Player.cpp
-        Player/HumanPlayer.cpp
-        GameEntities/HandProcess.cpp
-        GameEntities/Card.cpp)
+        main.cpp)
+target_link_libraries(logic MyLib)
 
 enable_testing()
 find_package(GTest REQUIRED)
@@ -21,13 +24,6 @@ message(${GTEST_INCLUDE_DIRS})
 
 add_executable(tests
         tests/main.cpp
-        tests/Player.cpp
-        tests/Utilities.cpp
-        tests/GameEntities.cpp
-        Player/Player.cpp
-        Player/HumanPlayer.cpp
-        Utilities/FileLogger.cpp
-        GameEntities/Card.cpp
-        GameEntities/HandProcess.cpp)
+        )
 
-target_link_libraries(tests ${GTEST_LIBRARIES} pthread)
+target_link_libraries(tests ${GTEST_LIBRARIES} pthread MyLib)
