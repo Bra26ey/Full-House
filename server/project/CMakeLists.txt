@@ -4,7 +4,9 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 include_directories(include)
 
-file(GLOB SERVER_SRC "src/*.cpp")
+# file(GLOB SERVER_SRC "src/*.cpp")
+
+set(SERVER_SRC src/server.cpp)
 
 add_library(server_lib SHARED ${SERVER_SRC})
 
