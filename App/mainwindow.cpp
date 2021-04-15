@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include "screenfactory.h"
 
-#include <QDesktopWidget>
+#include <QScreen>
+#include <QApplication>
 #include <QException>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
         container->setObjectName("window");
 
         this->setWindowTitle("Poker House");
-        this->resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
+
+        this->resize(QApplication::screens().at(0)->availableGeometry().size() * 0.7);
         this->setCentralWidget(container);
     } catch (std::exception& e) {
         qDebug("%s", e.what());

@@ -1,7 +1,6 @@
 set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage --coverage -pthread")
 set(CMAKE_CXX_STANDARD 17)
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+
 
 include_directories("${PROJECT_SOURCE_DIR}/")
 include_directories("${PROJECT_SOURCE_DIR}/Base")
@@ -71,13 +70,14 @@ set(PROJECT_SOURCES
 
 )
 
+
 foreach(file ${tests})
   set(name)
   get_filename_component(name ${file} NAME_WE)
   add_executable("${name}_tests"
     ${file}
     "${PROJECT_SOURCE_DIR}/test/main.cpp"
-    ${PROJECT_SOURCES})
-  target_link_libraries("${name}_tests" Qt${QT_VERSION_MAJOR}::Widgets gtest_main)
+    )
+  target_link_libraries("${name}_tests" MyLib gtest_main)
   add_test(NAME ${name} COMMAND "${name}_tests")
 endforeach()

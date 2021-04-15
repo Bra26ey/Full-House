@@ -1,7 +1,6 @@
 #include "navigator.h"
 #include "screenfactory.h"
 
-#include <QLinkedList>
 
 using namespace screens;
 
@@ -15,10 +14,10 @@ FragmentNavigator::FragmentNavigator(
     qDebug("create start fragment");
     BaseFragment* startFragment = getStartScreen();
     qDebug("append start fragment");
-    this->stack.append(startFragment);
+    this->stack.push_back(startFragment);
 
     qDebug("add widget");
-    currentContainer->addWidget(stack.last());
+    currentContainer->addWidget(stack.back());
     currentContainer->setCurrentIndex(0);
 }
 
@@ -29,30 +28,30 @@ FragmentNavigator::~FragmentNavigator() {
 void FragmentNavigator::navigateTo(QString tag) {
     qDebug("Navigator navigateTo");
     BaseFragment *newFragment = this->screensFactory->create(tag);
-    stack.last()->onPause();
-    disconnectFragment(stack.last());
+    stack.back()->onPause();
+    disconnectFragment(stack.back());
     connectFragment(newFragment);
-    stack.append(newFragment);
+    stack.push_back(newFragment);
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);
 }
 
 void FragmentNavigator::back() {
     qDebug("Navigator back");
-    currentContainer->removeWidget(stack.last());
-    delete stack.last();
-    stack.removeLast();
-    connectFragment(stack.last());
-    stack.last()->onResume();
-    currentContainer->setCurrentWidget(stack.last());
+    currentContainer->removeWidget(stack.back());
+    delete stack.back();
+    stack.pop_back();
+    connectFragment(stack.back());
+    stack.back()->onResume();
+    currentContainer->setCurrentWidget(stack.back());
 }
 
 void FragmentNavigator::replace(QString tag) {
     qDebug("Navigator replace");
     BaseFragment *newFragment = this->screensFactory->create(tag);
-    currentContainer->removeWidget(stack.last());
-    delete stack.last();
-    stack.removeLast();
+    currentContainer->removeWidget(stack.back());
+    delete stack.back();
+    stack.pop_back();
     connectFragment(newFragment);
     currentContainer->addWidget(newFragment);
 }
@@ -60,7 +59,7 @@ void FragmentNavigator::replace(QString tag) {
 void FragmentNavigator::newRootScreen(QString tag) {
     qDebug("Navigator newRootScreen");
     BaseFragment *newFragment = this->screensFactory->create(tag);
-    disconnectFragment(stack.last());
+    disconnectFragment(stack.back());
     stack.clear();
     connectFragment(newFragment);
     for(int i = currentContainer->count(); i >= 0; i--)
@@ -70,7 +69,7 @@ void FragmentNavigator::newRootScreen(QString tag) {
         widget->deleteLater();
     }
     currentContainer->addWidget(newFragment);
-    stack.append(newFragment);
+    stack.push_back(newFragment);
 }
 
 

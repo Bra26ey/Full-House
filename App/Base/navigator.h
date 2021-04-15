@@ -5,7 +5,7 @@
 #include "basescreensfactory.h"
 
 #include <QStackedWidget>
-#include <QLinkedList>
+#include <list>
 
 class FragmentNavigator: public QObject {
     Q_OBJECT
@@ -29,7 +29,7 @@ private:
     QStackedWidget *currentContainer;
 
     BaseScreensFactory *screensFactory;
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
 
     BaseFragment* createAndConnect(QString tag);
 

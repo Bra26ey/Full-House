@@ -10,7 +10,7 @@
 #include "gamesearchfragment.h"
 #include "gamefragment.h"
 
-#include <QLinkedList>
+
 #include <QApplication>
 
 
@@ -44,11 +44,11 @@ TEST(ScreenFactory, test3) {
     QApplication a(argc, argv);
 
 
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "login";
-    stack.append(factory->create(str));
-    ASSERT_NE(stack.first(), nullptr);
+    stack.push_back(factory->create(str));
+    ASSERT_NE(stack.front(), nullptr);
     delete factory;
 }
 
@@ -58,11 +58,11 @@ TEST(ScreenFactory, test4) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "registration";
-    stack.append(factory->create(str));
-    ASSERT_NE(stack.first(), nullptr);
+    stack.push_back(factory->create(str));
+    ASSERT_NE(stack.front(), nullptr);
     delete factory;
 }
 
@@ -71,11 +71,11 @@ TEST(ScreenFactory, test5) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "menu";
-    stack.append(factory->create(str));
-    ASSERT_NE(stack.first(), nullptr);
+    stack.push_back(factory->create(str));
+    ASSERT_NE(stack.front(), nullptr);
     delete factory;
 }
 
@@ -85,11 +85,11 @@ TEST(ScreenFactory, test6) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "settings";
-    stack.append(factory->create(str));
-    ASSERT_NE(stack.first(), nullptr);
+    stack.push_back(factory->create(str));
+    ASSERT_NE(stack.front(), nullptr);
     delete factory;
 }
 
@@ -98,11 +98,11 @@ TEST(ScreenFactory, test7) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "search";
-    stack.append(factory->create(str));
-    ASSERT_NE(stack.first(), nullptr);
+    stack.push_back(factory->create(str));
+    ASSERT_NE(stack.front(), nullptr);
     delete factory;
 }
 
@@ -111,10 +111,10 @@ TEST(ScreenFactory, test8) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    QLinkedList<BaseFragment*> stack;
+    std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "game";
-    stack.append(factory->create(str));
-    ASSERT_NE(stack.first(), nullptr);
+    stack.push_back(factory->create(str));
+    ASSERT_NE(stack.front(), nullptr);
     delete factory;
 }

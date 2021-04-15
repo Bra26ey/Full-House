@@ -51,7 +51,26 @@ TEST(textboxes, test1) {
 
     auto txt1 = new LoginTextBox;
     ASSERT_NO_THROW(txt1->show());
-    ASSERT_NO_THROW(TestBody());
+    ASSERT_NO_THROW(txt1->displayText());
+    delete txt1;
 
+    auto txt2 = new PasswordTextBox;
+    ASSERT_NO_THROW(txt2->show());
+    ASSERT_NO_THROW(txt2->displayText());
+    delete txt2;
 
+    auto txt3 = new EmailTextBox;
+    ASSERT_NO_THROW(txt3->show());
+    ASSERT_NO_THROW(txt3->displayText());
+    delete txt3;
+
+    auto txt4 = new RoomIdTextBox;
+    ASSERT_NO_THROW(txt4->show());
+    ASSERT_NO_THROW(txt4->displayText());
+    delete txt4;
+
+    auto txt5 = new RoomPasswordTextBox;
+    ASSERT_NO_THROW(txt5->show());
+    ASSERT_NO_THROW(txt5->displayText());
+    delete txt5;
 }
