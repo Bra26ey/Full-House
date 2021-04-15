@@ -38,10 +38,10 @@ jobs:
         run: ctest -V -R
 
       - name: ci coverage
-          uses: codecov/codecov-action@v1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            fail_ci_if_error: true
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
 
   lintets:
     name: cppcheck
