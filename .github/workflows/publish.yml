@@ -42,22 +42,22 @@ jobs:
           make
 
       - name: test server
-        working-directory: ${{runner.workspace}}/Full-House/server/build
+        working-directory: ${{runner.workspace}}/Full-House/server/build/server_lib
         shell: bash
         run: ctest -V -R
 
       - name: test client
-        working-directory: ${{runner.workspace}}/Full-House/client/build
+        working-directory: ${{runner.workspace}}/Full-House/client/build/client_lib
         shell: bash
         run: ctest -V -R
 
       - name: memcheck server
-        working-directory: ${{runner.workspace}}/Full-House/server/build
+        working-directory: ${{runner.workspace}}/Full-House/server/build/server_lib
         shell: bash
         run: valgrind ctest
 
       - name: memcheck client
-        working-directory: ${{runner.workspace}}/Full-House/client/build
+        working-directory: ${{runner.workspace}}/Full-House/client/build/client_lib
         shell: bash
         run: valgrind ctest
 

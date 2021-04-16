@@ -1,5 +1,5 @@
 /server/build/
-/server/Testind/
+/server/server_lib/Testind/
 /client/build/
-/client/Testind/
+/client/client_lib/Testind/
 /.vscode/

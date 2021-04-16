@@ -1,4 +1,4 @@
 ignore:
     - "project/src/main.c"
-    - "client/project/tests/**/*"
-    - "server/project/tests/**/*"
+    - "client/project/client_lib/tests/**/*"
+    - "server/project/server_lib/tests/**/*"

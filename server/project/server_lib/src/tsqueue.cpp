@@ -1,6 +1,5 @@
 #include "tsqueue.h"
 
-
 template <class T>
 TSQueue<T>::TSQueue() {}
 

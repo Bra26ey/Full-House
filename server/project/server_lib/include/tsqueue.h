@@ -6,8 +6,8 @@
 template <class T>
 class TSQueue {
  public:
-    Queue();
-    ~Queue();
+    TSQueue();
+    ~TSQueue();
     void Push(T &element);
     T Pop();
     bool IsEmpty();

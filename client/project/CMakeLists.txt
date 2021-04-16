@@ -1,12 +1,5 @@
-find_package(Boost 1.65.1 REQUIRED)
+add_subdirectory(client_lib)
 
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+add_executable(client_target src/main.cpp)
 
-include_directories(include)
-
-set(CLIENT_SRC src/client.cpp)
-
-add_executable(client_target CLIENT_SRC)
-target_link_libraries(client_target ${Boost_LIBRARIES})
-
-add_subdirectory(tests)
+target_link_libraries(client_target client_lib)

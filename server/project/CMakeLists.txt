@@ -1,17 +1,9 @@
-find_package(Boost 1.65.1 REQUIRED)
+include_directories(server_lib/include)
 
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
-include_directories(include)
-
-# file(GLOB SERVER_SRC "src/*.cpp")
-
-set(SERVER_SRC src/server.cpp)
-
-add_library(server_lib SHARED ${SERVER_SRC})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 add_executable(server_target src/main.cpp)
 
-target_link_libraries(server_target ${Boost_LIBRARIES} server_lib)
+add_subdirectory(server_lib)
 
-add_subdirectory(tests)
+target_link_libraries(server_target server_lib)
