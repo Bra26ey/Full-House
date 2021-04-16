@@ -4,6 +4,7 @@
 #include <boost/asio.hpp>
 
 #include "definitions.h"
+#include "userbase.h"
 
 using boost::asio::ip::tcp;
 using boost::asio::io_context;
@@ -14,10 +15,10 @@ namespace network {
 
 class Acceptor {
  public:
-    Acceptor(io_context &context, user_queue &waitng_autorisation) : context_(context),
-                                                                     endpoint_(tcp::v4(), PORT),
-                                                                     acceptor_(context_, endpoint_),
-                                                                     waitng_autorisation_(waitng_autorisation) {}
+    Acceptor(io_context &context, Userbase &userbase) : context_(context),
+                                                        endpoint_(tcp::v4(), PORT),
+                                                        acceptor_(context_, endpoint_),
+                                                        waitng_autorisation_(userbase.waitng_autorisation) {}
     ~Acceptor();
 
     void Start();

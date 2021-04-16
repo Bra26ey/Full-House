@@ -9,7 +9,10 @@ namespace network {
 
 class GameHandler {
  public:
-    explicit GameHandler(io_context &context, user_queue &autorised, user_queue &creating_game, user_queue &accepting_game);
+    GameHandler(io_context &context, Userbase &userbase) : context_(context),
+                                                           autorised_(userbase.autorised),
+                                                           creating_game_(userbase.creating_game),
+                                                           accepting_game_(userbase.accepting_game) {}
     GameHandler(GameHandler &other) = delete;
     ~GameHandler();
 

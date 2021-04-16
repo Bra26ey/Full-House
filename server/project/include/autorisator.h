@@ -11,7 +11,9 @@ namespace network {
 
 class Autorisator {
  public:
-    explicit Autorisator(io_context &context);
+    Autorisator(io_context &context, Userbase &userbase) : context_(context),
+                                                           waitng_autorisation_(userbase.waitng_autorisation),
+                                                           autorised_(userbase.autorised) {};
     Autorisator(Autorisator &other) = delete;
     ~Autorisator();
 

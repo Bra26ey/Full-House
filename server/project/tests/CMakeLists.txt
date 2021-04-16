@@ -3,7 +3,7 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(include)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage --coverage -Wall -Wextra -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 
 file(GLOB TEST_SRC "src/*.cpp")
 
@@ -15,7 +15,7 @@ target_link_libraries(
     tests
     ${GTEST_BOTH_LIBRARIES}
     stdc++fs
-    server_target
+    server_lib
 )
 
 add_test(

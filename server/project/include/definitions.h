@@ -2,8 +2,9 @@
 
 #include <queue>
 
+#include "tsqueue.h"
 #include "user.h"
 
 namespace network {
-    typedef std::queue<std::shared_ptr<User>> user_queue;
+    typedef TSQueue<std::shared_ptr<User>> user_queue;
 }

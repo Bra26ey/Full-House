@@ -10,7 +10,8 @@ set(SERVER_SRC src/server.cpp)
 
 add_library(server_lib SHARED ${SERVER_SRC})
 
-add_executable(server_target src/main.c)
+add_executable(server_target src/main.cpp)
+
 target_link_libraries(server_target ${Boost_LIBRARIES} server_lib)
 
 add_subdirectory(tests)
