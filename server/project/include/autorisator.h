@@ -2,10 +2,10 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include <queue>
 
 #include "user.h"
 #include "definitions.h"
+#include "userbase.h"
 
 namespace network {
 

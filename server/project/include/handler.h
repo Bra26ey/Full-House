@@ -3,11 +3,11 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
+#include "definitions.h"
 #include "user.h"
+#include "userbase.h"
 
 namespace network {
-
-typedef std::queue<std::shared_ptr<User>> user_queue;
 
 class Handler {
  public:
@@ -17,6 +17,8 @@ class Handler {
                                                        accepting_game_(userbase.accepting_game) {}
     Handler(Handler &other) = delete;
     ~Handler();
+
+    void Start();
 
  private:
     io_context &context_;

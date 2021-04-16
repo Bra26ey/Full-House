@@ -11,7 +11,7 @@ namespace network {
 
 class GameRoom {
  public:
-    explicit GameRoom(io_context &context);
+    explicit GameRoom(io_context &context) : context_(context) {}
     GameRoom(GameRoom  &other) = delete;
     ~GameRoom();
 

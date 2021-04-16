@@ -4,6 +4,8 @@
 #include <boost/asio.hpp>
 
 #include "gameroom.h"
+#include "definitions.h"
+#include "userbase.h"
 
 namespace network {
 
