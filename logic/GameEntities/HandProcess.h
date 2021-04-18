@@ -12,33 +12,46 @@
 #include "Board.h"
 #include "HandConfiguration.h"
 #include "Logger.h"
+#include "Deck.h"
 
 
 constexpr int DECK_SIZE = 52;
 
 class HandProcess {
 public:
-    // HandProcess();
-    void DealCards();  // TODO: using ShuffleDeck
-    void Preflop();  // TODO: using GameStage
-    void Flop();  // TODO: using GameStage
-    void Turn();  // TODO: using GameStage
-    void River();  // TODO: using GameStage
-    void PotDistribution();  // TODO: using HandValue from Player and sort for all players to determine winner
+    static void DealCards(HandConfiguration& hand_config, Deck& deck, Logger& logger);
 
+    static void Preflop(HandConfiguration& hand_config, Deck& deck, Board& board, Logger& logger);  // TODO: using GameStage
+    static void Flop(HandConfiguration& hand_config, Deck& deck, Board& board, Logger& logger);  // TODO: using GameStage
+    static void Turn(HandConfiguration& hand_config, Deck& deck, Board& board, Logger& logger);  // TODO: using GameStage
+    static void River(HandConfiguration& hand_config, Deck& deck, Board& board, Logger& logger);  // TODO: using GameStage
+    static void PotDistribution(HandConfiguration& hand_config, Deck& deck, Board& board, Logger& logge);  // TODO: using HandValue from Player and sort for all players to determine winner
+
+    static std::list<std::shared_ptr<Player> >::iterator CircularNext(std::list<std::shared_ptr<Player> >& l, std::list<std::shared_ptr<Player> >::iterator it) {
+        return std::next(it) == l.end() ? l.begin() : std::next(it);
+    }
+
+    static std::list<std::shared_ptr<Player> >::const_iterator CircularNext(std::list<std::shared_ptr<Player> >& l, std::list<std::shared_ptr<Player> >::const_iterator it) {
+        return std::next(it) == l.cend() ? l.cbegin() : std::next(it);
+    }
+
+    static std::list<std::shared_ptr<Player> >::iterator CircularPrev(std::list<std::shared_ptr<Player> >& l, std::list<std::shared_ptr<Player> >::iterator it) {
+        return std::prev(it) == l.begin() ? l.end() : std::prev(it);
+    }
+
+    static std::list<std::shared_ptr<Player> >::const_iterator CircularPrev(std::list<std::shared_ptr<Player> >& l, std::list<std::shared_ptr<Player> >::const_iterator it) {
+        return std::prev(it) == l.cbegin() ? l.cend() : std::prev(it);
+    }
+
+    static void GameStage(HandConfiguration& hand_config, Deck& deck, Board& board, Logger& logger);  // TODO: while loop pos_of_raiser == start_pos
+    static void GameLoop(bool& someone_raised, bool& first_round,
+                         std::list<std::shared_ptr<Player> >::iterator& first_player,
+                         std::list<std::shared_ptr<Player> >::iterator& position_of_raiser,
+                         HandConfiguration& hand_config, Board& board, Logger& logger,
+                         int& raised_money, int& players_in_pot, int& buf);
 private:
-    std::vector<Card> deck;
-    Board board_;
-    std::list<std::unique_ptr<Player> > players_;
-
-    std::shared_ptr<Logger> logger_;
-
-    std::list<std::unique_ptr<Player> >::iterator iter_;
-    unsigned int pos_of_raiser_;
 
 
-    void ShuffleDeck();
-    void GameStage();  // TODO: while loop pos_of_raiser == start_pos
 };
 
 

@@ -1,3 +1,4 @@
+/*
 //
 // Created by aleksandr on 15.04.2021.
 //
@@ -7,3 +8,4 @@
 void HumanPlayer::IsConnected() {
     return;
 }
+*/

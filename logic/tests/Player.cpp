@@ -4,8 +4,6 @@
 
 #include "gtest/gtest.h"
 #include "Player.h"
-#include "HumanPlayer.h"
-
 
 TEST(Player, fold) {
     Player player;
@@ -35,9 +33,4 @@ TEST(Player, hand_value) {
 TEST(Player, action) {
     Player player;
     ASSERT_NO_THROW(player.Action());
-}
-
-TEST(HumanPlayer, is_connected) {
-    HumanPlayer player;
-    ASSERT_NO_THROW(player.IsConnected());
 }

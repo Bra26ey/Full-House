@@ -5,6 +5,8 @@
 #ifndef FULL_HOUSE_CARD_H
 #define FULL_HOUSE_CARD_H
 
+#include <string>
+
 enum class Suit {
     DIAMONDS,
     HEARTS,
@@ -14,27 +16,33 @@ enum class Suit {
 
 enum class Value {
     Value_TWO = 2,
-    Value_THREE,
-    Value_FOUR,
-    Value_FIVE,
-    Value_SIX,
-    Value_SEVEN,
-    Value_EIGHT,
-    Value_NINE,
-    Value_TEN,
-    Value_JACK,
-    Value_QUEEN,
-    Value_KING,
-    Value_ACE,
+    Value_THREE = 3,
+    Value_FOUR = 4,
+    Value_FIVE = 5,
+    Value_SIX = 6,
+    Value_SEVEN = 7,
+    Value_EIGHT = 8,
+    Value_NINE = 9,
+    Value_TEN = 10,
+    Value_JACK = 11,
+    Value_QUEEN = 12,
+    Value_KING = 13,
+    Value_ACE = 14,
 };
 
 
+
+
 struct Card {
-    unsigned suit: 2;
-    unsigned value: 4;
+    Suit suit;
+    Value value;
     bool show_everyone = false;
 
+    Card(Suit suit, Value value);
+    bool operator==(const Card& card) const;
+
     void Show();
+    static std::string ToString(const Suit& s, const Value& v);
 };
 
 #endif //FULL_HOUSE_CARD_H

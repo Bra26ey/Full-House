@@ -5,7 +5,9 @@
 #ifndef FULL_HOUSE_HANDCONFIGURATION_H
 #define FULL_HOUSE_HANDCONFIGURATION_H
 
-#include <vector>
+#include <list>
+#include <memory>
+#include "Player.h"
 
 struct HandConfiguration {
     unsigned int button_pos;
@@ -15,7 +17,10 @@ struct HandConfiguration {
     int small_blind_bet;
     int big_blind_bet;
 
-    std::vector<unsigned int> pos_of_players;
+    unsigned int max_size_of_players;
+    unsigned int count_of_player_cards;
+
+    std::list<std::shared_ptr<Player> > players;
 };
 
 #endif //FULL_HOUSE_HANDCONFIGURATION_H

@@ -38,8 +38,8 @@ TEST(HandProcess, pot_distribution) {
     ASSERT_NO_THROW(hand_process.PotDistribution());
 }
 
-TEST(Card, show_card) {
+/*TEST(Card, show_card) {
     Card card = {2, 11};
     card.Show();
     EXPECT_EQ(card.show_everyone, true);
-}
+}*/
