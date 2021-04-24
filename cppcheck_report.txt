@@ -8,16 +8,6 @@
 [App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::CheckButton' is not initialized in the constructor.
 [App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::LeaveButton' is not initialized in the constructor.
 [App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::SettingsButton' is not initialized in the constructor.
-[App/Fragments/gamesearchfragment.cpp:3]: (warning) Member variable 'GameSearchFragment::roomIdEdit' is not initialized in the constructor.
-[App/Fragments/gamesearchfragment.cpp:3]: (warning) Member variable 'GameSearchFragment::passwordEdit' is not initialized in the constructor.
-[App/Fragments/gamesearchfragment.cpp:3]: (warning) Member variable 'GameSearchFragment::MenuButton' is not initialized in the constructor.
-[App/Fragments/gamesearchfragment.cpp:3]: (warning) Member variable 'GameSearchFragment::SearchButton' is not initialized in the constructor.
-[App/Fragments/menufragment.cpp:3]: (warning) Member variable 'MenuFragment::LoginButton' is not initialized in the constructor.
-[App/Fragments/menufragment.cpp:3]: (warning) Member variable 'MenuFragment::SettingsButton' is not initialized in the constructor.
-[App/Fragments/menufragment.cpp:3]: (warning) Member variable 'MenuFragment::SearchButton' is not initialized in the constructor.
-[App/Fragments/settingsfragment.cpp:3]: (warning) Member variable 'SettingsFragment::MuteButton' is not initialized in the constructor.
-[App/Fragments/settingsfragment.cpp:3]: (warning) Member variable 'SettingsFragment::MenuButton' is not initialized in the constructor.
-[App/Fragments/settingsfragment.cpp:3]: (warning) Member variable 'SettingsFragment::VolumeSlider' is not initialized in the constructor.
 [App/Game_Elements/card.cpp:3]: (warning) Member variable 'Card::mUpTexture' is not initialized in the constructor.
 [App/Game_Elements/card.cpp:3]: (warning) Member variable 'Card::mDownTexture' is not initialized in the constructor.
 [App/Game_Elements/chips.cpp:3]: (warning) Member variable 'Chips::mTexture' is not initialized in the constructor.
@@ -33,4 +23,4 @@
 [App/Game_Elements/playerinfolabel.cpp:3]: (warning) Member variable 'PlayerInfoLabel::mNickname' is not initialized in the constructor.
 [App/Game_Elements/playtable.cpp:3]: (warning) Member variable 'PlayTable::mTexture' is not initialized in the constructor.
 [App/Game_Elements/playtable.h:9]: (style) Class 'PlayTable' has a constructor with 1 argument that is not explicit.
-[App/mainwindow.h:22]: (style) Class 'MainWindow' has a constructor with 1 argument that is not explicit.
+[App/mainwindow.h:23]: (style) Class 'MainWindow' has a constructor with 1 argument that is not explicit.
