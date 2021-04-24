@@ -15,15 +15,17 @@ public:
     ~LoginFragment();
 public slots:
     void onLoginPressed();
+    void onExitPressed();
     void onRegistrationPressed();
     int CheckData();
 
 private:
     QLineEdit *loginEdit;
     QLineEdit *passwordEdit;
-    QPushButton *loginButton;
 
+    QPushButton *loginButton;
     QPushButton *RegistrationButton;
+    QPushButton *quitButton;
 };
 
 #endif // LOGINFRAGMENT_H

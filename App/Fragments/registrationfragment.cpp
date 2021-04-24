@@ -1,6 +1,7 @@
 #include "registrationfragment.h"
 
 #include <QLabel>
+#include <QMessageBox>
 
 RegistrationFragment::RegistrationFragment() {
     qDebug("LoginFragment create");
@@ -12,7 +13,6 @@ RegistrationFragment::RegistrationFragment() {
     QVBoxLayout *startMainLayout = new QVBoxLayout;
     QHBoxLayout *startContent = new QHBoxLayout;
 
-    QVBoxLayout *backContainer = new QVBoxLayout;
 
     QVBoxLayout *startVerticalContent = new QVBoxLayout;
     QLabel *title = new QLabel("Регистрация");
@@ -23,7 +23,6 @@ RegistrationFragment::RegistrationFragment() {
     emailEdit = new QLineEdit;
 
     QVBoxLayout *buttonContainer = new QVBoxLayout;
-    QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
     title->setStyleSheet("color:#242424;"
             "font-size:24px;");
@@ -41,24 +40,24 @@ RegistrationFragment::RegistrationFragment() {
     startMainLayout->addLayout(buttonContainer);
 
     loginEdit->setMaximumWidth(400);
-    loginEdit->setStyleSheet("color:#242424;font-size:24px");
+    loginEdit->setStyleSheet("color:#242424;font-size:20px");
     loginEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     loginEdit->setPlaceholderText("Логин");
 
     passwordEdit->setMaximumWidth(400);
-    passwordEdit->setStyleSheet("color:#242424;font-size:24px");
+    passwordEdit->setStyleSheet("color:#242424;font-size:20px");
     passwordEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     passwordEdit->setPlaceholderText("Пароль");
     passwordEdit->setEchoMode(QLineEdit::Password);
 
     passwordRepeatEdit->setMaximumWidth(400);
-    passwordRepeatEdit->setStyleSheet("color:#242424;font-size:24px");
+    passwordRepeatEdit->setStyleSheet("color:#242424;font-size:20px");
     passwordRepeatEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     passwordRepeatEdit->setPlaceholderText("Повторите введенный пароль");
     passwordRepeatEdit->setEchoMode(QLineEdit::Password);
 
     emailEdit->setMaximumWidth(400);
-    emailEdit->setStyleSheet("color:#242424;font-size:24px");
+    emailEdit->setStyleSheet("color:#242424;font-size:20px");
     emailEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     emailEdit->setPlaceholderText("Электронная почта");
 
@@ -75,17 +74,14 @@ RegistrationFragment::RegistrationFragment() {
     buttonContainer->addWidget(emailEdit);
     buttonContainer->addWidget(passwordEdit);
     buttonContainer->addWidget(passwordRepeatEdit);
-    loadingButtonContainer->addWidget(RegistrationButton);
-    loadingButtonContainer->addWidget(BackButton);
-    buttonContainer->addLayout(loadingButtonContainer);
+    buttonContainer->addWidget(RegistrationButton);
+    buttonContainer->addWidget(BackButton);
 
     startContent->setContentsMargins(46,46,46,46);
 
     centerConainer->setStyleSheet("color:#242424;font-size:24px");
     centerConainer->setLayout(startContent);
 
-    backContainer->setAlignment(Qt::AlignTop);
-    startContent->addLayout(backContainer);
     startContent->addLayout(startMainLayout);
 
     mainHLayout->addWidget(centerConainer);
@@ -99,11 +95,22 @@ RegistrationFragment::RegistrationFragment() {
 
 
 void RegistrationFragment::onRegistrationPressed() {
-
+    if (CheckData()) {
+        QMessageBox msgBox;
+         msgBox.setText("В пароле или логине недостаточно символов");
+         msgBox.setWindowTitle("Ошибка регистрации");
+         msgBox.exec();
+    } else {
+        // send data to database
+    }
 }
 
-void RegistrationFragment::checkData() {
-
+int RegistrationFragment::CheckData() {
+    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 RegistrationFragment::~RegistrationFragment() {

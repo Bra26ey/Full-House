@@ -25,7 +25,8 @@ SettingsFragment::SettingsFragment() {
     MenuButton->setStyleSheet("color:#242424;font-size:24px");
     connect(MenuButton, &QPushButton::clicked, this, &SettingsFragment::onMenuPressed);
 
-    VolumeSlider = new QSlider(Qt::Horizontal);
+    VolumeSlider = new QSlider(Qt::Horizontal, this);
+    VolumeSlider->setGeometry(50, 40, 75, 30);
     VolumeSlider->setGeometry(10, 10, 10, 10);
     VolumeSlider->setStyleSheet("color:#242424;font-size:24px;margin-top:200px");
     VolumeSlider->setRange(0, 100);
@@ -33,7 +34,7 @@ SettingsFragment::SettingsFragment() {
     connect(VolumeSlider, &QSlider::valueChanged, this, &SettingsFragment::ChangedSlider);
 
 
-    QLabel *title = new QLabel("Громкость");
+    QLabel *title = new QLabel("Громкость", VolumeSlider);
 
     buttonContainer->addWidget(MuteButton);
     buttonContainer->addWidget(title);

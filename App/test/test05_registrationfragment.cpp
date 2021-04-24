@@ -13,7 +13,7 @@ TEST(Registration, test1) {
     ASSERT_NO_THROW(auto reg = new RegistrationFragment);
     auto reg = new RegistrationFragment;
 
-    ASSERT_NO_THROW(reg->checkData());
+    ASSERT_NO_THROW(reg->CheckData());
     ASSERT_NO_THROW(reg->onRegistrationPressed());
     delete reg;
 }

@@ -29,7 +29,6 @@ LoginFragment::LoginFragment() {
     passwordEdit = new QLineEdit;
 
     QVBoxLayout *buttonContainer = new QVBoxLayout;
-    QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
     title->setStyleSheet("color:#242424;"
             "font-size:24px;");
@@ -56,8 +55,6 @@ LoginFragment::LoginFragment() {
     passwordEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     passwordEdit->setPlaceholderText("Пароль");
     passwordEdit->setEchoMode(QLineEdit::Password);
-    connect(loginEdit, &QLineEdit::textChanged, this, &LoginFragment::CheckData);
-    connect(passwordEdit, &QLineEdit::textChanged, this, &LoginFragment::CheckData);
 
     loginButton = new QPushButton("Войти");
     loginButton->setStyleSheet("color:#242424;font-size:24px");
@@ -67,11 +64,16 @@ LoginFragment::LoginFragment() {
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &LoginFragment::onRegistrationPressed);
 
+    quitButton = new QPushButton("Выход");
+    quitButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(quitButton, &QPushButton::clicked, this, &LoginFragment::onExitPressed);
+
     buttonContainer->addWidget(loginEdit);
     buttonContainer->addWidget(passwordEdit);
-    loadingButtonContainer->addWidget(loginButton);
-    loadingButtonContainer->addWidget(RegistrationButton);
-    buttonContainer->addLayout(loadingButtonContainer);
+    buttonContainer->addWidget(loginButton);
+    buttonContainer->addWidget(RegistrationButton);
+    buttonContainer->addWidget(quitButton);
+
 
     startContent->setContentsMargins(46,46,46,46);
 
@@ -109,6 +111,10 @@ void LoginFragment::onLoginPressed() {
 
 void LoginFragment::onRegistrationPressed() {
     navigateTo(REGISTRATION_TAG);
+}
+
+void LoginFragment::onExitPressed() {
+    exit(0);
 }
 
 int LoginFragment::CheckData() {

@@ -14,7 +14,7 @@ public:
 
 public slots:
     void onSearchPressed();
-    void CheckData();
+    int CheckData();
     void onMenuPressed();
 
 private:
