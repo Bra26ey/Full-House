@@ -9,13 +9,13 @@ file(GLOB TEST_SRC "src/*.cpp")
 
 add_executable(tests ${TEST_SRC})
 
-set_target_properties(tests PROPERTIES LINKER_LANGUAGE CXX)
+# set_target_properties(tests PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(
     tests 
     ${GTEST_BOTH_LIBRARIES}
     stdc++fs
-    client_target
+    client_lib
 )
 
 add_test(

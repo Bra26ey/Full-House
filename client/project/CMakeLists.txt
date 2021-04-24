@@ -1,5 +1,5 @@
 add_subdirectory(client_lib)
 
-add_executable(client_target src/main.cpp)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-target_link_libraries(client_target client_lib)
+include_directories(client_lib/include)

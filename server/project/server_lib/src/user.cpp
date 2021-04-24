@@ -4,14 +4,24 @@ namespace network {
 
 User::~User() {}
 
-bool User::Connect() {}
+bool User::Connect() {
+    return false;
+}
 
-bool User::Disconnect() {}
+bool User::Disconnect() {
+    return false;
+}
 
-bool User::IsConnected() {}
+bool User::IsConnected() {
+    return false;
+}
 
-int User::Send(boost::asio::streambuf &buffer) {}
+int User::Send(boost::asio::streambuf &buffer) {
+    return 0;
+}
 
-int User::Read(boost::asio::streambuf &buffer) {}
+int User::Read(boost::asio::streambuf &buffer) {
+        return 0;
+}
 
 }  // namespace network

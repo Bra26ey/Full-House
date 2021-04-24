@@ -6,7 +6,9 @@ GameHandler::~GameHandler() {}
 
 void GameHandler::Start() {}
 
-int GameHandler::CreateGames() {}
+int GameHandler::CreateGames() {
+    return 0;
+}
 
 void GameHandler::AcceptAll() {}
 
