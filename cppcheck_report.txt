@@ -1,13 +1,4 @@
 [App/Base/basefragment.cpp:10]: (style) The scope of the variable 'child' can be reduced.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::Player' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::OtherPlayers' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::PlayTable' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::BetButton' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::RaiseButton' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::FoldButton' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::CheckButton' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::LeaveButton' is not initialized in the constructor.
-[App/Fragments/gamefragment.cpp:3]: (warning) Member variable 'GameFragment::SettingsButton' is not initialized in the constructor.
 [App/Game_Elements/card.cpp:3]: (warning) Member variable 'Card::mUpTexture' is not initialized in the constructor.
 [App/Game_Elements/card.cpp:3]: (warning) Member variable 'Card::mDownTexture' is not initialized in the constructor.
 [App/Game_Elements/chips.cpp:3]: (warning) Member variable 'Chips::mTexture' is not initialized in the constructor.
