@@ -6,6 +6,8 @@
 #include <QVector>
 #include <QWidget>
 #include <QPushButton>
+#include <QLabel>
+#include <QSlider>
 
 class GameFragment: public BaseFragment {
     Q_OBJECT
@@ -25,9 +27,12 @@ public slots:
     void onSettingsPressed();
 
 private:
-    QWidget *Player;
-    QVector<QWidget> *OtherPlayers;
-    QWidget *PlayTable;
+    QLabel *Player;
+    QVector<QLabel*> OtherPlayers;
+    QLabel *PlayTable;
+
+    QSlider *BetSlider;
+    QLabel *BetValue;
 
     QPushButton *BetButton;
     QPushButton *RaiseButton;

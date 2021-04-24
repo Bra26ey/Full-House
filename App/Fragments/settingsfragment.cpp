@@ -26,9 +26,8 @@ SettingsFragment::SettingsFragment() {
     connect(MenuButton, &QPushButton::clicked, this, &SettingsFragment::onMenuPressed);
 
     VolumeSlider = new QSlider(Qt::Horizontal, this);
-    VolumeSlider->setGeometry(50, 40, 75, 30);
-    VolumeSlider->setGeometry(10, 10, 10, 10);
-    VolumeSlider->setStyleSheet("color:#242424;font-size:24px;margin-top:200px");
+    VolumeSlider->setMaximumWidth(500);
+    VolumeSlider->setStyleSheet("color:#242424;margin-top:200px");
     VolumeSlider->setRange(0, 100);
     VolumeSlider->setValue(player->volume());
     connect(VolumeSlider, &QSlider::valueChanged, this, &SettingsFragment::ChangedSlider);

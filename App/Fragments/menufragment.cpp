@@ -74,5 +74,5 @@ void MenuFragment::onSettingsPressed() {
 }
 
 void MenuFragment::onLoginPressed() {
-    back();
+    navigateTo(LOGIN_TAG);
 }

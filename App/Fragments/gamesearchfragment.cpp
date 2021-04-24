@@ -95,7 +95,7 @@ int GameSearchFragment::CheckData() {
 
 
 void GameSearchFragment::onMenuPressed() {
-    back();
+    navigateTo(MAIN_TAG);
 }
 
 void GameSearchFragment::onSearchPressed() {
