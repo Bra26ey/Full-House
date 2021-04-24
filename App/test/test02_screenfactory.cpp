@@ -9,6 +9,7 @@
 #include "settingsfragment.h"
 #include "gamesearchfragment.h"
 #include "gamefragment.h"
+#include "mediaplayer.h"
 
 
 #include <QApplication>
@@ -73,7 +74,7 @@ TEST(ScreenFactory, test5) {
 
     std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
-    QString str = "menu";
+    QString str = "main";
     stack.push_back(factory->create(str));
     ASSERT_NE(stack.front(), nullptr);
     delete factory;
@@ -85,12 +86,15 @@ TEST(ScreenFactory, test6) {
     char *argv[0];
     QApplication a(argc, argv);
 
+    player = new QMediaPlayer;
+
     std::list<BaseFragment*> stack;
     auto factory = new ScreensFactory;
     QString str = "settings";
     stack.push_back(factory->create(str));
     ASSERT_NE(stack.front(), nullptr);
     delete factory;
+    delete player;
 }
 
 TEST(ScreenFactory, test7) {

@@ -2,6 +2,7 @@
 
 #include "settingsfragment.h"
 #include "mainwindow.h"
+#include "mediaplayer.h"
 
 #include <QApplication>
 
@@ -10,7 +11,8 @@ TEST(Settings, test1) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    ASSERT_NO_THROW(auto set = new SettingsFragment);
+    player = new QMediaPlayer;
+    ASSERT_NO_THROW( auto set = new SettingsFragment);
     auto set = new SettingsFragment;
     ASSERT_NO_THROW(set->MutePressed());
     ASSERT_NO_THROW(set->ChangedSlider());
