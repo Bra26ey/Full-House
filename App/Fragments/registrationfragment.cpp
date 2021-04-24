@@ -67,11 +67,16 @@ RegistrationFragment::RegistrationFragment() {
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &RegistrationFragment::onRegistrationPressed);
 
+    BackButton = new QPushButton("Назад к окну авторизации");
+    RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(BackButton, &QPushButton::clicked, this, &RegistrationFragment::back);
+
     buttonContainer->addWidget(loginEdit);
     buttonContainer->addWidget(emailEdit);
     buttonContainer->addWidget(passwordEdit);
     buttonContainer->addWidget(passwordRepeatEdit);
     loadingButtonContainer->addWidget(RegistrationButton);
+    loadingButtonContainer->addWidget(BackButton);
     buttonContainer->addLayout(loadingButtonContainer);
 
     startContent->setContentsMargins(46,46,46,46);
@@ -89,7 +94,6 @@ RegistrationFragment::RegistrationFragment() {
     mainVLayout->setAlignment(Qt::AlignCenter);
 
     this->setLayout(mainVLayout);
-    checkData();
 }
 
 

@@ -16,7 +16,7 @@ public:
 public slots:
     void onLoginPressed();
     void onRegistrationPressed();
-    void CheckData();
+    int CheckData();
 
 private:
     QLineEdit *loginEdit;

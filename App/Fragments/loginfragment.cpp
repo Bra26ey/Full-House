@@ -50,6 +50,7 @@ LoginFragment::LoginFragment() {
     loginEdit->setStyleSheet("color:#242424;font-size:24px");
     loginEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     loginEdit->setPlaceholderText("Логин");
+
     passwordEdit->setMaximumWidth(335);
     passwordEdit->setStyleSheet("color:#242424;font-size:24px");
     passwordEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -87,7 +88,6 @@ LoginFragment::LoginFragment() {
     mainVLayout->setAlignment(Qt::AlignCenter);
 
     this->setLayout(mainVLayout);
-    CheckData();
 }
 
 LoginFragment::~LoginFragment() {
@@ -97,18 +97,25 @@ LoginFragment::~LoginFragment() {
 }
 
 void LoginFragment::onLoginPressed() {
-
+    if (CheckData()) {
+        QMessageBox msgBox;
+         msgBox.setText("В пароле или логине недостаточно символов");
+         msgBox.setWindowTitle("Ошибка авторизации");
+         msgBox.exec();
+    } else {
+        navigateTo(MAIN_TAG);
+    }
 }
 
 void LoginFragment::onRegistrationPressed() {
     navigateTo(REGISTRATION_TAG);
 }
 
-void LoginFragment::CheckData() {
+int LoginFragment::CheckData() {
     if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
-
+        return 0;
     } else {
-
+        return 1;
     }
 }
 

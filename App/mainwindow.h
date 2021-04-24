@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
+#include <QUrl>
 
 #include "navigator.h"
 

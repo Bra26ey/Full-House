@@ -24,6 +24,7 @@ private:
     QLineEdit *emailEdit;
 
     QPushButton *RegistrationButton;
+    QPushButton *BackButton;
 };
 
 #endif // REGISTRATIONFRAGMENT_H

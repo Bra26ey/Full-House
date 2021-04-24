@@ -26,8 +26,8 @@ enable_testing()
 add_subdirectory(test)
 
 find_package(Qt5Widgets)
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Multimedia REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Multimedia REQUIRED)
 
 include_directories("${PROJECT_SOURCE_DIR}/")
 include_directories("${PROJECT_SOURCE_DIR}/Base")
@@ -94,7 +94,7 @@ set(PROJECT_SOURCES
 )
 
 add_library(MyLib SHARED ${PROJECT_SOURCES})
-target_link_libraries(MyLib Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(MyLib Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(UiTest)

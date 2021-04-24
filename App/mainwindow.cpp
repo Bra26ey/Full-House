@@ -4,6 +4,9 @@
 #include <QScreen>
 #include <QApplication>
 #include <QException>
+#include <QDir>
+#include "mediaplayer.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -23,6 +26,16 @@ MainWindow::MainWindow(QWidget *parent)
 
         this->setWindowTitle("Poker House");
 
+        player = new QMediaPlayer;
+        playlist = new QMediaPlaylist();
+        playlist->addMedia(QUrl::fromLocalFile("/home/zennoma/Full-House/App/Media/BackGround.mp3"));
+        playlist->setPlaybackMode(QMediaPlaylist::Loop);
+
+        player->setPlaylist(playlist);
+        player->setVolume(20);
+        player->play();
+
+
         this->resize(QApplication::screens().at(0)->availableGeometry().size() * 0.7);
         this->setCentralWidget(container);
     } catch (std::exception& e) {
@@ -34,4 +47,6 @@ MainWindow::~MainWindow() {
     delete navigator;
     delete container;
     delete factory;
+    delete player;
+    delete playlist;
 }

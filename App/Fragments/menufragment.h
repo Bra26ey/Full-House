@@ -2,6 +2,7 @@
 #define MENUFRAGMENT_H
 
 #include "basefragment.h"
+#include "screenfactory.h"
 
 #include <QPushButton>
 
