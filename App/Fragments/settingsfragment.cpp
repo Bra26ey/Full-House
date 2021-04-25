@@ -27,13 +27,15 @@ SettingsFragment::SettingsFragment() {
 
     VolumeSlider = new QSlider(Qt::Horizontal, this);
     VolumeSlider->setMaximumWidth(500);
-    VolumeSlider->setStyleSheet("color:#242424;margin-top:200px");
+    VolumeSlider->setStyleSheet("color:#242424;margin-top:20px;margin-bottom:50px");
     VolumeSlider->setRange(0, 100);
     VolumeSlider->setValue(player->volume());
     connect(VolumeSlider, &QSlider::valueChanged, this, &SettingsFragment::ChangedSlider);
 
 
     QLabel *title = new QLabel("Громкость", VolumeSlider);
+    title->setAlignment(Qt::AlignHCenter);
+    title->setStyleSheet("margin-top:50px");
 
     buttonContainer->addWidget(MuteButton);
     buttonContainer->addWidget(title);

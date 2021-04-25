@@ -3,21 +3,17 @@
 
 #include <QImage>
 #include <QPixmap>
+#include <QSound>
 
 using namespace screens;
 GameFragment::GameFragment() {
-    QImage * mypix = new QImage("/home/zennoma/Full-House/App/Media/table.png");
-    QImage table = mypix->scaled(640, 480, Qt::IgnoreAspectRatio);
+
+
+    playtable = new PlayTable;
+
     QVBoxLayout *mainVLayout = new QVBoxLayout;
-
-    PlayTable = new QLabel(this);
-
-    PlayTable->setPixmap(QPixmap::fromImage(table, Qt::AutoColor));
-    PlayTable->resize(640, 480);
-
-    mainVLayout->addWidget(PlayTable);
+    mainVLayout->addWidget(playtable);
     mainVLayout->setAlignment(Qt::AlignCenter);
-
 
 
     BetButton = new QPushButton("Сделать ставку");
@@ -42,11 +38,12 @@ GameFragment::GameFragment() {
     BetSlider->setMaximumWidth(500);
     BetSlider->setStyleSheet("color:#242424;margin-top:50px");
     BetSlider->setRange(1, 1000);
-    BetSlider->setTickInterval(1);/*minbet*/
-    BetSlider->setValue(1);
+    BetSlider->setTickInterval(1);
+    int minbet = 10;
+    BetSlider->setValue(minbet);/*minbet*/
 
-
-    BetValue = new QLabel("1", this);
+    QString value = QString::number(minbet);
+    BetValue = new QLabel(value,this); /*minbet*/
     BetSlider->setStyleSheet("color:#242424;font-size:24px;margin-top:50px");
     BetValue->setMaximumWidth(50);
 
@@ -87,7 +84,7 @@ GameFragment::GameFragment() {
 
 GameFragment::~GameFragment() {
     delete Player;
-    delete PlayTable;
+    delete playtable;
 
     delete BetButton;
     delete RaiseButton;
@@ -126,6 +123,3 @@ void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
 }
 
-void GameFragment::ChangedSlider() {
-
-}

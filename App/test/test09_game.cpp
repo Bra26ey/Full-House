@@ -12,7 +12,6 @@ TEST(game, test1) {
 
     ASSERT_NO_THROW(auto game = new GameFragment);
     auto game = new GameFragment;
-    ASSERT_NO_THROW(game->ChangedSlider());
 
     ASSERT_NO_THROW(game->onBetPressed());
     ASSERT_NO_THROW(game->onCheckPressed());

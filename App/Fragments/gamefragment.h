@@ -2,6 +2,7 @@
 #define GAMEFRAGMENT_H
 
 #include "basefragment.h"
+#include "playtable.h"
 
 #include <QVector>
 #include <QWidget>
@@ -16,7 +17,6 @@ public:
     ~GameFragment();
 
 public slots:
-    void ChangedSlider();
 
     void onBetPressed();
     void onRaisePressed();
@@ -29,7 +29,7 @@ public slots:
 private:
     QLabel *Player;
     QVector<QLabel*> OtherPlayers;
-    QLabel *PlayTable;
+    QLabel *playtable;
 
     QSlider *BetSlider;
     QLabel *BetValue;

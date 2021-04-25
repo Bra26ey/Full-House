@@ -78,8 +78,8 @@ TEST(playtable, test1) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    ASSERT_NO_THROW(auto playtable = new PlayTable(0));
-    auto playtable = new PlayTable(0);
+    ASSERT_NO_THROW(auto playtable = new PlayTable);
+    auto playtable = new PlayTable;
     ASSERT_NO_THROW(playtable->show());
     delete playtable;
 }

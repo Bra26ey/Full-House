@@ -3,16 +3,17 @@
 
 #include <QWidget>
 #include <QPixmap>
+#include <QLabel>
+#include <QImage>
 
-class PlayTable:public QWidget {
+class PlayTable:public QLabel {
 public:
-    PlayTable(size_t texture_id);
+    PlayTable();
     ~PlayTable();
 
 private:
-    size_t mTextureId;
-    QPixmap *mTexture;
-
+    QImage *mypix;
+    QImage table;
 };
 
 #endif // PLAYTABLE_H
