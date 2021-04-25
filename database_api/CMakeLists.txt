@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.12)
+project(Full_House)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "-Wall -Werror -Wpedantic -fprofile-arcs -ftest-coverage")
+
+
+include_directories(/usr/include/cppconn)
+link_directories(/usr/lib /usr/local/lib)
+
+include_directories(Connection Models)
+set(SOURCES Connection/Connection.cpp Connection/PoolConnections.cpp Models/Board.cpp Models/User.cpp)
+add_library(lib SHARED ${SOURCES})
+add_executable(database_api main.cpp ${SOURCES})
+target_link_libraries(database_api pthread mysqlcppconn lib)
+
+enable_testing()
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+add_executable(tests tests/main.cpp tests/test01_Connection.cpp tests/test02_User.cpp tests/test03_Board.cpp ${SOURCES})
+target_link_libraries(tests ${GTEST_LIBRARIES} pthread mysqlcppconn lib)

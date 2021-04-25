@@ -1,7 +1,5 @@
-/cmake-build
-/build/
+/database_api/cmake-build-debug
+/database_api/.idea
+/database_api/build
 /.idea
-/database/build/
-/database/build
-/build
 *.out
