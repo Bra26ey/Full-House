@@ -12,6 +12,4 @@
 [App/Game_Elements/player.cpp:3]: (warning) Member variable 'Player::mTexture' is not initialized in the constructor.
 [App/Game_Elements/playerinfolabel.cpp:3]: (warning) Member variable 'PlayerInfoLabel::mAvatar' is not initialized in the constructor.
 [App/Game_Elements/playerinfolabel.cpp:3]: (warning) Member variable 'PlayerInfoLabel::mNickname' is not initialized in the constructor.
-[App/Game_Elements/playtable.cpp:3]: (warning) Member variable 'PlayTable::mTexture' is not initialized in the constructor.
-[App/Game_Elements/playtable.h:9]: (style) Class 'PlayTable' has a constructor with 1 argument that is not explicit.
 [App/mainwindow.h:23]: (style) Class 'MainWindow' has a constructor with 1 argument that is not explicit.
