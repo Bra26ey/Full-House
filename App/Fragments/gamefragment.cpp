@@ -4,16 +4,28 @@
 #include <QImage>
 #include <QPixmap>
 #include <QSound>
+#include <QVector>
+
+int base_card_coefficient = -50;
+int card_move_coefficient = 90;
 
 using namespace screens;
 GameFragment::GameFragment() {
-
-
     playtable = new PlayTable;
+    QVector<QLabel*> cards_on_table;
+    for(size_t i = 0; i < 5; ++i) {
+
+        card = new Card(2 * i + 1,1 * i + 1);
+        cards_on_table.push_back(card);
+        cards_on_table[i]->setParent(playtable);
+        cards_on_table[i]->setGeometry(playtable->width()/2 + base_card_coefficient + i * card_move_coefficient, playtable->height()/2 - 40, playtable->width()/2, playtable->height()/2);
+    }
+
 
     QVBoxLayout *mainVLayout = new QVBoxLayout;
-    mainVLayout->addWidget(playtable);
     mainVLayout->setAlignment(Qt::AlignCenter);
+
+    mainVLayout->addWidget(playtable);
 
 
     BetButton = new QPushButton("Сделать ставку");
@@ -43,9 +55,9 @@ GameFragment::GameFragment() {
     BetSlider->setValue(minbet);/*minbet*/
 
     QString value = QString::number(minbet);
-    BetValue = new QLabel(value,this); /*minbet*/
-    BetSlider->setStyleSheet("color:#242424;font-size:24px;margin-top:50px");
-    BetValue->setMaximumWidth(50);
+    BetValue = new QLabel(value, this); /*minbet*/
+    BetValue->setMaximumWidth(70);
+    BetValue->setStyleSheet("font-size:20px");
 
     connect(BetSlider, &QSlider::valueChanged, BetValue, static_cast<void (QLabel::*)(int)>(&QLabel::setNum));
 

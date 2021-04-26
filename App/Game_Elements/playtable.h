@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QImage>
 
-class PlayTable:public QLabel {
+class PlayTable : public QLabel {
 public:
     PlayTable();
     ~PlayTable();

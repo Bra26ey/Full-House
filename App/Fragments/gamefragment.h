@@ -3,6 +3,7 @@
 
 #include "basefragment.h"
 #include "playtable.h"
+#include "card.h"
 
 #include <QVector>
 #include <QWidget>
@@ -30,6 +31,8 @@ private:
     QLabel *Player;
     QVector<QLabel*> OtherPlayers;
     QLabel *playtable;
+
+    QLabel *card;
 
     QSlider *BetSlider;
     QLabel *BetValue;

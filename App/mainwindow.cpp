@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
         container->setStyleSheet(mainStyle);
         container->setObjectName("window");
 
-        this->setWindowTitle("Poker House");
+        this->setWindowTitle("Full House");
 
         player = new QMediaPlayer;
         playlist = new QMediaPlaylist();

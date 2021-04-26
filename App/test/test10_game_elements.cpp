@@ -60,8 +60,8 @@ TEST(cards, test1) {
     QApplication a(argc, argv);
 
     int some_hardcoded_error_code_for_now = -100;
-    ASSERT_ANY_THROW(auto card = new Card(0, 0, 0, 0));
-    auto card = new Card(0, 0, 0, 0);
+    ASSERT_ANY_THROW(auto card = new Card(0, 0));
+    auto card = new Card(0, 0);
     ASSERT_NE(card->GetDownTextureId(), some_hardcoded_error_code_for_now);
     ASSERT_NE(card->GetSuit(), some_hardcoded_error_code_for_now);
     ASSERT_NE(card->GetUpTextureId(), some_hardcoded_error_code_for_now);

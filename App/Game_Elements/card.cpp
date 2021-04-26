@@ -1,8 +1,21 @@
 #include "card.h"
 
-Card::Card(size_t up_texture, size_t down_texture, size_t value, size_t suit): mUpSideTextureId(up_texture), mDownSideTextureId(down_texture),
-mValue(value), mSuit(suit) {
+#include <QString>
+#include <QDebug>
 
+
+Card::Card(size_t value, size_t suit): mValue(value), mSuit(suit) {
+    mUpSideTextureId = mValue * mSuit;
+
+
+    QString name = "k" + QString::number(mUpSideTextureId) + ".png";
+    qDebug() << name;
+    mUpTexture = new QImage("/home/zennoma/Full-House/App/Media/Cards/" + name);
+    card = mUpTexture->scaled(70, 90, Qt::IgnoreAspectRatio);
+
+
+    this->setPixmap(QPixmap::fromImage(card, Qt::AutoColor));
+    this->repaint();
 }
 
 
@@ -27,5 +40,3 @@ size_t Card::GetSuit() {
     return mSuit;
 }
 
-void Card::setTextures() {
-}

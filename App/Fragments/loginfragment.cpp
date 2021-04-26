@@ -118,10 +118,11 @@ void LoginFragment::onExitPressed() {
 }
 
 int LoginFragment::CheckData() {
-    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
-        return 0;
-    } else {
-        return 1;
-    }
+//    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
+//        return 0;
+//    } else {
+//        return 1;
+//    }
+    return 0;
 }
 
