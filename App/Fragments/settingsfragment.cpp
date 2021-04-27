@@ -17,11 +17,11 @@ SettingsFragment::SettingsFragment() {
 
     QVBoxLayout *buttonContainer = new QVBoxLayout;
 
-    MuteButton = new QPushButton("Заглушить звук");
+    MuteButton = new QPushButton("Mute");
     MuteButton->setStyleSheet("color:#242424;font-size:24px");
     connect(MuteButton, &QPushButton::clicked, this, &SettingsFragment::MutePressed);
 
-    MenuButton = new QPushButton("Назад");
+    MenuButton = new QPushButton("Back");
     MenuButton->setStyleSheet("color:#242424;font-size:24px");
     connect(MenuButton, &QPushButton::clicked, this, &SettingsFragment::onMenuPressed);
 
@@ -33,7 +33,7 @@ SettingsFragment::SettingsFragment() {
     connect(VolumeSlider, &QSlider::valueChanged, this, &SettingsFragment::ChangedSlider);
 
 
-    QLabel *title = new QLabel("Громкость", VolumeSlider);
+    QLabel *title = new QLabel("Volume", VolumeSlider);
     title->setAlignment(Qt::AlignHCenter);
     title->setStyleSheet("margin-top:50px");
 

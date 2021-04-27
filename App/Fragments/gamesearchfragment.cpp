@@ -101,8 +101,8 @@ void GameSearchFragment::onMenuPressed() {
 void GameSearchFragment::onSearchPressed() {
     if (CheckData()) {
         QMessageBox msgBox;
-        msgBox.setText("Id и/или пароль некорректен");
-        msgBox.setWindowTitle("Ошибка поиск комнаты");
+        msgBox.setText("Id and/or password incorrect");
+        msgBox.setWindowTitle("Error finding room");
         msgBox.exec();
     } else {
         navigateTo(GAME_TAG);

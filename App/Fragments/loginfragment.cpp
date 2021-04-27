@@ -23,8 +23,8 @@ LoginFragment::LoginFragment() {
     QVBoxLayout *backContainer = new QVBoxLayout;
 
     QVBoxLayout *startVerticalContent = new QVBoxLayout;
-    QLabel *title = new QLabel("Вход в приложение");
-    QLabel *subtitle = new QLabel("Не сообщайте никому свои данные для авторизации.");
+    QLabel *title = new QLabel("Signing in");
+    QLabel *subtitle = new QLabel("Don't tell anyone authorization info.");
     loginEdit = new QLineEdit;
     passwordEdit = new QLineEdit;
 
@@ -48,23 +48,23 @@ LoginFragment::LoginFragment() {
     loginEdit->setMaximumWidth(335);
     loginEdit->setStyleSheet("color:#242424;font-size:24px");
     loginEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    loginEdit->setPlaceholderText("Логин");
+    loginEdit->setPlaceholderText("Login");
 
     passwordEdit->setMaximumWidth(335);
     passwordEdit->setStyleSheet("color:#242424;font-size:24px");
     passwordEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    passwordEdit->setPlaceholderText("Пароль");
+    passwordEdit->setPlaceholderText("Password");
     passwordEdit->setEchoMode(QLineEdit::Password);
 
-    loginButton = new QPushButton("Войти");
+    loginButton = new QPushButton("Sign in");
     loginButton->setStyleSheet("color:#242424;font-size:24px");
     connect(loginButton, &QPushButton::clicked, this, &LoginFragment::onLoginPressed);
 
-    RegistrationButton = new QPushButton("Регистрация");
+    RegistrationButton = new QPushButton("Sign up");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &LoginFragment::onRegistrationPressed);
 
-    quitButton = new QPushButton("Выход");
+    quitButton = new QPushButton("Exit");
     quitButton->setStyleSheet("color:#242424;font-size:24px");
     connect(quitButton, &QPushButton::clicked, this, &LoginFragment::onExitPressed);
 

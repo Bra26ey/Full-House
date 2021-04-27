@@ -18,15 +18,15 @@ MenuFragment::MenuFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
-    LoginButton = new QPushButton("Выйти");
+    LoginButton = new QPushButton("Log out");
     LoginButton->setStyleSheet("color:#242424;font-size:24px");
     connect(LoginButton, &QPushButton::clicked, this, &MenuFragment::onLoginPressed);
 
-    SettingsButton = new QPushButton("Настройки");
+    SettingsButton = new QPushButton("Settings");
     SettingsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SettingsButton, &QPushButton::clicked, this, &MenuFragment::onSettingsPressed);
 
-    SearchButton = new QPushButton("Поиск комнаты");
+    SearchButton = new QPushButton("Search game");
     SearchButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SearchButton, &QPushButton::clicked, this, &MenuFragment::onSearchPressed);
 

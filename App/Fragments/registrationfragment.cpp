@@ -42,31 +42,31 @@ RegistrationFragment::RegistrationFragment() {
     loginEdit->setMaximumWidth(400);
     loginEdit->setStyleSheet("color:#242424;font-size:20px");
     loginEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    loginEdit->setPlaceholderText("Логин");
+    loginEdit->setPlaceholderText("Login");
 
     passwordEdit->setMaximumWidth(400);
     passwordEdit->setStyleSheet("color:#242424;font-size:20px");
     passwordEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    passwordEdit->setPlaceholderText("Пароль");
+    passwordEdit->setPlaceholderText("Password");
     passwordEdit->setEchoMode(QLineEdit::Password);
 
     passwordRepeatEdit->setMaximumWidth(400);
     passwordRepeatEdit->setStyleSheet("color:#242424;font-size:20px");
     passwordRepeatEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    passwordRepeatEdit->setPlaceholderText("Повторите введенный пароль");
+    passwordRepeatEdit->setPlaceholderText("Repeat password");
     passwordRepeatEdit->setEchoMode(QLineEdit::Password);
 
     emailEdit->setMaximumWidth(400);
     emailEdit->setStyleSheet("color:#242424;font-size:20px");
     emailEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    emailEdit->setPlaceholderText("Электронная почта");
+    emailEdit->setPlaceholderText("Email");
 
 
-    RegistrationButton = new QPushButton("Регистрация");
+    RegistrationButton = new QPushButton("Sign up");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &RegistrationFragment::onRegistrationPressed);
 
-    BackButton = new QPushButton("Назад к окну авторизации");
+    BackButton = new QPushButton("Sign in");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(BackButton, &QPushButton::clicked, this, &RegistrationFragment::back);
 

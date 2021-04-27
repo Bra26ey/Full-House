@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSlider>
 
 class GameFragment: public BaseFragment {
@@ -27,15 +28,18 @@ public slots:
     void onLeavePressed();
     void onSettingsPressed();
 
+private slots:
+    void setval();
+
 private:
     QLabel *Player;
     QVector<QLabel*> OtherPlayers;
     QLabel *playtable;
 
-    QLabel *card;
+    QVector <Card*> cards_on_table;
 
     QSlider *BetSlider;
-    QLabel *BetValue;
+    QLineEdit *BetValue;
 
     QPushButton *BetButton;
     QPushButton *RaiseButton;
