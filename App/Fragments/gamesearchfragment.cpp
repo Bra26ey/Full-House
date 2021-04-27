@@ -22,7 +22,7 @@ GameSearchFragment::GameSearchFragment() {
     QVBoxLayout *buttonContainer = new QVBoxLayout;
 
 
-    QLabel *title = new QLabel("Поиск комнаты");
+    QLabel *title = new QLabel("Search room");
     title->setStyleSheet("color:#242424;font-size:24px;");
 
     startVerticalContent->addWidget(title);
@@ -36,21 +36,21 @@ GameSearchFragment::GameSearchFragment() {
     roomIdEdit->setMaximumWidth(335);
     roomIdEdit->setStyleSheet("color:#242424;font-size:24px");
     roomIdEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    roomIdEdit->setPlaceholderText("Id комнаты");
+    roomIdEdit->setPlaceholderText("Room ID");
 
     passwordEdit = new QLineEdit;
     passwordEdit->setMaximumWidth(335);
     passwordEdit->setStyleSheet("color:#242424;font-size:24px");
     passwordEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    passwordEdit->setPlaceholderText("Пароль комнаты");
+    passwordEdit->setPlaceholderText("Room Password");
     passwordEdit->setEchoMode(QLineEdit::Password);
 
-    SearchButton = new QPushButton("Поиск");
+    SearchButton = new QPushButton("Search");
     SearchButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SearchButton, &QPushButton::clicked, this, &GameSearchFragment::onSearchPressed);
 
 
-    MenuButton = new QPushButton("Назад");
+    MenuButton = new QPushButton("Back");
     MenuButton->setStyleSheet("color:#242424;font-size:24px");
     connect(MenuButton, &QPushButton::clicked, this, &GameSearchFragment::onMenuPressed);
 
