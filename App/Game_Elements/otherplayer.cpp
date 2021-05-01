@@ -28,12 +28,12 @@ OtherPlayer::OtherPlayer(size_t id) {
 
     this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
     this->resize(200, 200);
+    this->setStyleSheet("margin:50px;margin-left:100px");
 
 }
 
 OtherPlayer::~OtherPlayer() {
     delete Chips;
-    delete[] Cards;
     delete PlayerInfo;
     delete mypix;
 }
@@ -42,10 +42,47 @@ void OtherPlayer::DisplayInfo() {
 
 }
 
-void OtherPlayer::DisplayPlayer() {
-
-}
 
 void OtherPlayer::SetPosition(QRect &pos) {
     mPos = pos;
+}
+
+void OtherPlayer::GiveCards(size_t value1, size_t suit1, size_t value2, size_t suit2) {
+    Card* firstCard = new Card(value1, suit1);
+    Card* secondCard = new Card(value2, suit2);
+
+    mCards.first = firstCard;
+    mCards.second = secondCard;
+
+    mCards.first->setParent(this);
+    mCards.second->setParent(this);
+
+    if (mPos == firstpos) {
+        mCards.first->setGeometry(180, 80, 220, 220);
+        mCards.second->setGeometry(220, 80, 220, 220);
+    } else if (mPos == secondpos) {
+        mCards.first->setGeometry(150, 220, 220, 220);
+        mCards.second->setGeometry(210, 220, 220, 220);
+    } else if (mPos == thirdpos) {
+        mCards.first->setGeometry(30, 245, 220, 220);
+        mCards.second->setGeometry(90, 245, 220, 220);
+    } else if (mPos == fouthpos) {
+        mCards.first->setGeometry(-50, 220, 220, 220);
+        mCards.second->setGeometry(10, 220, 220, 220);
+    } else if (mPos == fifthpos) {
+        mCards.first->setGeometry(-100, 80, 220, 220);
+        mCards.second->setGeometry(-60, 80, 220, 220);
+    }
+}
+
+void OtherPlayer::DiscardCards() {
+    delete mCards.first;
+    delete mCards.second;
+}
+
+void OtherPlayer::FlipCards() {
+    if (mCards.first != nullptr && mCards.second != nullptr) {
+        mCards.first->Flip();
+        mCards.second->Flip();
+    }
 }

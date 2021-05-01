@@ -66,7 +66,7 @@ RegistrationFragment::RegistrationFragment() {
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &RegistrationFragment::onRegistrationPressed);
 
-    BackButton = new QPushButton("Sign in");
+    BackButton = new QPushButton("Back");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(BackButton, &QPushButton::clicked, this, &RegistrationFragment::back);
 
@@ -108,8 +108,10 @@ void RegistrationFragment::onRegistrationPressed() {
 int RegistrationFragment::CheckData() {
     if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
         return 0;
-    } else {
+    } else if (passwordEdit->text() != passwordRepeatEdit->text()) {
         return 1;
+    } else {
+        return 2;
     }
 }
 

@@ -13,8 +13,6 @@
 #include <QLineEdit>
 #include <QSlider>
 
-
-
 class GameFragment: public BaseFragment {
     Q_OBJECT
 public:

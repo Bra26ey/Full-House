@@ -6,12 +6,7 @@
 #include <QSound>
 #include <QVector>
 #include <QIntValidator>
-                                                // 3
-QRect firstpos(-20, 380, 400, 400);           // 2   4
-QRect secondpos(0, -70, 400, 400);           // 1     5
-QRect thirdpos(380, -120, 400, 400);          //   0
-QRect fouthpos(760, -70, 400, 400);
-QRect fifthpos(790, 380, 400, 400);
+
 
 int base_card_coefficient = -50;
 int card_move_coefficient = 90;
@@ -105,12 +100,21 @@ GameFragment::GameFragment() : num_players(0) {
     mainVLayout->addLayout(extraHLayout);
     this->setLayout(mainVLayout);
 
+    // кайнда дебаг
 
     DrawPlayer(firstpos, 1);
     DrawPlayer(secondpos, 2);
     DrawPlayer(thirdpos, 3);
     DrawPlayer(fouthpos, 4);
     DrawPlayer(fifthpos, 5);
+
+    OtherPlayers[0]->GiveCards(4,4,2,3);
+    OtherPlayers[1]->GiveCards(4,4,2,3);
+    OtherPlayers[0]->FlipCards();
+    OtherPlayers[2]->GiveCards(4,4,2,3);
+    OtherPlayers[3]->GiveCards(4,4,2,3);
+    OtherPlayers[4]->GiveCards(4,4,2,3);
+    OtherPlayers[4]->FlipCards();
 }
 
 GameFragment::~GameFragment() {

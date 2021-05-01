@@ -18,7 +18,6 @@ TEST(otherplayer, test1) {
 
     ASSERT_NO_THROW(auto player = new OtherPlayer(1));
     auto player = new OtherPlayer(1);
-    ASSERT_NO_THROW(player->DisplayPlayer());
     ASSERT_NO_THROW(player->DisplayInfo());
     ASSERT_NO_THROW(player->show());
 
@@ -33,7 +32,6 @@ TEST(player, test1) {
 
     auto player = new Player(1);
 
-    ASSERT_NO_THROW(player->DisplayPlayer());
     ASSERT_NO_THROW(player->DisplayInfo());
     ASSERT_NO_THROW(player->DisplayCards());
     ASSERT_NO_THROW(player->show());
