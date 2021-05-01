@@ -16,8 +16,8 @@ TEST(otherplayer, test1) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    ASSERT_NO_THROW(auto player = new OtherPlayer);
-    auto player = new OtherPlayer;
+    ASSERT_NO_THROW(auto player = new OtherPlayer(1));
+    auto player = new OtherPlayer(1);
     ASSERT_NO_THROW(player->DisplayPlayer());
     ASSERT_NO_THROW(player->DisplayInfo());
     ASSERT_NO_THROW(player->show());
@@ -31,7 +31,7 @@ TEST(player, test1) {
     char *argv[0];
     QApplication a(argc, argv);
 
-    auto player = new Player;
+    auto player = new Player(1);
 
     ASSERT_NO_THROW(player->DisplayPlayer());
     ASSERT_NO_THROW(player->DisplayInfo());

@@ -2,6 +2,7 @@
 #define GAMEFRAGMENT_H
 
 #include "basefragment.h"
+#include "otherplayer.h"
 #include "playtable.h"
 #include "card.h"
 
@@ -12,14 +13,16 @@
 #include <QLineEdit>
 #include <QSlider>
 
+
+
 class GameFragment: public BaseFragment {
     Q_OBJECT
 public:
     GameFragment();
     ~GameFragment();
+    void DrawPlayer(QRect pos, size_t player_id);
 
 public slots:
-
     void onBetPressed();
     void onRaisePressed();
     void onFoldPressed();
@@ -32,8 +35,9 @@ private slots:
     void setval();
 
 private:
+    size_t num_players;
     QLabel *Player;
-    QVector<QLabel*> OtherPlayers;
+    QVector<OtherPlayer*> OtherPlayers;
     QLabel *playtable;
 
     QVector <Card*> cards_on_table;

@@ -5,7 +5,7 @@
 
 class Player: public OtherPlayer {
 public:
-    Player();
+    Player(size_t pos);
     ~Player();
     void DisplayCards();
 

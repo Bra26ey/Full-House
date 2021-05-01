@@ -6,12 +6,18 @@
 #include <QSound>
 #include <QVector>
 #include <QIntValidator>
+                                                // 3
+QRect firstpos(-20, 380, 400, 400);           // 2   4
+QRect secondpos(0, -70, 400, 400);           // 1     5
+QRect thirdpos(380, -120, 400, 400);          //   0
+QRect fouthpos(760, -70, 400, 400);
+QRect fifthpos(790, 380, 400, 400);
 
 int base_card_coefficient = -50;
 int card_move_coefficient = 90;
 
 using namespace screens;
-GameFragment::GameFragment() {
+GameFragment::GameFragment() : num_players(0) {
     playtable = new PlayTable;
 
     bool up;
@@ -20,9 +26,11 @@ GameFragment::GameFragment() {
         auto card = new Card(2 * i + 1,1 * i + 1, up);
         cards_on_table.push_back(card);
         cards_on_table[i]->setParent(playtable);
-        cards_on_table[i]->setGeometry(playtable->width()/2 + base_card_coefficient + i * card_move_coefficient, playtable->height()/2 - 40, playtable->width()/2, playtable->height()/2);
+        cards_on_table[i]->setGeometry(playtable->width()/2 + base_card_coefficient + i * card_move_coefficient, playtable->height()/2, playtable->width()/2 + 200, playtable->height()/2 + 50);
     }
     cards_on_table[3]->Flip();
+
+
 
 
     QVBoxLayout *mainVLayout = new QVBoxLayout;
@@ -96,6 +104,13 @@ GameFragment::GameFragment() {
 
     mainVLayout->addLayout(extraHLayout);
     this->setLayout(mainVLayout);
+
+
+    DrawPlayer(firstpos, 1);
+    DrawPlayer(secondpos, 2);
+    DrawPlayer(thirdpos, 3);
+    DrawPlayer(fouthpos, 4);
+    DrawPlayer(fifthpos, 5);
 }
 
 GameFragment::~GameFragment() {
@@ -144,3 +159,11 @@ void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
 }
 
+void GameFragment::DrawPlayer(QRect pos, size_t player_id) {
+    OtherPlayer* player = new OtherPlayer(player_id);
+    OtherPlayers.append(player);
+    OtherPlayers[num_players]->setParent(playtable);
+    OtherPlayers[num_players]->setGeometry(pos);
+    OtherPlayers[num_players]->SetPosition(pos);
+    num_players++;
+}

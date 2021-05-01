@@ -60,4 +60,11 @@
     <qresource prefix="/other_textures">
         <file>Media/table.png</file>
     </qresource>
+    <qresource prefix="/players">
+        <file alias="Cartman">Media/Players/Cartman.png</file>
+        <file alias="Kenny">Media/Players/Kenny.png</file>
+        <file alias="Stan">Media/Players/Stan.png</file>
+        <file alias="Wendy">Media/Players/Wendy.png</file>
+        <file alias="Dougie">Media/Players/south_park_PNG38.png</file>
+    </qresource>
 </RCC>

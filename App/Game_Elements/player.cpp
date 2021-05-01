@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() {
+Player::Player(size_t pos) : OtherPlayer(pos) {
 
 }
 

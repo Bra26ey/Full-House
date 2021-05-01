@@ -12,22 +12,25 @@
 #include <QPixmap>
 
 
-class OtherPlayer: public QWidget {
+class OtherPlayer: public QLabel {
         Q_OBJECT
 public:
-    OtherPlayer();
-    virtual ~OtherPlayer();
+    OtherPlayer(size_t id);
+    ~OtherPlayer();
     void DisplayInfo();
     void DisplayPlayer();
+    void SetPosition(QRect &pos);
 
 protected:
     QWidget *Chips;
-    QPair<QWidget, QWidget> *Cards;
+    QPair<Card, Card> *Cards;
     QLabel *PlayerInfo;
 
 
 private:
-    QPixmap *mTexture;
+    QRect mPos;
+    QImage *mypix;
+    QImage player;
     size_t mTextureId;
 };
 
