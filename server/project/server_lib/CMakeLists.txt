@@ -10,4 +10,6 @@ file(GLOB SERVER_LIB_SRC "src/*.cpp")
 
 add_library(server_lib SHARED ${SERVER_LIB_SRC})
 
+target_link_libraries(server_lib ${Boost_LIBRARIES})
+
 add_subdirectory(tests)

@@ -5,7 +5,7 @@
 
 int main(int argc, const char *argv[]) {
     if (unlikely(argc != 1)) {
-        fprintf(stderr,"error: arg != 1\n");
+        std::cout << "error: arg != 1" << std::endl; 
         return -1;
     }
 

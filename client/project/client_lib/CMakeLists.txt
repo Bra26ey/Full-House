@@ -6,9 +6,9 @@ include_directories(include)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -lboost_thread -lboost_system -pthread")
 
-set(CLIENT_SRC src/client.cpp)
+file(GLOB CLIENT_LIB_SRC "src/*.cpp")
 
-add_library(client_lib ${CLIENT_SRC})
+add_library(client_lib SHARED ${CLIENT_LIB_SRC})
 
 target_link_libraries(client_lib ${Boost_LIBRARIES})
 

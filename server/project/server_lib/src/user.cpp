@@ -21,7 +21,7 @@ int User::Send(boost::asio::streambuf &buffer) {
 }
 
 int User::Read(boost::asio::streambuf &buffer) {
-        return 0;
+    return 0;
 }
 
 }  // namespace network
