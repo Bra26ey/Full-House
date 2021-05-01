@@ -2,10 +2,12 @@
 
 namespace network {
 
-Client::~Client() {}
+Client::~Client() {
+    socket_.close();
+}
 
 bool Client::Connect() {
-    return true;
+    socket_.async_connect()
 }
 
 bool Client::Disconnect() {
