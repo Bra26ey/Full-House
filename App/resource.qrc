@@ -59,6 +59,7 @@
     </qresource>
     <qresource prefix="/other_textures">
         <file>Media/table.png</file>
+        <file alias="DealerLogo">Media/DealerLogo.png</file>
     </qresource>
     <qresource prefix="/players">
         <file alias="Cartman">Media/Players/Cartman.png</file>

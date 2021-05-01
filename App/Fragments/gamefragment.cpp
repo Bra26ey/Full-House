@@ -13,17 +13,18 @@ int card_move_coefficient = 90;
 
 using namespace screens;
 GameFragment::GameFragment() : num_players(0) {
-    playtable = new PlayTable;
+    mPlayTable = new PlayTable;
+    mDealerLogo = new DealerLogo;
 
     bool up;
     for(size_t i = 0; i < 5; ++i) {
         i < 3 ? up = true : up = false;
         auto card = new Card(2 * i + 1,1 * i + 1, up);
-        cards_on_table.push_back(card);
-        cards_on_table[i]->setParent(playtable);
-        cards_on_table[i]->setGeometry(playtable->width()/2 + base_card_coefficient + i * card_move_coefficient, playtable->height()/2, playtable->width()/2 + 200, playtable->height()/2 + 50);
+        CardOnTable.push_back(card);
+        CardOnTable[i]->setParent(mPlayTable);
+        CardOnTable[i]->setGeometry(mPlayTable->width()/2 + base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
     }
-    cards_on_table[3]->Flip();
+    CardOnTable[3]->Flip();
 
 
 
@@ -31,7 +32,7 @@ GameFragment::GameFragment() : num_players(0) {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     mainVLayout->setAlignment(Qt::AlignCenter);
 
-    mainVLayout->addWidget(playtable);
+    mainVLayout->addWidget(mPlayTable);
 
 
     BetButton = new QPushButton("Bet");
@@ -115,11 +116,14 @@ GameFragment::GameFragment() : num_players(0) {
     OtherPlayers[3]->GiveCards(4,4,2,3);
     OtherPlayers[4]->GiveCards(4,4,2,3);
     OtherPlayers[4]->FlipCards();
+
+    MakeDealer(1);
 }
 
 GameFragment::~GameFragment() {
-    delete Player;
-    delete playtable;
+    delete mPlayer;
+    delete mPlayTable;
+    delete mDealerLogo;
 
     delete BetButton;
     delete RaiseButton;
@@ -166,8 +170,15 @@ void GameFragment::onSettingsPressed() {
 void GameFragment::DrawPlayer(QRect pos, size_t player_id) {
     OtherPlayer* player = new OtherPlayer(player_id);
     OtherPlayers.append(player);
-    OtherPlayers[num_players]->setParent(playtable);
+    OtherPlayers[num_players]->setParent(mPlayTable);
     OtherPlayers[num_players]->setGeometry(pos);
     OtherPlayers[num_players]->SetPosition(pos);
     num_players++;
+}
+
+void GameFragment::MakeDealer(size_t player_id) {
+    if (player_id > 0)
+    mDealerLogo->setParent(OtherPlayers[player_id - 1]);
+    //else setParentPlayer
+    mDealerLogo->setGeometry(20, 30, 150, 150);
 }

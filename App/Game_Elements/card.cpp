@@ -5,13 +5,13 @@
 
 
 Card::Card(size_t value, size_t suit, bool upsided): mUpSided(upsided), mValue(value), mSuit(suit) {
-    mUpSideTextureId = mValue * mSuit;
+    mUpSideTextureId = ((mSuit - 1) * 13) + value;
 
 
     QString name = "k" + QString::number(mUpSideTextureId) + ".png";
     qDebug() << name;
     mUpTexture = new QImage(":/cards/Media/Cards/" + name);
-    name = "k" + QString::number(mDownSideTextureId) + ".png";
+    name = "k0.png";
     mDownTexture = new QImage(":/cards/Media/Cards/" + name);
 
     if (upsided) {

@@ -5,6 +5,7 @@
 #include "otherplayer.h"
 #include "playtable.h"
 #include "card.h"
+#include "dealerlogo.h"
 
 #include <QVector>
 #include <QWidget>
@@ -19,6 +20,7 @@ public:
     GameFragment();
     ~GameFragment();
     void DrawPlayer(QRect pos, size_t player_id);
+    void MakeDealer(size_t player_id);
 
 public slots:
     void onBetPressed();
@@ -34,11 +36,13 @@ private slots:
 
 private:
     size_t num_players;
-    QLabel *Player;
-    QVector<OtherPlayer*> OtherPlayers;
-    QLabel *playtable;
 
-    QVector <Card*> cards_on_table;
+    QLabel *mPlayer;
+    QVector<OtherPlayer*> OtherPlayers;
+    QLabel *mPlayTable;
+    QLabel *mDealerLogo;
+
+    QVector <Card*> CardOnTable;
 
     QSlider *BetSlider;
     QLineEdit *BetValue;

@@ -1,7 +1,6 @@
 #ifndef PLAYTABLE_H
 #define PLAYTABLE_H
 
-#include <QWidget>
 #include <QPixmap>
 #include <QLabel>
 #include <QImage>
