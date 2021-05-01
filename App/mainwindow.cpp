@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         player = new QMediaPlayer;
         playlist = new QMediaPlaylist();
-        playlist->addMedia(QUrl::fromLocalFile("/home/zennoma/Full-House/App/Media/BackGround.mp3"));
+        playlist->addMedia(QUrl("qrc:/music/Media/BackGround.mp3"));
         playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
         player->setPlaylist(playlist);

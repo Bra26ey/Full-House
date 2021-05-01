@@ -10,9 +10,9 @@ Card::Card(size_t value, size_t suit, bool upsided): mUpSided(upsided), mValue(v
 
     QString name = "k" + QString::number(mUpSideTextureId) + ".png";
     qDebug() << name;
-    mUpTexture = new QImage("/home/zennoma/Full-House/App/Media/Cards/" + name);
+    mUpTexture = new QImage(":/cards/Media/Cards/" + name);
     name = "k" + QString::number(mDownSideTextureId) + ".png";
-    mDownTexture = new QImage("/home/zennoma/Full-House/App/Media/Cards/" + name);
+    mDownTexture = new QImage(":/cards/Media/Cards/" + name);
 
     if (upsided) {
         card = mUpTexture->scaled(70, 90, Qt::IgnoreAspectRatio);

@@ -1,7 +1,7 @@
 #include "playtable.h"
 
 PlayTable::PlayTable() {
-    mypix = new QImage("/home/zennoma/Full-House/App/Media/table.png");
+    mypix = new QImage(":/other_textures/Media/table.png");
     table = mypix->scaled(960, 720, Qt::IgnoreAspectRatio);
 
     this->setPixmap(QPixmap::fromImage(table, Qt::AutoColor));

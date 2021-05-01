@@ -91,6 +91,7 @@ set(PROJECT_SOURCES
         ${PROJECT_SOURCE_DIR}/mainwindow.cpp
 
         ${PROJECT_SOURCE_DIR}/main.cpp
+        ${PROJECT_SOURCE_DIR}/resource.qrc
 )
 
 add_library(MyLib SHARED ${PROJECT_SOURCES})
