@@ -1,12 +1,3 @@
 [App/Fragments/gamefragment.cpp:19]: (style) The scope of the variable 'up' can be reduced.
 [App/Game_Elements/chips.cpp:3]: (warning) Member variable 'Chips::mTexture' is not initialized in the constructor.
 [App/Game_Elements/chips.h:10]: (style) Class 'Chips' has a constructor with 1 argument that is not explicit.
-[App/Game_Elements/otherplayer.cpp:3]: (warning) Member variable 'OtherPlayer::Chips' is not initialized in the constructor.
-[App/Game_Elements/otherplayer.cpp:3]: (warning) Member variable 'OtherPlayer::PlayerInfo' is not initialized in the constructor.
-[App/Game_Elements/otherplayer.cpp:3]: (warning) Member variable 'OtherPlayer::mTextureId' is not initialized in the constructor.
-[App/Game_Elements/otherplayer.h:26]: (style) Class 'OtherPlayer' has a constructor with 1 argument that is not explicit.
-[App/Game_Elements/player.cpp:3]: (warning) Member variable 'Player::mTextureId' is not initialized in the constructor.
-[App/Game_Elements/player.cpp:3]: (warning) Member variable 'Player::mTexture' is not initialized in the constructor.
-[App/Game_Elements/player.h:8]: (style) Class 'Player' has a constructor with 1 argument that is not explicit.
-[App/Game_Elements/playerinfolabel.cpp:3]: (warning) Member variable 'PlayerInfoLabel::mAvatar' is not initialized in the constructor.
-[App/Game_Elements/playerinfolabel.cpp:3]: (warning) Member variable 'PlayerInfoLabel::mNickname' is not initialized in the constructor.
