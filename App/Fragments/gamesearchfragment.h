@@ -16,12 +16,14 @@ public slots:
     void onSearchPressed();
     int CheckData();
     void onMenuPressed();
+    void onHostPressed();
 
 private:
     QLineEdit *roomIdEdit;
     QLineEdit *passwordEdit;
     QPushButton *MenuButton;
     QPushButton *SearchButton;
+    QPushButton *HostButton;
 };
 
 #endif // GAMESEARCHFRAGMENT_H

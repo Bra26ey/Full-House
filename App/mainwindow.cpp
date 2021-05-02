@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->navigator = new FragmentNavigator(this->container, this->factory);
 
         QString mainStyle = "QWidget#window {"
-                            "background-color:rgb(89, 176, 76);"
+                            "background-color:rgb(47, 140, 140);"
                             "}";
         container->setStyleSheet(mainStyle);
         container->setObjectName("window");

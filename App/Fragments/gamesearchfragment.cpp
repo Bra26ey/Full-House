@@ -54,9 +54,14 @@ GameSearchFragment::GameSearchFragment() {
     MenuButton->setStyleSheet("color:#242424;font-size:24px");
     connect(MenuButton, &QPushButton::clicked, this, &GameSearchFragment::onMenuPressed);
 
+    HostButton = new QPushButton("Host");
+    MenuButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(MenuButton, &QPushButton::clicked, this, &GameSearchFragment::onMenuPressed);
+
     buttonContainer->addWidget(roomIdEdit);
     buttonContainer->addWidget(passwordEdit);
     buttonContainer->addWidget(SearchButton);
+    buttonContainer->addWidget(HostButton);
     buttonContainer->addWidget(MenuButton);
 
 
@@ -96,6 +101,17 @@ int GameSearchFragment::CheckData() {
 
 void GameSearchFragment::onMenuPressed() {
     navigateTo(MAIN_TAG);
+}
+
+void GameSearchFragment::onHostPressed() {
+    if (CheckData()) {
+        QMessageBox msgBox;
+        msgBox.setText("Id and/or password incorrect");
+        msgBox.setWindowTitle("Error finding room");
+        msgBox.exec();
+    } else {
+        // host game
+    }
 }
 
 void GameSearchFragment::onSearchPressed() {
