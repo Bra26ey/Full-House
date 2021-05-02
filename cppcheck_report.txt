@@ -1,3 +1,1 @@
-[App/Fragments/gamefragment.cpp:19]: (style) The scope of the variable 'up' can be reduced.
-[App/Game_Elements/chips.cpp:3]: (warning) Member variable 'Chips::mTexture' is not initialized in the constructor.
-[App/Game_Elements/chips.h:10]: (style) Class 'Chips' has a constructor with 1 argument that is not explicit.
+[App/Fragments/gamefragment.cpp:23]: (style) The scope of the variable 'up' can be reduced.
