@@ -78,7 +78,9 @@ void SettingsFragment::onMenuPressed() {
 void SettingsFragment::MutePressed() {
     if (player->isMuted()) {
         player->setMuted(false);
+        MuteButton->setText("Mute");
     } else {
         player->setMuted(true);
+        MuteButton->setText("Unmute");
     }
 }

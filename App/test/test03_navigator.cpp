@@ -23,5 +23,3 @@ TEST(Navigator, test1) {
     delete screensFactory;
 }
 
-TEST(Navigator, test2) {
-}

@@ -19,7 +19,7 @@ class GameFragment: public BaseFragment {
 public:
     GameFragment();
     ~GameFragment();
-    void DrawPlayer(QRect pos, size_t player_id);
+    void DrawPlayer(QRect pos, size_t player_id, std::string nickname, size_t total_money);
     void MakeDealer(size_t player_id);
 
 public slots:

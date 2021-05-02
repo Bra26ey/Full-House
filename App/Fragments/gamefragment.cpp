@@ -103,11 +103,11 @@ GameFragment::GameFragment() : num_players(0) {
 
     // кайнда дебаг
 
-    DrawPlayer(firstpos, 1);
-    DrawPlayer(secondpos, 2);
-    DrawPlayer(thirdpos, 3);
-    DrawPlayer(fouthpos, 4);
-    DrawPlayer(fifthpos, 5);
+    DrawPlayer(firstpos, 1, "Cartman", 5000);
+    DrawPlayer(secondpos, 2, "Kenny", 2000);
+    DrawPlayer(thirdpos, 3, "Stan", 6000);
+    DrawPlayer(fouthpos, 4, "Wendy", 1000);
+    DrawPlayer(fifthpos, 5, "Dougie", 500);
 
     OtherPlayers[0]->GiveCards(4,4,2,3);
     OtherPlayers[1]->GiveCards(4,4,2,3);
@@ -118,6 +118,7 @@ GameFragment::GameFragment() : num_players(0) {
     OtherPlayers[4]->FlipCards();
 
     MakeDealer(1);
+    OtherPlayers[3]->setBet(400);
 }
 
 GameFragment::~GameFragment() {
@@ -167,8 +168,8 @@ void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
 }
 
-void GameFragment::DrawPlayer(QRect pos, size_t player_id) {
-    OtherPlayer* player = new OtherPlayer(player_id);
+void GameFragment::DrawPlayer(QRect pos, size_t player_id, std::string nickname, size_t total_money) {
+    OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
     OtherPlayers.append(player);
     OtherPlayers[num_players]->setParent(mPlayTable);
     OtherPlayers[num_players]->setGeometry(pos);

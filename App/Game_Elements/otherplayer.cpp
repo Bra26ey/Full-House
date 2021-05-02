@@ -1,6 +1,7 @@
 #include "otherplayer.h"
 
-OtherPlayer::OtherPlayer(size_t id) {
+OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) {
+    mPlayerInfo = new PlayerInfoLabel(nickname, money);
     switch(id) {
     case 1: {
         mypix = new QImage(":/players/Cartman");
@@ -30,18 +31,20 @@ OtherPlayer::OtherPlayer(size_t id) {
     this->resize(200, 200);
     this->setStyleSheet("margin:50px;margin-left:100px");
 
+    mPlayerInfo->setParent(this);
+    mPlayerInfo->setGeometry(QRect(100, 0, 400, 300));
 }
 
 OtherPlayer::~OtherPlayer() {
-    delete Chips;
-    delete PlayerInfo;
+    delete mChips;
+    delete mPlayerInfo;
     delete mypix;
 }
 
-void OtherPlayer::DisplayInfo() {
 
+void OtherPlayer::setBet(size_t bet) {
+    mPlayerInfo->setBet(bet);
 }
-
 
 void OtherPlayer::SetPosition(QRect &pos) {
     mPos = pos;

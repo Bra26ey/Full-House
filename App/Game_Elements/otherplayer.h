@@ -23,7 +23,7 @@ static QRect fifthpos(900, 480, 400, 400);
 class OtherPlayer: public QLabel {
         Q_OBJECT
 public:
-    OtherPlayer(size_t id);
+    OtherPlayer(size_t id, std::string nickname, size_t money);
     ~OtherPlayer();
     void SetPosition(QRect &pos);
 
@@ -32,11 +32,11 @@ public:
     void DiscardCards();
     void FlipCards();
 
-    void DisplayInfo();
+    void setBet(size_t bet);
 protected:
-    QWidget *Chips;
+    QWidget *mChips;
     QPair<Card*, Card*> mCards;
-    QLabel *PlayerInfo;
+    PlayerInfoLabel *mPlayerInfo;
 
 
 private:
