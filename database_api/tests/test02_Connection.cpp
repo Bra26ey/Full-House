@@ -20,7 +20,7 @@ TEST(Singleton, get_connection__access_denied) {
 
 TEST(Singleton, get_connection__ok) {
     PoolConnections* instance = PoolConnections::GetInstance();
-    instance->SetParams("localhost", "****", "****", "poker_database");
+    instance->SetParams("config.txt");
     Connection* conn = instance->GetConnection();
     ASSERT_FALSE(conn == nullptr);
     conn->Close();
@@ -29,7 +29,7 @@ TEST(Singleton, get_connection__ok) {
 void Thread(Connection*& conn) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     PoolConnections* instance = PoolConnections::GetInstance();
-    instance->SetParams("localhost", "****", "****", "poker_database");
+    instance->SetParams("config.txt");
     conn = instance->GetConnection();
 }
 

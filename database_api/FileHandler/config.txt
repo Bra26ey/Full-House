@@ -1,0 +1,4 @@
+url=localhost
+user=poker_user
+password=12345678
+database=poker_database

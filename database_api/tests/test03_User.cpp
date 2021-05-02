@@ -5,7 +5,7 @@
 
 Connection* GetConn() {
     PoolConnections* instance = PoolConnections::GetInstance();
-    instance->SetParams("localhost", "****", "****", "poker_database");
+    instance->SetParams("config.txt");
     return instance->GetConnection();
 }
 
@@ -18,8 +18,8 @@ TEST(User, add_user) {
 
     User usr = User(conn);
 
-    int out = usr.InsertUser("test_user", "test_password");
-    ASSERT_EQ(out, OK);
+    auto out = usr.InsertUser("test_user", "test_password");
+    ASSERT_EQ(out.second, OK);
 
     conn->Close();
 }
@@ -76,13 +76,16 @@ TEST(User, update_params) {
 
     User usr = User(conn);
 
-    ASSERT_EQ(usr.UpdateLogin("test_user", "new_test_user"), OK);
-    ASSERT_EQ(usr.UpdatePassword("new_test_user", "new_test_password"), OK);
-    ASSERT_EQ(usr.UpdateUsername("new_test_user", "new_username"), OK);
-    ASSERT_EQ(usr.UpdateAvatar("new_test_user", "new_path_to_avatar"), OK);
-    ASSERT_EQ(usr.UpdateMoney("new_test_user", 25.0), OK);
+    user_t user_struct = usr.GetUser("test_user", false);
+    ASSERT_EQ(user_struct.status_code, OK);
 
-    user_t user_struct = usr.GetUser("new_test_user", true);
+    ASSERT_EQ(usr.UpdateLogin(user_struct.id, "new_test_user"), OK);
+    ASSERT_EQ(usr.UpdatePassword(user_struct.id, "new_test_password"), OK);
+    ASSERT_EQ(usr.UpdateUsername(user_struct.id, "new_username"), OK);
+    ASSERT_EQ(usr.UpdateAvatar(user_struct.id, "new_path_to_avatar"), OK);
+    ASSERT_EQ(usr.UpdateMoney(user_struct.id, 25.0), OK);
+
+    user_struct = usr.GetUser("new_test_user", true);
     ASSERT_EQ(user_struct.status_code, OK);
     ASSERT_EQ(user_struct.login, "new_test_user");
     ASSERT_EQ(user_struct.password, "new_test_password");
@@ -101,7 +104,8 @@ TEST(User, delete_user) {
 
     User usr = User(conn);
 
-    ASSERT_EQ(usr.DeleteUser("new_test_user"), OK);
+    user_t user_struct = usr.GetUser("new_test_user", true);
+    ASSERT_EQ(usr.DeleteUser(user_struct.id), OK);
 
     conn->Close();
 }

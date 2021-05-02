@@ -1,10 +1,10 @@
 #include "Board.h"
 
 
-board_t Board::GetBoard(const std::size_t &board_id) {
+board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false) {
     board_t b;
 
-    std::string query_string = "SELECT * FROM board WHERE board_id = ?";
+    std::string query_string = "SELECT * FROM board WHERE id = ?";
 
     sql::PreparedStatement *pstmt;
     sql::ResultSet *res;
@@ -20,17 +20,19 @@ board_t Board::GetBoard(const std::size_t &board_id) {
         res = pstmt->executeQuery();
         std::pair<std::size_t, double> pr(0, 0.0);
         if (res->next()) {
-            b.board_id = res->getInt("board_id");
-            pr.first = res->getInt("player_id");
-            pr.second = (double) res->getDouble("reserved_money");
-            b.users.push_back(pr);
+            b.board_id = res->getInt("id");
+            b.admin_id = res->getInt("admin_id");
+            if (with_password) {
+                b.password = res->getString("password");
+            }
+            else {
+                b.password = "";
+            }
+            b.status_code = OK;
         }
-        while (res->next()) {
-            pr.first = res->getInt("player_id");
-            pr.second = (double) res->getDouble("reserved_money");
-            b.users.push_back(pr);
+        else {
+            b.status_code = EMPTY_DATA;
         }
-        b.status_code = OK;
     } catch (sql::SQLException &e) {
         delete pstmt;
         delete res;
@@ -39,8 +41,49 @@ board_t Board::GetBoard(const std::size_t &board_id) {
     }
     delete pstmt;
     delete res;
-
     return b;
+}
+
+
+active_board_t Board::GetActiveBoard(const std::size_t &board_id) {
+    active_board_t act_board;
+    std::string query_string = "SELECT * FROM active_board WHERE board_id = ?";
+
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
+    if (!conn_->IsOpen()) {
+        act_board.status_code = DATABASE_NOT_CONNECTED;
+        return act_board;
+    }
+
+    pstmt = conn_->PrepareQuery(query_string);
+    pstmt->setInt(1, (int) board_id);
+
+    try {
+        res = pstmt->executeQuery();
+        std::pair<std::size_t, double> pr(0, 0.0);
+        if (res->next()) {
+            act_board.board_id = res->getInt("board_id");
+            pr.first = res->getInt("player_id");
+            pr.second = (double) res->getDouble("reserved_money");
+            act_board.users.push_back(pr);
+        }
+        while (res->next()) {
+            pr.first = res->getInt("player_id");
+            pr.second = (double) res->getDouble("reserved_money");
+            act_board.users.push_back(pr);
+        }
+        act_board.status_code = OK;
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        delete res;
+        act_board.status_code = OBJECT_NOT_EXIST;
+        return act_board;
+    }
+    delete pstmt;
+    delete res;
+
+    return act_board;
 }
 
 
@@ -64,13 +107,8 @@ user_t Board::GetUserId(const std::string &login) {
 }
 
 
-std::pair<std::size_t, int> Board::CreateBoard(const std::string &login) {
-    user_t u = GetUserId(login);
-    if (u.status_code != OK) {
-        return std::pair<std::size_t, int> (0, u.status_code);
-    }
-    std::string query_string = "INSERT INTO board(player_id, reserved_money) VALUES (?, ?)";
-    // insert into board (board_id, player_id, reserved_money) values ((SELECT MAX(b.board_id) + 1 from board as b), 1, 25);
+std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const std::string& password) {
+    std::string query_string = "INSERT INTO board(admin_id, password) VALUES (?, ?)";
 
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
@@ -78,18 +116,18 @@ std::pair<std::size_t, int> Board::CreateBoard(const std::string &login) {
     }
 
     pstmt = conn_->PrepareQuery(query_string);
-    pstmt->setInt(1, (int) u.id);
-    pstmt->setDouble(2, 0.0);
+    pstmt->setInt(1, (int) user_id);
+    pstmt->setString(2, password);
 
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
         delete pstmt;
-        return std::pair<std::size_t, int> (0, OBJECT_ALREADY_EXIST);
+        return std::pair<std::size_t, int> (0, OBJECT_NOT_EXIST);
     }
     delete pstmt;
 
-    query_string = "SELECT MAX(board_id) from board";
+    query_string = "SELECT MAX(id) from board";
     sql::Statement *stmt = conn_->SetQuery(query_string);
     sql::ResultSet *res = stmt->executeQuery(query_string);
     std::size_t last_id = 0;
@@ -99,7 +137,12 @@ std::pair<std::size_t, int> Board::CreateBoard(const std::string &login) {
 
     delete stmt;
     delete res;
-    return std::pair<std::size_t, int> (last_id, OK);
+    if (last_id != 0) {
+        return std::pair<std::size_t, int>(last_id, OK);
+    }
+    else {
+        return std::pair<std::size_t, int>(last_id, BAD_QUERY);
+    }
 }
 
 
@@ -109,7 +152,7 @@ int Board::DeleteBoard(const std::size_t &board_id) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "DELETE FROM board WHERE board_id = ?";
+    std::string query_string = "DELETE FROM board WHERE id = ?";
     pstmt = conn_->PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
@@ -128,13 +171,46 @@ int Board::DeleteBoard(const std::size_t &board_id) {
 }
 
 
-int Board::AddUserToBoard(const std::size_t &board_id, const std::string &login) {
-    user_t u = GetUserId(login);
-    if (u.status_code != OK) {
-        return (int) u.status_code;
+int Board::CheckPassword(const std::size_t &board_id, const std::string &password) {
+    std::string query_string = "SELECT password FROM board WHERE id = ?";
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
+
+    if (!conn_->IsOpen()) {
+        return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "INSERT INTO board(board_id, player_id, reserved_money) VALUES (?, ?, ?)";
+    pstmt = conn_->PrepareQuery(query_string);
+    pstmt->setInt(1, (int) board_id);
+
+    try {
+        res = pstmt->executeQuery();
+        if (!res->next()) {
+            delete pstmt;
+            delete res;
+            return OBJECT_NOT_EXIST;
+        }
+
+        std::string res_password = res->getString("password");
+        delete pstmt;
+        delete res;
+        return (res_password == password) ? OK : WRONG_PASSWORD;
+
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        delete res;
+        return OBJECT_NOT_EXIST;
+    }
+}
+
+
+int Board::AddUserToBoard(const std::size_t &board_id, const std::size_t &player_id, const std::string &password) {
+    int out = CheckPassword(board_id, password);
+    if (out != OK) {
+        return out;
+    }
+
+    std::string query_string = "INSERT INTO active_board(board_id, player_id, reserved_money) VALUES (?, ?, ?)";
 
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
@@ -143,7 +219,7 @@ int Board::AddUserToBoard(const std::size_t &board_id, const std::string &login)
 
     pstmt = conn_->PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
-    pstmt->setInt(2, (int) u.id);
+    pstmt->setInt(2, (int) player_id);
     pstmt->setDouble(3, 0.0);
 
     try {
@@ -157,21 +233,16 @@ int Board::AddUserToBoard(const std::size_t &board_id, const std::string &login)
 }
 
 
-int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::string &login) {
-    user_t u = GetUserId(login);
-    if (u.status_code != OK) {
-        return (int) u.status_code;
-    }
-
+int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::size_t &player_id) {
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "DELETE FROM board WHERE board_id = ? AND player_id = ?";
+    std::string query_string = "DELETE FROM active_board WHERE board_id = ? AND player_id = ?";
     pstmt = conn_->PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
-    pstmt->setInt(2, (int) u.id);
+    pstmt->setInt(2, (int) player_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
@@ -188,22 +259,17 @@ int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::string &l
 }
 
 
-int Board::SetReservedMoney(const std::size_t &board_id, const std::string &login, const double &reserved_money) {
-    user_t u = GetUserId(login);
-    if (u.status_code != OK) {
-        return (int) u.status_code;
-    }
-
+int Board::SetReservedMoney(const std::size_t &board_id, const std::size_t &player_id, const double &reserved_money) {
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "UPDATE board SET reserved_money = ? WHERE board_id = ? AND player_id = ?";
+    std::string query_string = "UPDATE active_board SET reserved_money = ? WHERE board_id = ? AND player_id = ?";
     pstmt = conn_->PrepareQuery(query_string);
     pstmt->setDouble(1, reserved_money);
     pstmt->setInt(2, (int) board_id);
-    pstmt->setInt(3, (int) u.id);
+    pstmt->setInt(3, (int) player_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {

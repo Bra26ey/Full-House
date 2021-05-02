@@ -1,11 +1,46 @@
 #include "User.h"
 
 
-bool User::IsExist(const std::string &login) {
-    if (login.empty()) {
+bool User::IsExist(const std::size_t& id) {
+    std::string query_string = "SELECT id FROM user WHERE id = ?";
+
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
+
+    if (!conn_->IsOpen()) {
         return false;
     }
 
+    pstmt = conn_->PrepareQuery(query_string);
+    pstmt->setInt(1, (int)id);
+
+    try {
+        res = pstmt->executeQuery();
+        if (!res->next()) {
+            delete pstmt;
+            delete res;
+            return false;
+        }
+
+        std::size_t res_id = res->getInt("id");
+        if (res_id != id) {
+            delete pstmt;
+            delete res;
+            return false;
+        }
+
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        delete res;
+        return false;
+    }
+    delete pstmt;
+    delete res;
+    return true;
+}
+
+
+bool User::IsExist(const std::string &login) {
     std::string query_string = "SELECT login FROM user WHERE login = ?";
 
     sql::PreparedStatement *pstmt;
@@ -44,12 +79,55 @@ bool User::IsExist(const std::string &login) {
 }
 
 
-user_t User::GetUser(const std::string &login, bool with_password=false) {
+user_t User::GetUser(const std::size_t& id, bool with_password=false) {
     user_t u;
-    if (login.empty()) {
-        u.status_code = EMPTY_DATA;
+
+    std::string query_string = "SELECT * FROM user WHERE id = ?";
+
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
+    if (!conn_->IsOpen()) {
+        u.status_code = DATABASE_NOT_CONNECTED;
         return u;
     }
+
+    pstmt = conn_->PrepareQuery(query_string);
+    pstmt->setInt(1, (int)id);
+
+    try {
+        res = pstmt->executeQuery();
+        if (!res->next()) {
+            u.status_code = OBJECT_NOT_EXIST;
+            delete pstmt;
+            delete res;
+            return u;
+        }
+
+        u.id = res->getInt(1);
+        u.login = res->getString("login");
+        if (with_password) {
+            u.password = res->getString("password");
+        } else {
+            u.password = "";
+        }
+        u.username = res->getString("username");
+        u.avatar = res->getString("avatar");
+        u.money = (double) res->getDouble("money");
+        u.status_code = OK;
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        delete res;
+        u.status_code = OBJECT_NOT_EXIST;
+        return u;
+    }
+    delete pstmt;
+    delete res;
+    return u;
+}
+
+
+user_t User::GetUser(const std::string & login, bool with_password=false) {
+    user_t u;
 
     std::string query_string = "SELECT * FROM user WHERE login = ?";
 
@@ -95,13 +173,13 @@ user_t User::GetUser(const std::string &login, bool with_password=false) {
 }
 
 
-int User::InsertUser(const std::string &login, const std::string &password) {
+std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std::string &password) {
     if (login.empty() || password.empty()) {
-        return EMPTY_DATA;
+        return std::pair<std::size_t, int> (0, EMPTY_DATA);
     }
 
     if (IsExist(login)) {
-        return OBJECT_ALREADY_EXIST;
+        return std::pair<std::size_t, int> (0, OBJECT_ALREADY_EXIST);
     }
 
     std::string query_string = "INSERT INTO user(login, password, username, avatar, money) VALUES (?, ?, ?, ?, ?)";
@@ -111,7 +189,7 @@ int User::InsertUser(const std::string &login, const std::string &password) {
 
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
-        return DATABASE_NOT_CONNECTED;
+        return std::pair<std::size_t, int> (0, DATABASE_NOT_CONNECTED);
     }
 
     pstmt = conn_->PrepareQuery(query_string);
@@ -125,23 +203,34 @@ int User::InsertUser(const std::string &login, const std::string &password) {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
         delete pstmt;
-        return OBJECT_ALREADY_EXIST;
+        return std::pair<std::size_t, int> (0, OBJECT_ALREADY_EXIST);
     }
+
+    query_string = "SELECT MAX(id) from user";
+    sql::Statement *stmt = conn_->SetQuery(query_string);
+    sql::ResultSet *res = stmt->executeQuery(query_string);
+    std::size_t last_id = 0;
+    if (res->next()) {
+        last_id = res->getInt(1);
+    }
+
     delete pstmt;
-    return OK;
+    delete stmt;
+    delete res;
+    return std::pair<std::size_t, int> (last_id, OK);
 }
 
 
-int User::UpdateStringField(const std::string &field_name, const std::string &login, const std::string &data) {
+int User::UpdateStringField(const std::string &field_name, const std::size_t &id, const std::string &data) {
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "UPDATE user SET " + field_name + " = ? WHERE login = ?";
+    std::string query_string = "UPDATE user SET " + field_name + " = ? WHERE id = ?";
     pstmt = conn_->PrepareQuery(query_string);
     pstmt->setString(1, data);
-    pstmt->setString(2, login);
+    pstmt->setInt(2, (int) id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
@@ -158,48 +247,48 @@ int User::UpdateStringField(const std::string &field_name, const std::string &lo
 }
 
 
-int User::UpdateLogin(const std::string &login, const std::string &new_login) {
-    if (new_login.empty() || login.empty()) {
+int User::UpdateLogin(const std::size_t &id, const std::string &new_login) {
+    if (new_login.empty()) {
         return EMPTY_DATA;
     }
-    return UpdateStringField("login", login, new_login);
+    return UpdateStringField("login", id, new_login);
 }
 
 
-int User::UpdatePassword(const std::string &login, const std::string &new_password) {
-    if (new_password.empty() || login.empty()) {
+int User::UpdatePassword(const size_t &id, const std::string &new_password) {
+    if (new_password.empty()) {
         return EMPTY_DATA;
     }
-    return UpdateStringField("password", login, new_password);
+    return UpdateStringField("password", id, new_password);
 }
 
 
-int User::UpdateUsername(const std::string &login, const std::string &new_username) {
-    if (new_username.empty() || login.empty()) {
+int User::UpdateUsername(const size_t &id, const std::string &new_username) {
+    if (new_username.empty()) {
         return EMPTY_DATA;
     }
-    return UpdateStringField("username", login, new_username);
+    return UpdateStringField("username", id, new_username);
 }
 
 
-int User::UpdateAvatar(const std::string &login, const std::string &new_avatar) {
-    if (new_avatar.empty() || login.empty()) {
+int User::UpdateAvatar(const size_t &id, const std::string &new_avatar) {
+    if (new_avatar.empty()) {
         return EMPTY_DATA;
     }
-    return UpdateStringField("avatar", login, new_avatar);
+    return UpdateStringField("avatar", id, new_avatar);
 }
 
 
-int User::UpdateMoney(const std::string &login, double new_money) {
+int User::UpdateMoney(const size_t &id, double new_money) {
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "UPDATE user SET money = ? WHERE login = ?";
+    std::string query_string = "UPDATE user SET money = ? WHERE id = ?";
     pstmt = conn_->PrepareQuery(query_string);
     pstmt->setDouble(1, new_money);
-    pstmt->setString(2, login);
+    pstmt->setInt(2, (int) id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
@@ -216,15 +305,15 @@ int User::UpdateMoney(const std::string &login, double new_money) {
 }
 
 
-int User::DeleteUser(const std::string &login) {
+int User::DeleteUser(const size_t &id) {
     sql::PreparedStatement *pstmt;
     if (!conn_->IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "DELETE FROM user WHERE login = ?";
+    std::string query_string = "DELETE FROM user WHERE id = ?";
     pstmt = conn_->PrepareQuery(query_string);
-    pstmt->setString(1, login);
+    pstmt->setInt(1, (int) id);
 
     try {
         if (pstmt->executeUpdate() == 0) {

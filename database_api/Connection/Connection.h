@@ -1,6 +1,6 @@
 #pragma once
-#ifndef UNTITLED_CONNECTION_H
-#define UNTITLED_CONNECTION_H
+#ifndef FULL_HOUSE_CONNECTION_H
+#define FULL_HOUSE_CONNECTION_H
 
 
 #include "mysql_connection.h"
@@ -10,9 +10,7 @@
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
 
-
-#define OK 1
-#define DATABASE_NOT_CONNECTED 11
+#include "../FileHandler/FileHandler.h"
 
 
 class Connection {
@@ -28,14 +26,15 @@ public:
     bool IsOpen();
     void Close();
 
-    void InitSchema();
+    int InitSchema();
     sql::Statement* SetQuery(const std::string& query);
     sql::PreparedStatement* PrepareQuery(const std::string& query);
 
 private:
     sql::Connection* conn_;
+    db_schemas_t schemas_;
 
 };
 
 
-#endif //UNTITLED_CONNECTION_H
+#endif //FULL_HOUSE_CONNECTION_H

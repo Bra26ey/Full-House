@@ -2,7 +2,6 @@
 
 
 PoolConnections::PoolConnections() {
-    //driver_ = get_driver_instance();
     for (std::size_t i = 0; i < POOL_SIZE; ++i) {
         pool_.push_back(new Connection());
     }
@@ -28,12 +27,10 @@ PoolConnections* PoolConnections::GetInstance() {
 }
 
 
-void PoolConnections::SetParams(const std::string &url, const std::string &password,
-                                const std::string &user, const std::string &dbase_name) {
-    url_ = url;
-    user_ = user;
-    password_ = password;
-    dbase_name_ = dbase_name;
+int PoolConnections::SetParams(const std::string& filename = "config.txt") {
+    FileHandler fh;
+    config_params_ = fh.ParseConfig(filename);
+    return (int) config_params_.status_code;
 }
 
 
@@ -46,7 +43,8 @@ Connection* PoolConnections::GetConnection() {
     std::size_t old_size = pool_.size();
     for (auto & elem : pool_) {
         if (!elem->IsOpen()) {
-            bool out = elem->Connect(url_, password_, user_, dbase_name_);
+            bool out = elem->Connect(config_params_.url, config_params_.password,
+                                     config_params_.user, config_params_.database);
             return out ? elem : nullptr;
         }
     }
@@ -56,7 +54,8 @@ Connection* PoolConnections::GetConnection() {
         return nullptr;
     }
 
-    bool out = pool_[old_size]->Connect(url_, password_, user_, dbase_name_);
+    bool out = pool_[old_size]->Connect(config_params_.url, config_params_.password,
+                                        config_params_.user, config_params_.database);
     return out ? pool_[old_size] : nullptr;
 }
 

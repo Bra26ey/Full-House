@@ -1,17 +1,9 @@
 #pragma once
-#ifndef UNTITLED_USER_H
-#define UNTITLED_USER_H
+#ifndef FULL_HOUSE_USER_H
+#define FULL_HOUSE_USER_H
 
 
 #include "../Connection/PoolConnections.h"
-
-// set constants
-#define OBJECT_ALREADY_EXIST 21
-#define OBJECT_NOT_EXIST 22
-#define OBJECT_NOT_UPDATED 23
-#define EMPTY_DATA 24
-
-#define DEFAULT_PATH_TO_IMAGE "default_path_to_image"
 
 
 typedef struct user user_t;
@@ -40,22 +32,25 @@ public:
     User(const User&)=delete;
     User& operator=(const User&)=delete;
 
-    user_t GetUser(const std::string& login, bool with_password);
-    int InsertUser(const std::string&, const std::string&);
-    int UpdateLogin(const std::string&, const std::string&);
-    int UpdatePassword(const std::string&, const std::string&);
-    int UpdateUsername(const std::string&, const std::string&);
-    int UpdateAvatar(const std::string&, const std::string&);
-    int UpdateMoney(const std::string&, double);
-    int DeleteUser(const std::string&);
-    bool IsExist(const std::string&);
+    user_t GetUser(const std::size_t&, bool with_password);
+    user_t GetUser(const std::string&, bool with_password);
+
+    std::pair<std::size_t, int> InsertUser(const std::string&, const std::string&);
+    int UpdateLogin(const std::size_t&, const std::string&);
+    int UpdatePassword(const std::size_t&, const std::string&);
+    int UpdateUsername(const std::size_t&, const std::string&);
+    int UpdateAvatar(const std::size_t&, const std::string&);
+    int UpdateMoney(const std::size_t&, double);
+    int DeleteUser(const std::size_t&);
+    bool IsExist(const std::size_t&);
+    bool IsExist(const std::string &);
 
 private:
-    int UpdateStringField(const std::string&, const std::string&, const std::string&);
+    int UpdateStringField(const std::string&, const std::size_t &, const std::string&);
 
     Connection* conn_;
 
 };
 
 
-#endif //UNTITLED_USER_H
+#endif //FULL_HOUSE_USER_H
