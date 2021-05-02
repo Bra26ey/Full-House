@@ -1,19 +1,22 @@
 #ifndef CHIPS_H
 #define CHIPS_H
 
-#include <QWidget>
+#include <QLabel>
 #include <QPixmap>
+#include <QImage>
 
-class Chips: public QWidget {
+class Chips: public QLabel {
 public:
-    Chips() = delete;
-    Chips(size_t value);
+    Chips();
     ~Chips();
+    void Wipe();
+    void AddToBank(size_t value);
 
 private:
-    void setTextures();
-    QPixmap* mTexture;
+    QImage* mypix;
+    QImage chips;
     size_t mValue;
+    QLabel* mAmount;
 };
 
 #endif // CHIPS_H

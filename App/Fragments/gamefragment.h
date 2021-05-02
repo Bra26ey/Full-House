@@ -41,6 +41,7 @@ private:
     QVector<OtherPlayer*> OtherPlayers;
     QLabel *mPlayTable;
     QLabel *mDealerLogo;
+    QLabel *mChips;
 
     QVector <Card*> CardOnTable;
 

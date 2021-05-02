@@ -15,8 +15,12 @@ using namespace screens;
 GameFragment::GameFragment() : num_players(0) {
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
+    mChips = new Chips;
 
-    bool up;
+    mChips->setParent(mPlayTable);
+    mChips->setGeometry(mPlayTable->width()/2 + base_card_coefficient + 5 * card_move_coefficient + 30, mPlayTable->height()/2 - 50, 400, 400);
+
+    bool up;  // тоже дебаг
     for(size_t i = 0; i < 5; ++i) {
         i < 3 ? up = true : up = false;
         auto card = new Card(2 * i + 1,1 * i + 1, up);
@@ -103,10 +107,10 @@ GameFragment::GameFragment() : num_players(0) {
 
     // кайнда дебаг
 
-    DrawPlayer(firstpos, 1, "Cartman", 5000);
+    DrawPlayer(fouthpos, 1, "Cartman", 5000);
     DrawPlayer(secondpos, 2, "Kenny", 2000);
     DrawPlayer(thirdpos, 3, "Stan", 6000);
-    DrawPlayer(fouthpos, 4, "Wendy", 1000);
+    DrawPlayer(firstpos, 4, "Wendy", 1000);
     DrawPlayer(fifthpos, 5, "Dougie", 500);
 
     OtherPlayers[0]->GiveCards(4,4,2,3);

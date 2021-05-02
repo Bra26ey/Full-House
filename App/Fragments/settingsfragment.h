@@ -21,6 +21,7 @@ private:
     QPushButton *MuteButton;
     QPushButton *MenuButton;
     QSlider *VolumeSlider;
+    size_t EasterEgg;
 };
 
 #endif // SETTINGSFRAGMENT_H

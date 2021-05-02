@@ -56,10 +56,12 @@
     </qresource>
     <qresource prefix="/music">
         <file>Media/BackGround.mp3</file>
+        <file>Media/EasterEgg.mp3</file>
     </qresource>
     <qresource prefix="/other_textures">
         <file>Media/table.png</file>
         <file alias="DealerLogo">Media/DealerLogo.png</file>
+        <file alias="chips">Media/chips.png</file>
     </qresource>
     <qresource prefix="/players">
         <file alias="Cartman">Media/Players/Cartman.png</file>

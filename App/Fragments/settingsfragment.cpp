@@ -3,7 +3,7 @@
 
 #include <QLabel>
 
-SettingsFragment::SettingsFragment() {
+SettingsFragment::SettingsFragment() : EasterEgg(0) {
     qDebug("Settings create");
 
     QVBoxLayout *mainVLayout = new QVBoxLayout;
@@ -79,8 +79,16 @@ void SettingsFragment::MutePressed() {
     if (player->isMuted()) {
         player->setMuted(false);
         MuteButton->setText("Mute");
+        EasterEgg++;
     } else {
         player->setMuted(true);
         MuteButton->setText("Unmute");
+    }
+    if (EasterEgg == 10) {
+        playlist->addMedia(QUrl("qrc:/music/Media/EasterEgg.mp3"));
+        playlist->next();
+    } if (EasterEgg == 11) {
+        playlist->addMedia(QUrl("qrc:/music/Media/BackGround.mp3"));
+        playlist->next();
     }
 }
