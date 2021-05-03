@@ -82,10 +82,9 @@ GameFragment::GameFragment() : num_players(0) {
     ActionButtons.append(RaiseButton);
     ActionButtons.append(FoldButton);
     ActionButtons.append(CheckButton);
-    for (auto btn: ActionButtons) {
+    foreach (auto btn, ActionButtons) {
         mainHLayout->addWidget(btn);
     }
-
     mainVLayout->addLayout(mainHLayout);
 
     QHBoxLayout *SliderLayout = new QHBoxLayout;
@@ -121,16 +120,16 @@ GameFragment::GameFragment() : num_players(0) {
     DrawPlayer(firstpos, 4, "Wendy", 1000);
     DrawPlayer(fifthpos, 5, "Dougie", 500);
 
-    OtherPlayers[0]->GiveCards(4,4,2,3);
-    OtherPlayers[1]->GiveCards(4,4,2,3);
-    OtherPlayers[0]->FlipCards();
-    OtherPlayers[2]->GiveCards(4,4,2,3);
-    OtherPlayers[3]->GiveCards(4,4,2,3);
-    OtherPlayers[4]->GiveCards(4,4,2,3);
-    OtherPlayers[4]->FlipCards();
+    mOtherPlayers[0]->GiveCards(4,4,2,3);
+    mOtherPlayers[1]->GiveCards(4,4,2,3);
+    mOtherPlayers[0]->FlipCards();
+    mOtherPlayers[2]->GiveCards(4,4,2,3);
+    mOtherPlayers[3]->GiveCards(4,4,2,3);
+    mOtherPlayers[4]->GiveCards(4,4,2,3);
+    mOtherPlayers[4]->FlipCards();
 
     MakeDealer(1);
-    OtherPlayers[3]->setBet(400);
+    mOtherPlayers[3]->setBet(400);
 }
 
 GameFragment::~GameFragment() {
@@ -158,7 +157,7 @@ void GameFragment::setval() {
 void GameFragment::onBetPressed() {
     mPlayer->setBet(BetValue->text().toUInt());
     mChips->AddToBank(BetValue->text().toUInt());
-    for (auto btn: ActionButtons) {
+    foreach (auto btn, ActionButtons) {
         btn->blockSignals(true);
     }
 }
@@ -172,7 +171,6 @@ void GameFragment::onRaisePressed() {
 }
 
 void GameFragment::onFoldPressed() {
-
 }
 
 void GameFragment::onLeavePressed() {
@@ -186,10 +184,10 @@ void GameFragment::onSettingsPressed() {
 
 void GameFragment::DrawPlayer(QRect pos, size_t player_id, std::string nickname, size_t total_money) {
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
-    OtherPlayers.append(player);
-    OtherPlayers[num_players]->setParent(mPlayTable);
-    OtherPlayers[num_players]->setGeometry(pos);
-    OtherPlayers[num_players]->SetPosition(pos);
+    mOtherPlayers.append(player);
+    mOtherPlayers[num_players]->setParent(mPlayTable);
+    mOtherPlayers[num_players]->setGeometry(pos);
+    mOtherPlayers[num_players]->SetPosition(pos);
     num_players++;
 }
 
@@ -201,8 +199,14 @@ void GameFragment::DrawMainPlayer() {
 }
 
 void GameFragment::MakeDealer(size_t player_id) {
-    if (player_id > 0)
-    mDealerLogo->setParent(OtherPlayers[player_id - 1]);
-    //else setParentPlayer
+    if (player_id > 0) mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
+    else mDealerLogo->setParent(mPlayer);
     mDealerLogo->setGeometry(20, 30, 150, 150);
+}
+
+void GameFragment::FlipAllCards() {
+    foreach(auto player, mOtherPlayers) {
+        if (!player->GetCardSide())
+        player->FlipCards();
+    }
 }

@@ -92,3 +92,7 @@ void OtherPlayer::FlipCards() {
         mCards.second->Flip();
     }
 }
+
+bool OtherPlayer::GetCardSide() {
+    return mCards.first->GetSide();
+}

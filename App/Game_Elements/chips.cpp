@@ -33,3 +33,7 @@ Chips::~Chips() {
     delete mypix;
     delete mAmount;
 }
+
+size_t Chips::GetBank() {
+    return mValue;
+}

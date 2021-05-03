@@ -35,6 +35,7 @@ public:
     void FlipCards();
 
     void setBet(size_t bet);
+    bool GetCardSide();
 
 protected:
     QWidget *mChips;

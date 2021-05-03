@@ -25,6 +25,7 @@ public:
     void DrawPlayer(QRect pos, size_t player_id, std::string nickname, size_t total_money);
     void DrawMainPlayer();
     void MakeDealer(size_t player_id);
+    void FlipAllCards();
 
 public slots:
     void onBetPressed();
@@ -42,7 +43,7 @@ private:
     size_t num_players;
 
     Player *mPlayer;
-    QVector<OtherPlayer*> OtherPlayers;
+    QVector<OtherPlayer*> mOtherPlayers;
     QLabel *mPlayTable;
     QLabel *mDealerLogo;
     Chips *mChips;

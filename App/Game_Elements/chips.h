@@ -11,6 +11,7 @@ public:
     ~Chips();
     void Wipe();
     void AddToBank(size_t value);
+    size_t GetBank();
 
 private:
     QImage* mypix;

@@ -49,3 +49,6 @@ size_t Card::GetSuit() {
     return mSuit;
 }
 
+bool Card::GetSide() {
+    return mUpSided;
+}

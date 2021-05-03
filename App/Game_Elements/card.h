@@ -15,6 +15,7 @@ public:
     void Flip();
     size_t GetValue();
     size_t GetSuit();
+    bool GetSide();
 
 
 private:
