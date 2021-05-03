@@ -43,6 +43,7 @@ GameFragment::GameFragment() : num_players(0) {
     BetButton->setStyleSheet("color:#242424;font-size:24px");
     connect(BetButton, &QPushButton::clicked, this, &GameFragment::onBetPressed);
 
+
     RaiseButton = new QPushButton("Raise");
     RaiseButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RaiseButton, &QPushButton::clicked, this, &GameFragment::onRaisePressed);
@@ -55,6 +56,8 @@ GameFragment::GameFragment() : num_players(0) {
     CheckButton = new QPushButton("Check");
     CheckButton->setStyleSheet("color:#242424;font-size:24px");
     connect(CheckButton, &QPushButton::clicked, this, &GameFragment::onCheckPressed);
+
+
 
     BetSlider = new QSlider(Qt::Horizontal); // слайдер ставки
     BetSlider->setFocusPolicy(Qt::NoFocus);
@@ -75,10 +78,13 @@ GameFragment::GameFragment() : num_players(0) {
 
     QHBoxLayout *mainHLayout = new QHBoxLayout;
 
-    mainHLayout->addWidget(BetButton);
-    mainHLayout->addWidget(RaiseButton);
-    mainHLayout->addWidget(FoldButton);
-    mainHLayout->addWidget(CheckButton);
+    ActionButtons.append(BetButton);
+    ActionButtons.append(RaiseButton);
+    ActionButtons.append(FoldButton);
+    ActionButtons.append(CheckButton);
+    for (auto btn: ActionButtons) {
+        mainHLayout->addWidget(btn);
+    }
 
     mainVLayout->addLayout(mainHLayout);
 
@@ -106,7 +112,9 @@ GameFragment::GameFragment() : num_players(0) {
     this->setLayout(mainVLayout);
 
     // кайнда дебаг
-
+    DrawMainPlayer();
+    mPlayer->GiveCards(1,4, 1,3);
+    mPlayer->FlipCards();
     DrawPlayer(fouthpos, 1, "Cartman", 5000);
     DrawPlayer(secondpos, 2, "Kenny", 2000);
     DrawPlayer(thirdpos, 3, "Stan", 6000);
@@ -148,7 +156,11 @@ void GameFragment::setval() {
 }
 
 void GameFragment::onBetPressed() {
-
+    mPlayer->setBet(BetValue->text().toUInt());
+    mChips->AddToBank(BetValue->text().toUInt());
+    for (auto btn: ActionButtons) {
+        btn->blockSignals(true);
+    }
 }
 
 void GameFragment::onCheckPressed() {
@@ -179,6 +191,13 @@ void GameFragment::DrawPlayer(QRect pos, size_t player_id, std::string nickname,
     OtherPlayers[num_players]->setGeometry(pos);
     OtherPlayers[num_players]->SetPosition(pos);
     num_players++;
+}
+
+void GameFragment::DrawMainPlayer() {
+    mPlayer = new Player("Sample Text", 9999);
+    mPlayer->setParent(mPlayTable);
+    mPlayer->setGeometry(mainplayerpos);
+    mPlayer->SetPosition(mainplayerpos);
 }
 
 void GameFragment::MakeDealer(size_t player_id) {

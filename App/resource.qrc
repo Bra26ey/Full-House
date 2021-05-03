@@ -69,5 +69,6 @@
         <file alias="Stan">Media/Players/Stan.png</file>
         <file alias="Wendy">Media/Players/Wendy.png</file>
         <file alias="Dougie">Media/Players/south_park_PNG38.png</file>
+        <file alias="Kyle">Media/Players/Kyle.png</file>
     </qresource>
 </RCC>

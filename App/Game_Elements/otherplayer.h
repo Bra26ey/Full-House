@@ -10,12 +10,13 @@
 #include <QLabel>
 #include <QWidget>
 #include <QPixmap>
-                                                      //  3
+                                                     //  3
 static QRect firstpos(70, 480, 400, 400);           // 2   4
-static QRect secondpos(110, 30, 400, 400);           // 1     5
+static QRect secondpos(110, 30, 400, 400);         // 1     5
 static QRect thirdpos(470, -20, 400, 400);        //     0
 static QRect fouthpos(850, 30, 400, 400);
 static QRect fifthpos(900, 480, 400, 400);
+static QRect mainplayerpos(500, 590, 400, 400);
 
 //TODO refactor
 
@@ -23,6 +24,7 @@ static QRect fifthpos(900, 480, 400, 400);
 class OtherPlayer: public QLabel {
         Q_OBJECT
 public:
+    OtherPlayer() = default;
     OtherPlayer(size_t id, std::string nickname, size_t money);
     ~OtherPlayer();
     void SetPosition(QRect &pos);
@@ -33,13 +35,12 @@ public:
     void FlipCards();
 
     void setBet(size_t bet);
+
 protected:
     QWidget *mChips;
     QPair<Card*, Card*> mCards;
     PlayerInfoLabel *mPlayerInfo;
 
-
-private:
     QRect mPos;
     QImage *mypix;
     QImage player;

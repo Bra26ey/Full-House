@@ -1,17 +1,17 @@
-//#ifndef PLAYER_H
-//#define PLAYER_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
-//#include "otherplayer.h"
+#include "otherplayer.h"
 
-//class Player: public OtherPlayer {
-//public:
-//    Player(size_t pos);
-//    ~Player();
-//    void DisplayCards();
+class Player: public OtherPlayer {
+public:
+    Player(std::string name, size_t money);
+    ~Player();
+    void DisplayCards();
 
-//private:
-//    size_t mTextureId;
-//    QPixmap *mTexture;
-//};
+private:
+    size_t mTextureId;
+    QPixmap *mTexture;
+};
 
-//#endif // PLAYER_H
+#endif // PLAYER_H

@@ -114,6 +114,7 @@ void LoginFragment::onRegistrationPressed() {
 }
 
 void LoginFragment::onExitPressed() {
+    // disconnect from server
     exit(0);
 }
 

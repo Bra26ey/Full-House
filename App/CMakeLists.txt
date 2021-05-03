@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(UiTest LANGUAGES CXX)
+project(FullHouse LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -99,9 +99,9 @@ add_library(MyLib SHARED ${PROJECT_SOURCES})
 target_link_libraries(MyLib Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(UiTest)
+    qt_add_executable(FullHouse)
 else()
-    add_executable(UiTest)
+    add_executable(FullHouse)
 endif()
 
-target_link_libraries(UiTest PRIVATE MyLib)
+target_link_libraries(FullHouse PRIVATE MyLib)

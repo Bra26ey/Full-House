@@ -60,7 +60,10 @@ void OtherPlayer::GiveCards(size_t value1, size_t suit1, size_t value2, size_t s
     mCards.first->setParent(this);
     mCards.second->setParent(this);
 
-    if (mPos == firstpos) {
+    if (mPos == mainplayerpos) {
+        mCards.first->setGeometry(40, -50, 220, 220);
+        mCards.second->setGeometry(90, -50, 220, 220);
+    } else if (mPos == firstpos) {
         mCards.first->setGeometry(180, 80, 220, 220);
         mCards.second->setGeometry(220, 80, 220, 220);
     } else if (mPos == secondpos) {
