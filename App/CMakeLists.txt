@@ -25,6 +25,10 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 enable_testing()
 add_subdirectory(test)
 
+find_package(Boost 1.65.1 REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
+
 find_package(Qt5Widgets)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Multimedia REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Multimedia REQUIRED)
@@ -96,7 +100,7 @@ set(PROJECT_SOURCES
 )
 
 add_library(MyLib SHARED ${PROJECT_SOURCES})
-target_link_libraries(MyLib Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
+target_link_libraries(MyLib Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia ${Boost_LIBRARIES})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FullHouse)

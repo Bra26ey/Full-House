@@ -1,5 +1,6 @@
 #include "registrationfragment.h"
 
+#include <boost/functional/hash/hash.hpp>
 #include <QLabel>
 #include <QMessageBox>
 
@@ -113,6 +114,8 @@ int RegistrationFragment::CheckData() {
     } else {
         return 2;
     }
+    boost::hash<std::string> PasswordHasher;
+    PasswordHasher(passwordEdit->text().toStdString());
 }
 
 RegistrationFragment::~RegistrationFragment() {

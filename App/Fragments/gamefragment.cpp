@@ -23,7 +23,7 @@ GameFragment::GameFragment() : num_players(0) {
     bool up;  // тоже дебаг
     for(size_t i = 0; i < 5; ++i) {
         i < 3 ? up = true : up = false;
-        auto card = new Card(2 * i + 1,1 * i + 1, up);
+        auto card = new Card(1 * i + 2, (i + 1) % 4, up);
         CardOnTable.push_back(card);
         CardOnTable[i]->setParent(mPlayTable);
         CardOnTable[i]->setGeometry(mPlayTable->width()/2 + base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
@@ -113,7 +113,7 @@ GameFragment::GameFragment() : num_players(0) {
 
     DrawMainPlayer();
     // кайнда дебаг
-    mPlayer->GiveCards(1,4, 1,3);
+    mPlayer->GiveCards(14,2, 14,3);
     mPlayer->FlipCards();
 
     DrawPlayer(fouthpos, 1, "Cartman", 5000);
@@ -122,12 +122,12 @@ GameFragment::GameFragment() : num_players(0) {
     DrawPlayer(firstpos, 4, "Wendy", 1000);
     DrawPlayer(fifthpos, 5, "Dougie", 500);
 
-    mOtherPlayers[0]->GiveCards(4,4,2,3);
-    mOtherPlayers[1]->GiveCards(4,4,2,3);
+    mOtherPlayers[0]->GiveCards(4,3,2,3);
+    mOtherPlayers[1]->GiveCards(4,3,2,3);
     mOtherPlayers[0]->FlipCards();
-    mOtherPlayers[2]->GiveCards(4,4,2,3);
-    mOtherPlayers[3]->GiveCards(4,4,2,3);
-    mOtherPlayers[4]->GiveCards(4,4,2,3);
+    mOtherPlayers[2]->GiveCards(4,3,2,3);
+    mOtherPlayers[3]->GiveCards(4,3,2,3);
+    mOtherPlayers[4]->GiveCards(4,3,2,3);
     mOtherPlayers[4]->FlipCards();
 
     MakeDealer(0);
@@ -204,7 +204,6 @@ void GameFragment::DrawMainPlayer() {
 }
 
 
-// TODO fix this shit
 void GameFragment::MakeDealer(size_t player_id) {
     if (player_id > 0) {
         mDealerLogo->setParent(mOtherPlayers[player_id - 1]);

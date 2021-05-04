@@ -1,5 +1,7 @@
 #include "loginfragment.h"
 
+#include <boost/functional/hash/hash.hpp>
+#include <iostream>
 #include <QLabel>
 #include <QPushButton>
 #include <QTreeWidgetItem>
@@ -11,7 +13,6 @@
 using namespace screens;
 
 LoginFragment::LoginFragment() {
-    qDebug("LoginFragment create");
 
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
@@ -124,6 +125,8 @@ int LoginFragment::CheckData() {
 //    } else {
 //        return 1;
 //    }
+    boost::hash<std::string> PasswordHasher;
+    PasswordHasher(passwordEdit->text().toStdString());
     return 0;
 }
 

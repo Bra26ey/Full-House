@@ -1,5 +1,23 @@
 <RCC>
+    <qresource prefix="/music">
+        <file>Media/BackGround.mp3</file>
+        <file>Media/EasterEgg.mp3</file>
+    </qresource>
+    <qresource prefix="/other_textures">
+        <file>Media/table.png</file>
+        <file alias="DealerLogo">Media/DealerLogo.png</file>
+        <file alias="chips">Media/chips.png</file>
+    </qresource>
+    <qresource prefix="/players">
+        <file alias="Cartman">Media/Players/Cartman.png</file>
+        <file alias="Kenny">Media/Players/Kenny.png</file>
+        <file alias="Stan">Media/Players/Stan.png</file>
+        <file alias="Wendy">Media/Players/Wendy.png</file>
+        <file alias="Dougie">Media/Players/south_park_PNG38.png</file>
+        <file alias="Kyle">Media/Players/Kyle.png</file>
+    </qresource>
     <qresource prefix="/cards">
+        <file>Media/Cards/k53.png</file>
         <file>Media/Cards/k52.png</file>
         <file>Media/Cards/k51.png</file>
         <file>Media/Cards/k50.png</file>
@@ -51,24 +69,6 @@
         <file>Media/Cards/k4.png</file>
         <file>Media/Cards/k3.png</file>
         <file>Media/Cards/k2.png</file>
-        <file>Media/Cards/k1.png</file>
         <file>Media/Cards/k0.png</file>
-    </qresource>
-    <qresource prefix="/music">
-        <file>Media/BackGround.mp3</file>
-        <file>Media/EasterEgg.mp3</file>
-    </qresource>
-    <qresource prefix="/other_textures">
-        <file>Media/table.png</file>
-        <file alias="DealerLogo">Media/DealerLogo.png</file>
-        <file alias="chips">Media/chips.png</file>
-    </qresource>
-    <qresource prefix="/players">
-        <file alias="Cartman">Media/Players/Cartman.png</file>
-        <file alias="Kenny">Media/Players/Kenny.png</file>
-        <file alias="Stan">Media/Players/Stan.png</file>
-        <file alias="Wendy">Media/Players/Wendy.png</file>
-        <file alias="Dougie">Media/Players/south_park_PNG38.png</file>
-        <file alias="Kyle">Media/Players/Kyle.png</file>
     </qresource>
 </RCC>
