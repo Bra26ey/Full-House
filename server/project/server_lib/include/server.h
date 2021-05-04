@@ -2,6 +2,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/thread.hpp>
 
 #include "definitions.h"
 #include "userbase.h"
@@ -23,6 +24,10 @@ class Server {
     void Start();
 
  private:
+    void StartListen(size_t thread_count);
+    void ListenThread();
+
+ private:
     io_context context_;
 
     Userbase userbase_;
@@ -31,6 +36,8 @@ class Server {
     Autorisator autorisator_;
     Handler handler_;
     GameHandler gamehandler_;
+
+    boost::thread_group threads_;
 };
 
 }  // namespace network

@@ -2,6 +2,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/coroutine.hpp>
 
 #include "definitions.h"
 #include "user.h"
@@ -9,7 +10,7 @@
 
 namespace network {
 
-class Handler {
+class Handler : public boost::asio::coroutine {
  public:
     Handler(io_context &context, Userbase &userbase) : context_(context),
                                                        autorised_(userbase.autorised),
@@ -19,6 +20,10 @@ class Handler {
     ~Handler();
 
     void Start();
+
+ private:
+    void DoHandle();
+    void HandleShareing(std::shared_ptr<User> user);
 
  private:
     io_context &context_;

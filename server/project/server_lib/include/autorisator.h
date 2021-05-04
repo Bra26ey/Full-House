@@ -2,6 +2,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/coroutine.hpp>
 
 #include "user.h"
 #include "definitions.h"
@@ -9,7 +10,7 @@
 
 namespace network {
 
-class Autorisator {
+class Autorisator : public boost::asio::coroutine {
  public:
     Autorisator(io_context &context, Userbase &userbase) : context_(context),
                                                            waitng_autorisation_(userbase.waitng_autorisation),
@@ -26,6 +27,7 @@ class Autorisator {
 
  private:
     void DoAutorise();
+    void HandleAutorisation(std::shared_ptr<User> &user);
 };
 
 }  // namespace network

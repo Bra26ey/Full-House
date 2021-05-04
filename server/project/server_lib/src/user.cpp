@@ -2,26 +2,21 @@
 
 namespace network {
 
-User::~User() {}
-
-bool User::Connect() {
-    return false;
+User::~User() {
+    Disconnect();
 }
 
-bool User::Disconnect() {
-    return false;
+int User::Disconnect() {
+    if (!IsConnected()) {
+        return 0;
+    }
+
+    socket_.close();
+    return 0;
 }
 
 bool User::IsConnected() {
-    return false;
-}
-
-int User::Send(boost::asio::streambuf &buffer) {
-    return 0;
-}
-
-int User::Read(boost::asio::streambuf &buffer) {
-    return 0;
+    return socket_.is_open();
 }
 
 }  // namespace network

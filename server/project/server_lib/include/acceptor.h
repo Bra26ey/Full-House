@@ -2,22 +2,24 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/coroutine.hpp>
 
 #include "definitions.h"
 #include "userbase.h"
 
 using boost::asio::ip::tcp;
+using boost::asio::ip::address;
 using boost::asio::io_context;
 
 constexpr uint16_t PORT = 2000;
 
 namespace network {
 
-class Acceptor {
+class Acceptor : public boost::asio::coroutine {
  public:
     Acceptor(io_context &context, Userbase &userbase) : context_(context),
-                                                        endpoint_(tcp::v4(), PORT),
-                                                        acceptor_(context_, endpoint_),
+                                                        endpoint_(address::from_string("127.0.1.1"), PORT),
+                                                        acceptor_(context_),
                                                         waitng_autorisation_(userbase.waitng_autorisation) {}
     ~Acceptor();
 
@@ -30,7 +32,7 @@ class Acceptor {
 
     user_queue &waitng_autorisation_;
 
-    void DoAccept();
+    void DoAccept(std::shared_ptr<User> &user);
 };
 
 }  // namespace network
