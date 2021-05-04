@@ -1,6 +1,6 @@
 #include "playerinfolabel.h"
 
-PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) {
+PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) : TotalMoney(money), Bet(0) {
     mNickname = new QLabel;
     mTotalMoney = new QLabel;
     mBet = new QLabel;
@@ -25,12 +25,17 @@ PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) {
 }
 
 void PlayerInfoLabel::setTotal(size_t total) {
-    QString totalm = "Bank 💰: " + QString::number(total);
+    TotalMoney = total;
+    QString totalm = "Bank 💰: " + QString::number(TotalMoney);
     mTotalMoney->setText(totalm);
 }
 
 void PlayerInfoLabel::setBet(size_t bet) {
     QString total = "Bet 🌝: " + QString::number(bet);
+    Bet = bet;
+    TotalMoney -= Bet;
+    QString totalm = "Bank 💰: " + QString::number(TotalMoney);
+    mTotalMoney->setText(totalm);
     mBet->setText(total);
 }
 
@@ -38,4 +43,12 @@ PlayerInfoLabel::~PlayerInfoLabel() {
     delete mNickname;
     delete mTotalMoney;
     delete mBet;
+}
+
+size_t PlayerInfoLabel::GetBet() {
+    return Bet;
+}
+
+size_t PlayerInfoLabel::GetTotal() {
+    return TotalMoney;
 }

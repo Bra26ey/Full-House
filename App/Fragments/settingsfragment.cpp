@@ -12,12 +12,13 @@ SettingsFragment::SettingsFragment() : EasterEgg(0) {
 
     QVBoxLayout *startMainLayout = new QVBoxLayout;
     QHBoxLayout *startContent = new QHBoxLayout;
-
-
-
     QVBoxLayout *buttonContainer = new QVBoxLayout;
 
-    MuteButton = new QPushButton("Mute");
+    QString text;
+    if (player->isMuted())
+    text = "Unmute";
+    else text = "Mute";
+    MuteButton = new QPushButton(text);
     MuteButton->setStyleSheet("color:#242424;font-size:24px");
     connect(MuteButton, &QPushButton::clicked, this, &SettingsFragment::MutePressed);
 

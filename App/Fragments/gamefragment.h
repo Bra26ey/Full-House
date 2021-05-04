@@ -27,6 +27,9 @@ public:
     void MakeDealer(size_t player_id);
     void FlipAllCards();
 
+    void BlockActions();
+    void UnBlockActions();
+
 public slots:
     void onBetPressed();
     void onRaisePressed();

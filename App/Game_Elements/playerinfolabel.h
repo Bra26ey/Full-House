@@ -12,11 +12,16 @@ public:
     ~PlayerInfoLabel();
     void setBet(size_t bet);
     void setTotal(size_t total);
+    size_t GetBet();
+    size_t GetTotal();
 
 private:
     QLabel *mNickname;
     QLabel *mTotalMoney;
     QLabel *mBet;
+
+    size_t TotalMoney;
+    size_t Bet;
 };
 
 #endif // PLAYERINFOLABEL_H

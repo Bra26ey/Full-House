@@ -35,6 +35,7 @@ public:
     void FlipCards();
 
     void setBet(size_t bet);
+    size_t GetBet();
     bool GetCardSide();
 
 protected:

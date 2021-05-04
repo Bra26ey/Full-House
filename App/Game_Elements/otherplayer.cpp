@@ -84,6 +84,8 @@ void OtherPlayer::GiveCards(size_t value1, size_t suit1, size_t value2, size_t s
 void OtherPlayer::DiscardCards() {
     delete mCards.first;
     delete mCards.second;
+    mCards.first = nullptr;
+    mCards.second = nullptr;
 }
 
 void OtherPlayer::FlipCards() {
@@ -94,5 +96,12 @@ void OtherPlayer::FlipCards() {
 }
 
 bool OtherPlayer::GetCardSide() {
-    return mCards.first->GetSide();
+    if (mCards.first != nullptr && mCards.second != nullptr) {
+        return mCards.first->GetSide();
+    }
+    return false;
+}
+
+size_t OtherPlayer::GetBet() {
+    return mPlayerInfo->GetBet();
 }

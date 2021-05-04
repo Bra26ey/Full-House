@@ -110,10 +110,12 @@ GameFragment::GameFragment() : num_players(0) {
     mainVLayout->addLayout(extraHLayout);
     this->setLayout(mainVLayout);
 
-    // кайнда дебаг
+
     DrawMainPlayer();
+    // кайнда дебаг
     mPlayer->GiveCards(1,4, 1,3);
     mPlayer->FlipCards();
+
     DrawPlayer(fouthpos, 1, "Cartman", 5000);
     DrawPlayer(secondpos, 2, "Kenny", 2000);
     DrawPlayer(thirdpos, 3, "Stan", 6000);
@@ -128,8 +130,9 @@ GameFragment::GameFragment() : num_players(0) {
     mOtherPlayers[4]->GiveCards(4,4,2,3);
     mOtherPlayers[4]->FlipCards();
 
-    MakeDealer(1);
+    MakeDealer(0);
     mOtherPlayers[3]->setBet(400);
+    mOtherPlayers[2]->DiscardCards();
 }
 
 GameFragment::~GameFragment() {
@@ -157,20 +160,22 @@ void GameFragment::setval() {
 void GameFragment::onBetPressed() {
     mPlayer->setBet(BetValue->text().toUInt());
     mChips->AddToBank(BetValue->text().toUInt());
-    foreach (auto btn, ActionButtons) {
-        btn->blockSignals(true);
-    }
+    BlockActions();
+
 }
 
 void GameFragment::onCheckPressed() {
+    FlipAllCards();
+    BlockActions();
 
 }
 
 void GameFragment::onRaisePressed() {
-
+    BlockActions();
 }
 
 void GameFragment::onFoldPressed() {
+    BlockActions();
 }
 
 void GameFragment::onLeavePressed() {
@@ -198,15 +203,33 @@ void GameFragment::DrawMainPlayer() {
     mPlayer->SetPosition(mainplayerpos);
 }
 
+
+// TODO fix this shit
 void GameFragment::MakeDealer(size_t player_id) {
-    if (player_id > 0) mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
-    else mDealerLogo->setParent(mPlayer);
-    mDealerLogo->setGeometry(20, 30, 150, 150);
+    if (player_id > 0) {
+        mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
+        mDealerLogo->setGeometry(20, 30, 150, 150);
+    } else {
+        mDealerLogo->setParent(mPlayer);
+        mDealerLogo->setGeometry(-20, -10, 200, 200);
+    }
 }
 
 void GameFragment::FlipAllCards() {
     foreach(auto player, mOtherPlayers) {
         if (!player->GetCardSide())
         player->FlipCards();
+    }
+}
+
+void GameFragment::BlockActions() {
+    foreach (auto btn, ActionButtons) {
+        btn->blockSignals(true);
+    }
+}
+
+void GameFragment::UnBlockActions() {
+    foreach (auto btn, ActionButtons) {
+        btn->blockSignals(false);
     }
 }
