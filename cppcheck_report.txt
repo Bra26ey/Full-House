@@ -1,2 +1,3 @@
 [App/Fragments/gamefragment.cpp:23]: (style) The scope of the variable 'up' can be reduced.
-[App/Game_Elements/otherplayer.h:47] -> [App/Game_Elements/player.h:13]: (warning) The class 'Player' defines member variable with name 'mTextureId' also defined in its parent class 'OtherPlayer'.
+[App/Game_Elements/otherplayer.h:48] -> [App/Game_Elements/player.h:13]: (warning) The class 'Player' defines member variable with name 'mTextureId' also defined in its parent class 'OtherPlayer'.
+[App/test/test10_game_elements.cpp:61]: (style) Variable 'some_hardcoded_error_code_for_now' is assigned a value that is never used.
