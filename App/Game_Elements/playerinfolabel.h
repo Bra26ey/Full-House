@@ -11,6 +11,11 @@ public:
     PlayerInfoLabel(std::string nickname, size_t money);
     ~PlayerInfoLabel();
     void setBet(size_t bet);
+    void setFold();
+    void setRaise();
+    void setCheck();
+    void ClearStatus();
+
     void setTotal(size_t total);
     size_t GetBet();
     size_t GetTotal();
@@ -18,7 +23,7 @@ public:
 private:
     QLabel *mNickname;
     QLabel *mTotalMoney;
-    QLabel *mBet;
+    QLabel *mStatus;
 
     size_t TotalMoney;
     size_t Bet;

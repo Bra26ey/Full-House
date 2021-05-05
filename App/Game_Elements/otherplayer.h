@@ -34,9 +34,16 @@ public:
     void DiscardCards();
     void FlipCards();
 
-    void setBet(size_t bet);
+
     size_t GetBet();
     bool GetCardSide();
+
+    //status interface
+    void setRaise();
+    void setFold();
+    void setCheck();
+    void ClearStatus();
+    void setBet(size_t bet);
 
 protected:
     QWidget *mChips;

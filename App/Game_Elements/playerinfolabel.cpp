@@ -3,7 +3,7 @@
 PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) : TotalMoney(money), Bet(0) {
     mNickname = new QLabel;
     mTotalMoney = new QLabel;
-    mBet = new QLabel;
+    mStatus = new QLabel;
 
     QString name = QString::fromStdString(nickname);
     mNickname->setText(name);
@@ -18,9 +18,9 @@ PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) : TotalMone
     mTotalMoney->setGeometry(0, 80, 400, 30);
     mTotalMoney->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(242, 224, 22)");
 
-    mBet->setParent(this);
-    mBet->setGeometry(0, 110, 400, 30);
-    mBet->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(242, 224, 22)");
+    mStatus->setParent(this);
+    mStatus->setGeometry(0, 110, 400, 30);
+    mStatus->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(0, 255, 255);");
     qDebug("All added");
 }
 
@@ -36,13 +36,32 @@ void PlayerInfoLabel::setBet(size_t bet) {
     TotalMoney -= Bet;
     QString totalm = "Bank 💰: " + QString::number(TotalMoney);
     mTotalMoney->setText(totalm);
-    mBet->setText(total);
+    mStatus->setText(total);
+}
+
+void PlayerInfoLabel::setRaise() {
+    QString status = "Raise 📈";
+    mStatus->setText(status);
+}
+
+void PlayerInfoLabel::setFold() {
+    QString status = "Fold ❎";
+    mStatus->setText(status);
+}
+
+void PlayerInfoLabel::setCheck() {
+    QString status = "Check ✅";
+    mStatus->setText(status);
+}
+
+void PlayerInfoLabel::ClearStatus() {
+    mStatus->setText("");
 }
 
 PlayerInfoLabel::~PlayerInfoLabel() {
     delete mNickname;
     delete mTotalMoney;
-    delete mBet;
+    delete mStatus;
 }
 
 size_t PlayerInfoLabel::GetBet() {

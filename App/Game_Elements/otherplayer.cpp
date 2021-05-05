@@ -46,6 +46,22 @@ void OtherPlayer::setBet(size_t bet) {
     mPlayerInfo->setBet(bet);
 }
 
+void OtherPlayer::setCheck() {
+    mPlayerInfo->setCheck();
+}
+
+void OtherPlayer::setFold() {
+    mPlayerInfo->setFold();
+}
+
+void OtherPlayer::setRaise() {
+    mPlayerInfo->setRaise();
+}
+
+void OtherPlayer::ClearStatus() {
+    mPlayerInfo->ClearStatus();
+}
+
 void OtherPlayer::SetPosition(QRect &pos) {
     mPos = pos;
 }

@@ -11,7 +11,7 @@ Chips::Chips() : mValue(0) {
     QString text = "Total $: " + QString::number(mValue);
     mAmount->setParent(this);
     mAmount->setText(text);
-    mAmount->setStyleSheet("background:rgba(33,33,33,0.7);font-size:20px;color:rgb(2, 116, 245);");
+    mAmount->setStyleSheet("background:rgba(33,33,33,0.7);font-size:20px;color:rgb(5, 189, 240);");
     mAmount->setGeometry(-25, 165, 550, 225);
     mAmount->show();
 

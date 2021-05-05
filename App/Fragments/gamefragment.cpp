@@ -133,6 +133,11 @@ GameFragment::GameFragment() : num_players(0) {
     MakeDealer(0);
     mOtherPlayers[3]->setBet(400);
     mOtherPlayers[2]->DiscardCards();
+    mOtherPlayers[2]->setFold();
+    mOtherPlayers[3]->setRaise();
+    mOtherPlayers[3]->ClearStatus();
+    mOtherPlayers[1]->setCheck();
+    mOtherPlayers[4]->setRaise();
 }
 
 GameFragment::~GameFragment() {
@@ -165,17 +170,19 @@ void GameFragment::onBetPressed() {
 }
 
 void GameFragment::onCheckPressed() {
+    mPlayer->setCheck();
     FlipAllCards();
-    BlockActions();
-
+    //BlockActions();
 }
 
 void GameFragment::onRaisePressed() {
-    BlockActions();
+    mPlayer->setRaise();
+    //BlockActions();
 }
 
 void GameFragment::onFoldPressed() {
-    BlockActions();
+    mPlayer->setFold();
+    //BlockActions();
 }
 
 void GameFragment::onLeavePressed() {
