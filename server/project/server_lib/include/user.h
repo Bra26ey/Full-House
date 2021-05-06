@@ -2,6 +2,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/atomic.hpp>
 #include <string>
 
 using boost::asio::ip::tcp;
@@ -11,22 +12,19 @@ namespace network {
 
 class User {
  public:
-    explicit User(io_context &context) : context_(context),
-                                         socket_(context),
-                                         read_buffer(),
-                                         write_buffer(),
-                                         in(&read_buffer),
-                                         out(&write_buffer),
-                                         is_autorised(false) {};
+    explicit User(io_context &in_context) : context(in_context),
+                                            socket(context),
+                                            read_buffer(),
+                                            write_buffer(),
+                                            in(&read_buffer),
+                                            out(&write_buffer),
+                                            is_autorised(false) {};
    //  User(User &other) = delete;
-    ~User();
-
-    int Disconnect();
-    bool IsConnected();
+    ~User() = default;
 
  public:
-    io_context &context_;
-    tcp::socket socket_;
+    io_context &context;
+    tcp::socket socket;
 
     boost::asio::streambuf read_buffer;
     boost::asio::streambuf write_buffer;
@@ -34,8 +32,13 @@ class User {
     std::istream in;
     std::ostream out;
 
-    std::string name_;
+    std::string name;
+
     bool is_autorised;
+    boost::atomic<bool> is_talking;
+    boost::atomic<bool> is_gaming;
+
+    uint64_t room_id;
 };
 
 }  // namespace network

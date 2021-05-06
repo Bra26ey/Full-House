@@ -13,7 +13,7 @@ int main(int argc, const char *argv[]) {
 
     while (true) {
         getline(std::cin, str);
-        out << str;
+        out << "{" << str << "}" << "\n\r\n\r";
         client.Send(write_buffer);
         client.Read(read_buffer);
     }

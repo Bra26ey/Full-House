@@ -29,42 +29,42 @@ TEST(Server, UserQueue) {
     ASSERT_TRUE(users.IsEmpty());
 }
 
-TEST(Server, GameRoom) {
-    boost::asio::io_context context;
-    network::GameRoom gameroom(context);
-    for (size_t i = 0; i < QUEUE_SIZE; ++i) {
-        auto user = std::make_shared<network::User>(context);
-        gameroom.AddUser(user);
-    }
-    gameroom.Step();
-}
+// TEST(Server, GameRoom) {
+//     boost::asio::io_context context;
+//     network::GameRoom gameroom(context);
+//     for (size_t i = 0; i < QUEUE_SIZE; ++i) {
+//         auto user = std::make_shared<network::User>(context);
+//         gameroom.AddUser(user);
+//     }
+//     gameroom.Step();
+// }
 
-TEST(Server, GameHandler) {
-    boost::asio::io_context context;
-    network::Userbase userbase;
-    for (size_t i = 0; i < QUEUE_SIZE; ++i) {
-        auto user = std::make_shared<network::User>(context);
-        userbase.waitng_autorisation.Push(user);
+// TEST(Server, GameHandler) {
+//     boost::asio::io_context context;
+//     network::Userbase userbase;
+//     for (size_t i = 0; i < QUEUE_SIZE; ++i) {
+//         auto user = std::make_shared<network::User>(context);
+//         userbase.waitng_autorisation.Push(user);
 
-    }
-    for (size_t i = 0; i < QUEUE_SIZE; ++i) {
-        auto user = std::make_shared<network::User>(context);
-        userbase.autorised.Push(user);
+//     }
+//     for (size_t i = 0; i < QUEUE_SIZE; ++i) {
+//         auto user = std::make_shared<network::User>(context);
+//         userbase.autorised.Push(user);
 
-    }
-    for (size_t i = 0; i < QUEUE_SIZE; ++i) {
-        auto user = std::make_shared<network::User>(context);
-        userbase.creating_game.Push(user);
+//     }
+//     for (size_t i = 0; i < QUEUE_SIZE; ++i) {
+//         auto user = std::make_shared<network::User>(context);
+//         userbase.creating_game.Push(user);
 
-    }
-    for (size_t i = 0; i < QUEUE_SIZE; ++i) {
-        auto user = std::make_shared<network::User>(context);
-        userbase.accepting_game.Push(user);
+//     }
+//     for (size_t i = 0; i < QUEUE_SIZE; ++i) {
+//         auto user = std::make_shared<network::User>(context);
+//         userbase.accepting_game.Push(user);
 
-    }
+//     }
 
-    ASSERT_NO_THROW(network::GameHandler gamehandler(context, userbase));
-}
+//     ASSERT_NO_THROW(network::GameHandler gamehandler(context, userbase));
+// }
 
 TEST(Server, Server) {
     ASSERT_NO_THROW(network::Server server);

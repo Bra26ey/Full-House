@@ -6,19 +6,22 @@
 
 #include "definitions.h"
 #include "userbase.h"
-#include "acceptor.h"
-#include "autorisator.h"
-#include "handler.h"
-#include "gamehandler.h"
+#include "usertalker.h"
+#include "gametalker.h"
+
+using boost::asio::ip::tcp;
+using boost::asio::ip::address;
+using boost::asio::io_context;
+
+constexpr uint16_t PORT = 2000;
 
 namespace network {
 
 class Server {
  public:
-    Server() : acceptor_(context_, userbase_),
-               autorisator_(context_, userbase_),
-               handler_(context_, userbase_),
-               gamehandler_(context_, userbase_) {};
+    Server() : context_(),
+               endpoint_(address::from_string("127.0.1.1"), PORT),
+               acceptor_(context_) {};
     Server(Server &other) = delete;
     ~Server();
     void Start();
@@ -26,16 +29,27 @@ class Server {
  private:
     void StartListen(size_t thread_count);
     void ListenThread();
+    void CleanUserTalkers();
+    void CleanGameTalkers();
+    void StartAccepting();
+    void HandleAcception(std::shared_ptr<User> &user);
+    void CreateRooms();
+    void JoinPlayers();
+    
 
  private:
     io_context context_;
 
+    std::vector<std::shared_ptr<UserTalker>> usertalkers_;
+    std::mutex usertalkers_mutex_;
+
+    std::vector<std::shared_ptr<GameTalker>> gametalkers_;
+    std::mutex gametalkers_mutex_;
+
     Userbase userbase_;
 
-    Acceptor acceptor_;
-    Autorisator autorisator_;
-    Handler handler_;
-    GameHandler gamehandler_;
+    tcp::endpoint endpoint_;
+    tcp::acceptor acceptor_;
 
     boost::thread_group threads_;
 };
