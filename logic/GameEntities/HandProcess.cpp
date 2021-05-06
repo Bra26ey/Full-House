@@ -203,7 +203,7 @@ void HandProcess::GameLoop(bool& someone_raised, bool& first_round,
                 continue;
             }
 
-            std::cout << "You " << "[" << it->get()->name << "] " << "have: " << Card::ToString(it->get()->cards[0].suit, it->get()->cards[0].value)
+            std::cout << "\nYou " << "[" << it->get()->name << "] " << "have: " << Card::ToString(it->get()->cards[0].suit, it->get()->cards[0].value)
                       << " and " << Card::ToString(it->get()->cards[1].suit, it->get()->cards[1].value) << std::endl;
 
             int signal;
