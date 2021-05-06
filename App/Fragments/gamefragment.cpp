@@ -40,21 +40,24 @@ GameFragment::GameFragment() : num_players(0) {
 
 
     BetButton = new QPushButton("Bet");
-    BetButton->setStyleSheet("color:#242424;font-size:24px");
+    BetButton->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     connect(BetButton, &QPushButton::clicked, this, &GameFragment::onBetPressed);
 
+    CallButton = new QPushButton("Call");
+    CallButton->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
+    connect(CallButton, &QPushButton::clicked, this, &GameFragment::onCallPressed);
 
     RaiseButton = new QPushButton("Raise");
-    RaiseButton->setStyleSheet("color:#242424;font-size:24px");
+    RaiseButton->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     connect(RaiseButton, &QPushButton::clicked, this, &GameFragment::onRaisePressed);
 
     FoldButton = new QPushButton("Fold");
-    FoldButton->setStyleSheet("color:#242424;font-size:24px");
+    FoldButton->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     connect(FoldButton, &QPushButton::clicked, this, &GameFragment::onFoldPressed);
 
 
     CheckButton = new QPushButton("Check");
-    CheckButton->setStyleSheet("color:#242424;font-size:24px");
+    CheckButton->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     connect(CheckButton, &QPushButton::clicked, this, &GameFragment::onCheckPressed);
 
 
@@ -79,6 +82,7 @@ GameFragment::GameFragment() : num_players(0) {
     QHBoxLayout *mainHLayout = new QHBoxLayout;
 
     ActionButtons.append(BetButton);
+    ActionButtons.append(CallButton);
     ActionButtons.append(RaiseButton);
     ActionButtons.append(FoldButton);
     ActionButtons.append(CheckButton);
@@ -138,6 +142,7 @@ GameFragment::GameFragment() : num_players(0) {
     mOtherPlayers[3]->ClearStatus();
     mOtherPlayers[1]->setCheck();
     mOtherPlayers[4]->setRaise();
+
 }
 
 GameFragment::~GameFragment() {
@@ -167,6 +172,12 @@ void GameFragment::onBetPressed() {
     mChips->AddToBank(BetValue->text().toUInt());
     BlockActions();
 
+}
+
+void GameFragment::onCallPressed() {
+    ActionButtons[0]->hide();
+    ActionButtons[1]->hide();
+    ActionButtons[1]->show();
 }
 
 void GameFragment::onCheckPressed() {
@@ -231,11 +242,13 @@ void GameFragment::FlipAllCards() {
 void GameFragment::BlockActions() {
     foreach (auto btn, ActionButtons) {
         btn->blockSignals(true);
+        btn->setStyleSheet("background:rgb(245, 65, 0);color:#242424;font-size:24px");
     }
 }
 
 void GameFragment::UnBlockActions() {
     foreach (auto btn, ActionButtons) {
         btn->blockSignals(false);
+        btn->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     }
 }

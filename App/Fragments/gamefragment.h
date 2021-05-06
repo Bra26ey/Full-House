@@ -35,6 +35,7 @@ public slots:
     void onRaisePressed();
     void onFoldPressed();
     void onCheckPressed();
+    void onCallPressed();
 
     void onLeavePressed();
     void onSettingsPressed();
@@ -57,6 +58,7 @@ private:
     QLineEdit *BetValue;
 
     QVector<QPushButton*> ActionButtons;
+    QPushButton *CallButton;
     QPushButton *BetButton;
     QPushButton *RaiseButton;
     QPushButton *FoldButton;
