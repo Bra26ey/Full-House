@@ -22,6 +22,10 @@ MenuFragment::MenuFragment() {
     LoginButton->setStyleSheet("color:#242424;font-size:24px");
     connect(LoginButton, &QPushButton::clicked, this, &MenuFragment::onLoginPressed);
 
+    RulesButton = new QPushButton("Rules");
+    RulesButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(RulesButton, &QPushButton::clicked, this, &MenuFragment::onRulesPressed);
+
     SettingsButton = new QPushButton("Settings");
     SettingsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SettingsButton, &QPushButton::clicked, this, &MenuFragment::onSettingsPressed);
@@ -31,10 +35,12 @@ MenuFragment::MenuFragment() {
     connect(SearchButton, &QPushButton::clicked, this, &MenuFragment::onSearchPressed);
 
     buttonContainer->addWidget(SearchButton);
+    buttonContainer->addWidget(RulesButton);
     buttonContainer->addWidget(SettingsButton);
     buttonContainer->addWidget(LoginButton);
 
     loadingButtonContainer->addWidget(SearchButton);
+    loadingButtonContainer->addWidget(RulesButton);
     loadingButtonContainer->addWidget(SettingsButton);
     loadingButtonContainer->addWidget(LoginButton);
 
@@ -63,6 +69,7 @@ MenuFragment::~MenuFragment() {
     delete LoginButton;
     delete SettingsButton;
     delete SearchButton;
+    delete RulesButton;
 }
 
 void MenuFragment::onSearchPressed() {
@@ -75,4 +82,8 @@ void MenuFragment::onSettingsPressed() {
 
 void MenuFragment::onLoginPressed() {
     navigateTo(LOGIN_TAG);
+}
+
+void MenuFragment::onRulesPressed() {
+    navigateTo(RULE_TAG);
 }

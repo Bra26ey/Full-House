@@ -4,8 +4,6 @@
 #include <QLabel>
 
 SettingsFragment::SettingsFragment() : EasterEgg(0) {
-    qDebug("Settings create");
-
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerConainer = new QFrame;

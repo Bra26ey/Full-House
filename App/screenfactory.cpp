@@ -5,6 +5,7 @@
 #include "settingsfragment.h"
 #include "gamesearchfragment.h"
 #include "gamefragment.h"
+#include "rulesfragment.h"
 
 
 using namespace screens;
@@ -37,6 +38,9 @@ BaseFragment* ScreensFactory::create(QString tag) {
     }
     if (tag == GAME_TAG) {
         return new GameFragment;
+    }
+    if (tag == RULE_TAG) {
+        return new RulesFragment;
     }
     return nullptr;
 }

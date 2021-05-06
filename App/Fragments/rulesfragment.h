@@ -5,22 +5,21 @@
 #include "screenfactory.h"
 
 #include <QPushButton>
+#include <QLabel>
 
-class RulesFragment: public RulesFragment {
+class RulesFragment: public BaseFragment {
     Q_OBJECT
 
 public:
     RulesFragment();
     ~RulesFragment();
 public slots:
-    void onLoginPressed();
-    void onSettingsPressed();
-    void onSearchPressed();
+    void onExitPressed();
 
 private:
+    QLabel *Rules;
     QPushButton *ExitButton;
 };
 
-#endif // MENUFRAGMENT_H
 
 #endif // RULESFRAGMENT_H

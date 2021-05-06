@@ -56,6 +56,7 @@ set(PROJECT_SOURCES
         ${PROJECT_SOURCE_DIR}/Fragments/settingsfragment.cpp
         ${PROJECT_SOURCE_DIR}/Fragments/gamesearchfragment.cpp
         ${PROJECT_SOURCE_DIR}/Fragments/gamefragment.cpp
+        ${PROJECT_SOURCE_DIR}/Fragments/rulesfragment.cpp
 
         ${PROJECT_SOURCE_DIR}/Game_Elements/otherplayer.cpp
         ${PROJECT_SOURCE_DIR}/Game_Elements/player.cpp
