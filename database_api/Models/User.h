@@ -4,6 +4,7 @@
 
 
 #include "../Connection/PoolConnections.h"
+#include "../Connection/SafetyConnection.h"
 
 
 typedef struct user user_t;
@@ -26,8 +27,8 @@ struct user {
 
 class User {
 public:
-    explicit User(Connection*& conn) : conn_(conn) {}
-    ~User() { conn_ = nullptr; }
+    User()=default;
+    ~User()=default;
 
     User(const User&)=delete;
     User& operator=(const User&)=delete;
@@ -48,7 +49,7 @@ public:
 private:
     int UpdateStringField(const std::string&, const std::size_t &, const std::string&);
 
-    Connection* conn_;
+    SafetyConnection conn_;
 
 };
 

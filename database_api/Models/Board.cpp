@@ -2,18 +2,20 @@
 
 
 board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false) {
+    conn_.Lock();
     board_t b;
 
     std::string query_string = "SELECT * FROM board WHERE id = ?";
 
     sql::PreparedStatement *pstmt;
     sql::ResultSet *res;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         b.status_code = DATABASE_NOT_CONNECTED;
         return b;
     }
 
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
     try {
@@ -34,11 +36,13 @@ board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false)
             b.status_code = EMPTY_DATA;
         }
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         delete res;
         b.status_code = OBJECT_NOT_EXIST;
         return b;
     }
+    conn_.Unlock();
     delete pstmt;
     delete res;
     return b;
@@ -46,17 +50,19 @@ board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false)
 
 
 active_board_t Board::GetActiveBoard(const std::size_t &board_id) {
+    conn_.Lock();
     active_board_t act_board;
     std::string query_string = "SELECT * FROM active_board WHERE board_id = ?";
 
     sql::PreparedStatement *pstmt;
     sql::ResultSet *res;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         act_board.status_code = DATABASE_NOT_CONNECTED;
         return act_board;
     }
 
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
     try {
@@ -75,11 +81,13 @@ active_board_t Board::GetActiveBoard(const std::size_t &board_id) {
         }
         act_board.status_code = OK;
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         delete res;
         act_board.status_code = OBJECT_NOT_EXIST;
         return act_board;
     }
+    conn_.Unlock();
     delete pstmt;
     delete res;
 
@@ -95,7 +103,7 @@ user_t Board::GetUserId(const std::string &login) {
         return u;
     }
 
-    User usr = User(conn_);
+    User usr;
 
     if (!usr.IsExist(login)) {
         u.status_code = OBJECT_NOT_EXIST;
@@ -108,32 +116,36 @@ user_t Board::GetUserId(const std::string &login) {
 
 
 std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const std::string& password) {
+    conn_.Lock();
     std::string query_string = "INSERT INTO board(admin_id, password) VALUES (?, ?)";
 
     sql::PreparedStatement *pstmt;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         return std::pair<std::size_t, int> (0, DATABASE_NOT_CONNECTED);
     }
 
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) user_id);
     pstmt->setString(2, password);
 
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         return std::pair<std::size_t, int> (0, OBJECT_NOT_EXIST);
     }
     delete pstmt;
 
     query_string = "SELECT MAX(id) from board";
-    sql::Statement *stmt = conn_->SetQuery(query_string);
+    sql::Statement *stmt = conn_.GetConnection().SetQuery(query_string);
     sql::ResultSet *res = stmt->executeQuery(query_string);
     std::size_t last_id = 0;
     if (res->next()) {
         last_id = res->getInt(1);
     }
+    conn_.Unlock();
 
     delete stmt;
     delete res;
@@ -147,24 +159,29 @@ std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const
 
 
 int Board::DeleteBoard(const std::size_t &board_id) {
+    conn_.Lock();
     sql::PreparedStatement *pstmt;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
     std::string query_string = "DELETE FROM board WHERE id = ?";
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
+            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_EXIST;
         }
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
+    conn_.Unlock();
 
     delete pstmt;
     return OK;
@@ -176,11 +193,11 @@ int Board::CheckPassword(const std::size_t &board_id, const std::string &passwor
     sql::PreparedStatement *pstmt;
     sql::ResultSet *res;
 
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
     try {
@@ -205,19 +222,22 @@ int Board::CheckPassword(const std::size_t &board_id, const std::string &passwor
 
 
 int Board::AddUserToBoard(const std::size_t &board_id, const std::size_t &player_id, const std::string &password) {
+    conn_.Lock();
     int out = CheckPassword(board_id, password);
     if (out != OK) {
+        conn_.Unlock();
         return out;
     }
 
     std::string query_string = "INSERT INTO active_board(board_id, player_id, reserved_money) VALUES (?, ?, ?)";
 
     sql::PreparedStatement *pstmt;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
     pstmt->setInt(2, (int) player_id);
     pstmt->setDouble(3, 0.0);
@@ -225,61 +245,72 @@ int Board::AddUserToBoard(const std::size_t &board_id, const std::size_t &player
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         return OBJECT_ALREADY_EXIST;
     }
+    conn_.Unlock();
     delete pstmt;
     return OK;
 }
 
 
 int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::size_t &player_id) {
+    conn_.Lock();
     sql::PreparedStatement *pstmt;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
     std::string query_string = "DELETE FROM active_board WHERE board_id = ? AND player_id = ?";
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
     pstmt->setInt(2, (int) player_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
+            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_EXIST;
         }
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
-
+    conn_.Unlock();
     delete pstmt;
     return OK;
 }
 
 
 int Board::SetReservedMoney(const std::size_t &board_id, const std::size_t &player_id, const double &reserved_money) {
+    conn_.Lock();
     sql::PreparedStatement *pstmt;
-    if (!conn_->IsOpen()) {
+    if (!conn_.GetConnection().IsOpen()) {
+        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
     std::string query_string = "UPDATE active_board SET reserved_money = ? WHERE board_id = ? AND player_id = ?";
-    pstmt = conn_->PrepareQuery(query_string);
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setDouble(1, reserved_money);
     pstmt->setInt(2, (int) board_id);
     pstmt->setInt(3, (int) player_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
+            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_UPDATED;
         }
     } catch (sql::SQLException &e) {
+        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
+    conn_.Unlock();
 
     delete pstmt;
     return OK;

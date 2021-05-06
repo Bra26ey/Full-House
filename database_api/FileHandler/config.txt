@@ -1,4 +1,4 @@
 url=localhost
-user=poker_user
-password=12345678
+user=root
+password=Erm!n2000
 database=poker_database

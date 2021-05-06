@@ -3,78 +3,53 @@
 #include "../Models/User.h"
 
 
-Connection* GetConn() {
-    PoolConnections* instance = PoolConnections::GetInstance();
-    instance->SetParams("config.txt");
-    return instance->GetConnection();
-}
-
-
 TEST(User, add_user) {
-    Connection* conn = GetConn();
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
 
-    ASSERT_FALSE(conn == nullptr);
-    ASSERT_EQ(conn->IsOpen(), true);
-
-    User usr = User(conn);
+    User usr;
 
     auto out = usr.InsertUser("test_user", "test_password");
     ASSERT_EQ(out.second, OK);
-
-    conn->Close();
 }
 
 TEST(User, is_exist) {
-    Connection* conn = GetConn();
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
 
-    ASSERT_FALSE(conn == nullptr);
-    ASSERT_EQ(conn->IsOpen(), true);
-
-    User usr = User(conn);
+    User usr;
 
     int out = usr.IsExist("test_user");
     ASSERT_EQ(out, true);
-
-    conn->Close();
 }
 
 TEST(User, get_user__in_database) {
-    Connection* conn = GetConn();
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
 
-    ASSERT_FALSE(conn == nullptr);
-    ASSERT_EQ(conn->IsOpen(), true);
-
-    User usr = User(conn);
+    User usr;
 
     user_t user_struct = usr.GetUser("test_user", false);
     ASSERT_EQ(user_struct.status_code, OK);
     ASSERT_EQ(user_struct.login, "test_user");
     ASSERT_EQ(user_struct.password, "");
-
-    conn->Close();
 }
 
 TEST(User, get_user__not_in_database) {
-    Connection* conn = GetConn();
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
 
-    ASSERT_FALSE(conn == nullptr);
-    ASSERT_EQ(conn->IsOpen(), true);
-
-    User usr = User(conn);
+    User usr;
 
     user_t user_struct = usr.GetUser("not_test_user", false);
     ASSERT_FALSE(user_struct.status_code == OK);
-
-    conn->Close();
 }
 
 TEST(User, update_params) {
-    Connection* conn = GetConn();
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
 
-    ASSERT_FALSE(conn == nullptr);
-    ASSERT_EQ(conn->IsOpen(), true);
-
-    User usr = User(conn);
+    User usr;
 
     user_t user_struct = usr.GetUser("test_user", false);
     ASSERT_EQ(user_struct.status_code, OK);
@@ -92,20 +67,14 @@ TEST(User, update_params) {
     ASSERT_EQ(user_struct.username, "new_username");
     ASSERT_EQ(user_struct.avatar, "new_path_to_avatar");
     ASSERT_EQ(user_struct.money, 25.0);
-
-    conn->Close();
 }
 
 TEST(User, delete_user) {
-    Connection* conn = GetConn();
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
 
-    ASSERT_FALSE(conn == nullptr);
-    ASSERT_EQ(conn->IsOpen(), true);
-
-    User usr = User(conn);
+    User usr;
 
     user_t user_struct = usr.GetUser("new_test_user", true);
     ASSERT_EQ(usr.DeleteUser(user_struct.id), OK);
-
-    conn->Close();
 }

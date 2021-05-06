@@ -4,7 +4,16 @@
 Connection::Connection() : conn_(nullptr) {}
 
 
-Connection::~Connection() { Close(); }
+Connection::~Connection() {
+    Close();
+}
+
+
+Connection& Connection::operator=(Connection&& c) noexcept {
+    conn_ = c.conn_;
+    c.conn_ = nullptr;
+    return *this;
+}
 
 
 bool Connection::Connect(const std::string &url, const std::string &password,

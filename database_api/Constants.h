@@ -20,5 +20,8 @@
 #define POOL_SIZE 10
 #define MAX_POOL_SIZE 40
 
+#define FREE_CONN 0
+#define BUSY_CONN 1
+
 
 #endif //FULL_HOUSE_CONSTANTS_H

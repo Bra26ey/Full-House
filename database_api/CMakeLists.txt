@@ -10,7 +10,7 @@ include_directories(/usr/include/cppconn)
 link_directories(/usr/lib /usr/local/lib)
 
 include_directories(Connection Models)
-set(SOURCES FileHandler/FileHandler.cpp Connection/Connection.cpp Connection/PoolConnections.cpp Models/Board.cpp Models/User.cpp)
+set(SOURCES FileHandler/FileHandler.cpp Connection/Connection.cpp Connection/PoolConnections.cpp Connection/SafetyConnection.cpp Models/Board.cpp Models/User.cpp)
 add_library(lib SHARED ${SOURCES})
 add_executable(database_api main.cpp ${SOURCES})
 target_link_libraries(database_api pthread mysqlcppconn lib)

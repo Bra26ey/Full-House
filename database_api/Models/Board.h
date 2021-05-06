@@ -39,8 +39,8 @@ struct board {
 
 class Board {
 public:
-    explicit Board(Connection* conn) : conn_(conn) {}
-    ~Board() { conn_ = nullptr; }
+    explicit Board()=default;
+    ~Board()=default;
     Board(const Board&)=delete;
     Board& operator=(const Board&)=delete;
 
@@ -60,7 +60,7 @@ private:
     user_t GetUserId(const std::string&);
     int CheckPassword(const std::size_t&, const std::string&);
 
-    Connection* conn_;
+    SafetyConnection conn_;
 
 };
 

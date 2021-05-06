@@ -6,6 +6,7 @@
 #include <string>
 #include <future>
 #include <mutex>
+#include <utility>
 
 #include "Connection.h"
 
@@ -14,19 +15,21 @@ class PoolConnections {
 public:
     // prohibit copying the object
     PoolConnections(const PoolConnections&) = delete;
-    PoolConnections& operator=(const PoolConnections&) = delete;
+    Connection operator=(const PoolConnections&) = delete;
 
     static PoolConnections* GetInstance();
 
     int SetParams(const std::string& filename);
-    Connection* GetConnection();
-    bool GrowPool();
+    int GetConnection(Connection& conn);
+    void ReturnConnection(Connection& conn, int& ind);
 
 private:
     PoolConnections();
-    ~PoolConnections();
+    ~PoolConnections()=default;
 
-    std::vector<Connection*> pool_;
+    bool GrowPool();
+
+    std::vector<std::pair<Connection, bool>> pool_;
     config_t config_params_;
 
     static PoolConnections* instance_;

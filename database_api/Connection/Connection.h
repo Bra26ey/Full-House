@@ -10,6 +10,8 @@
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
 
+#include <mutex>
+
 #include "../FileHandler/FileHandler.h"
 
 
@@ -19,6 +21,7 @@ public:
     ~Connection();
     Connection(const Connection&)=default;
     Connection& operator=(const Connection&)=default;
+    Connection& operator=(Connection&& c) noexcept;
 
     bool Connect(const std::string &url, const std::string &password,
                  const std::string &user, const std::string &dbase_name);
