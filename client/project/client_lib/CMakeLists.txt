@@ -1,4 +1,4 @@
-find_package(Boost 1.65.1 REQUIRED)
+find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 

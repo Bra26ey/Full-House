@@ -1,26 +1,16 @@
 #include "usertalker.h"
 
 #include <boost/asio/yield.hpp>
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 using boost::asio::async_read;
 using boost::asio::async_write;
 
-static void Clean(std::istream &in) {
-    in.clear();
-    char c = in.peek();
-    while (c != EOF) {
-        in >> c;
-        c = in.peek();
-    }
-    in.clear();
-}
+namespace pt = boost::property_tree;
 
 namespace network {
 
 void UserTalker::Start() {
-    // boost::property_tree::ptree p;
     user_->is_talking.store(true);
     BOOST_LOG_TRIVIAL(info) << "UserTalker start work with connection";
     boost::asio::post(context_, boost::bind(&UserTalker::HandleRequest, this));
@@ -33,78 +23,83 @@ bool UserTalker::IsUserWorks() const {
 void UserTalker::HandleAutorisation() {
     user_->is_autorised = true;
     if (user_->is_autorised) {
-        user_->in >> user_->name;
+        const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
+        user_->name = parametrs.get<std::string>("login");
         user_->out << "{ok}";
         BOOST_LOG_TRIVIAL(info) << "user is autorised. name: " << user_->name;
     } else {
         user_->out << "{not ok}";
         BOOST_LOG_TRIVIAL(info) << "autorisation: invalid data";
     }
-    Clean(user_->in);
-    write(user_->socket, user_->write_buffer);
-    boost::asio::post(context_, boost::bind(&UserTalker::HandleRequest, this));
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
 void UserTalker::CreateGame() {
     BOOST_LOG_TRIVIAL(info) << user_->name << " trying to create room";
-    Clean(user_->in);  // TODO(ANDY) insted add reading & handling params of the room
     user_->out << "{status: trying to create;}";
-    write(user_->socket, user_->write_buffer);
-    userbase_.creating_game.Push(user_);
+    async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.creating_game, user_));
 }
 
 
 void UserTalker::JoinPlayer() {
     BOOST_LOG_TRIVIAL(info) << user_->name << " trying to accept game";
-    user_->in >> user_->room_id;
-    Clean(user_->in);
+
+    const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
+    user_->room_id = parametrs.get<uint64_t>("id");
+
     user_->out << "{status: trying to accept; room-id: " << user_->room_id << ";}";
-    write(user_->socket, user_->write_buffer);
-    userbase_.accepting_game.Push(user_);
+    async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.accepting_game, user_));
 }
 
 void UserTalker::HandleError() {
-    Clean(user_->in);
-    user_->out << "{error: unknown format;}";
-    write(user_->socket, user_->write_buffer);
     BOOST_LOG_TRIVIAL(info) << user_->name << "'s request is anknown";
-    boost::asio::post(context_, boost::bind(&UserTalker::HandleRequest, this));
+
+    user_->out << "{error: unknown format;}";
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
 void UserTalker::Disconnect() {
-    Clean(user_->in);
-    user_->out << "{status: disconnected;}";
     BOOST_LOG_TRIVIAL(info) << user_->name << "is disconnected";
+
+    user_->out << "{status: disconnected;}";
     write(user_->socket, user_->write_buffer);
     is_remove.store(true);
 }
 
 void UserTalker::Logout() {
-    Clean(user_->in);
+    BOOST_LOG_TRIVIAL(info) << user_->name << "is loged out";
+
     user_->name.clear();
     user_->is_autorised = false;
+
     user_->out << "{status: notloged;}";
-    BOOST_LOG_TRIVIAL(info) << user_->name << "is loged out";
-    write(user_->socket, user_->write_buffer);
-    boost::asio::post(context_, boost::bind(&UserTalker::HandleRequest, this));
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
 void UserTalker::HandleRequest() {
     reenter(this) {
         while (true) {
-            // if (user_->is_autorised) {
-            //     BOOST_LOG_TRIVIAL(info) << user_->name << " is ready for new request";
-            // } else {
-            //     BOOST_LOG_TRIVIAL(info) << "unloged user is ready for new request";
-            // }
             yield async_read_until(user_->socket, user_->read_buffer, "\n\r\n\r", boost::bind(&UserTalker::HandleRequest, this));
             yield {
-                std::string str;
-                user_->in >> str;
-                BOOST_LOG_TRIVIAL(info) << "handle user request: " << str;
+                pt::read_json(user_->in, user_->last_msg);
+                BOOST_LOG_TRIVIAL(info) << "handle user request: ";
+
+                std::string command_type = user_->last_msg.get<std::string>("command-type");
+
+                if (command_type == "ping") {
+                    boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
+                    return;
+                }
+
+                if (command_type != "basic") {
+                    boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
+                    return;
+                }
+
+                std::string command = user_->last_msg.get<std::string>("command");
 
                 if (!user_->is_autorised) {
-                    if (str == "{login:") {
+                    if (command == "autorisation") {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleAutorisation, this));
                     } else {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
@@ -112,19 +107,18 @@ void UserTalker::HandleRequest() {
                     return;
                 }
 
-                if (str == "{create:") {
+                if (command == "create-room") {
                     boost::asio::post(context_, boost::bind(&UserTalker::CreateGame, this));
-                } else if (str == "{join:") {
+                } else if (command == "join-room") {
                     boost::asio::post(context_, boost::bind(&UserTalker::JoinPlayer, this));
-                } else if (str == "{logout:") {
+                } else if (command == "logout") {
                     boost::asio::post(context_, boost::bind(&UserTalker::Logout, this));
-                } else if (str == "{disconnect:") {
+                } else if (command == "disconnect") {
                     boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
                 } else {
                     boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
                 }
             }
-            // yield async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
         }
     }
 }

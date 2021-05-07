@@ -1,9 +1,11 @@
 #pragma once
 
+#include <string>
+
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/atomic.hpp>
-#include <string>
+#include <boost/property_tree/ptree.hpp>
 
 using boost::asio::ip::tcp;
 using boost::asio::io_context;
@@ -31,6 +33,8 @@ class User {
 
     std::istream in;
     std::ostream out;
+
+    boost::property_tree::ptree last_msg;
 
     std::string name;
 

@@ -40,7 +40,6 @@ class GameTalker : public boost::asio::coroutine {
     void HandleError(std::shared_ptr<User> &user);
 
     void Delete();
-    void OnDelete();
 
     void HandleGameProcess();
 

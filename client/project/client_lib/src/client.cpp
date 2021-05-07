@@ -39,7 +39,7 @@ int Client::Send(boost::asio::streambuf &buffer) {
 }
 
 int Client::Read(boost::asio::streambuf &buffer) {
-    boost::asio::read_until(socket_, buffer, '}');
+    boost::asio::read_until(socket_, buffer, "}");
     std::cout << "msg from server: " << &buffer << std::endl;
     return 0;
 }
