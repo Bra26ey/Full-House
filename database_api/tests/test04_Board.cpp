@@ -23,7 +23,7 @@ TEST(Board, create_board__ok) {
     ASSERT_EQ(conn.IsConnected(), true);
 
     User usr;
-    auto ans = usr.InsertUser("test_user", "test_password");
+    auto ans = usr.RegUser("test_user", "test_password");
     ASSERT_EQ(ans.second, OK);
     USER_ID1 = ans.first;
 
@@ -51,9 +51,11 @@ TEST(Board, add_user_to_board) {
     ASSERT_EQ(conn.IsConnected(), true);
 
     User usr;
-    auto ans = usr.InsertUser("test_user2", "test_password2");
+    auto ans = usr.RegUser("test_user2", "test_password2");
     ASSERT_EQ(ans.second, OK);
     USER_ID2 = ans.first;
+    int out = usr.UpdateMoneyByDelta(USER_ID2, 11);
+    ASSERT_EQ(out, OK);
 
     Board brd;
     ASSERT_EQ(brd.AddUserToBoard(BOARD_ID, USER_ID1, "1234"), WRONG_PASSWORD);
@@ -61,13 +63,45 @@ TEST(Board, add_user_to_board) {
     ASSERT_EQ(brd.AddUserToBoard(BOARD_ID, USER_ID2, "12345678"), OK);
 }
 
+TEST(Board, change_admin) {
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
+
+    Board brd;
+    ASSERT_EQ(brd.UpdateBoardAdmin(BOARD_ID, USER_ID2), OK);
+}
+
+TEST(Board, update_hand_configuration) {
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
+
+    hand_configuration_t hand_config;
+    hand_config.button_pos = 1;
+    hand_config.small_blind_pos = 2;
+    hand_config.big_blind_pos = 3;
+    hand_config.small_blind_bet = 4;
+    hand_config.big_blind_bet = 5;
+    hand_config.max_size_of_players = 6;
+    hand_config.count_of_player_cards = 7;
+    Board brd;
+    ASSERT_EQ(brd.UpdateHandConfiguration(BOARD_ID, hand_config), OK);
+}
+
 TEST(Board, set_reserved_money) {
     SafetyConnection conn;
     ASSERT_EQ(conn.IsConnected(), true);
 
     Board brd;
-    ASSERT_EQ(brd.SetReservedMoney(BOARD_ID, USER_ID1, 25.0), OK);
+    ASSERT_EQ(brd.SetReservedMoney(BOARD_ID, USER_ID1, 25.0), INSUFFICIENT_FUNDS);
     ASSERT_EQ(brd.SetReservedMoney(BOARD_ID, USER_ID2, 10.0), OK);
+}
+
+TEST(Board, upd_user_position) {
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
+
+    Board brd;
+    ASSERT_EQ(brd.UpdateUserPosition(BOARD_ID, USER_ID1, 5), OK);
 }
 
 TEST(Board, get_active_board) {
@@ -78,7 +112,8 @@ TEST(Board, get_active_board) {
     active_board_t act_board = brd.GetActiveBoard(BOARD_ID);
     ASSERT_EQ(act_board.status_code, OK);
     ASSERT_EQ(act_board.board_id, BOARD_ID);
-    ASSERT_EQ(act_board.users[1].second, 10.0);
+    ASSERT_EQ(act_board.players[0].reserved_money, 0.0);
+    ASSERT_EQ(act_board.players[1].reserved_money, 10.0);
 }
 
 TEST(Board, remove_user_from_board) {

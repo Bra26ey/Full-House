@@ -33,21 +33,28 @@ public:
     User(const User&)=delete;
     User& operator=(const User&)=delete;
 
-    user_t GetUser(const std::size_t&, bool with_password);
-    user_t GetUser(const std::string&, bool with_password);
+    user_t GetUser(const std::size_t&, bool with_password = false);
+    user_t GetUser(const std::string&, bool with_password = false);
 
-    std::pair<std::size_t, int> InsertUser(const std::string&, const std::string&);
+    // registration
+    std::pair<std::size_t, int> RegUser(const std::string&, const std::string&);
+    // authorization
+    std::pair<user_t, int> AuthUser(const std::string& login, const std::string& password);
     int UpdateLogin(const std::size_t&, const std::string&);
     int UpdatePassword(const std::size_t&, const std::string&);
     int UpdateUsername(const std::size_t&, const std::string&);
     int UpdateAvatar(const std::size_t&, const std::string&);
-    int UpdateMoney(const std::size_t&, double);
+    int UpdateMoney(const std::size_t&, const double& new_money);
+    int UpdateMoneyByDelta(const std::size_t&, const double& delta_money);
+
     int DeleteUser(const std::size_t&);
     bool IsExist(const std::size_t&);
     bool IsExist(const std::string &);
 
 private:
+    std::pair<std::size_t, int> InsertUser(const std::string&, const std::string&);
     int UpdateStringField(const std::string&, const std::size_t &, const std::string&);
+    int UpdateMoney(const size_t &id, const double& money, const std::string& query_string);
 
     SafetyConnection conn_;
 

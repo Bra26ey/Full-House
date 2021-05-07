@@ -12,6 +12,9 @@ public:
 
     void Lock();
     void Unlock();
+    std::mutex& GetMutex() {
+        return conn_mutex_;
+    }
 
     Connection& GetConnection();
     bool IsConnected();

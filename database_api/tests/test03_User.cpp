@@ -9,7 +9,7 @@ TEST(User, add_user) {
 
     User usr;
 
-    auto out = usr.InsertUser("test_user", "test_password");
+    auto out = usr.RegUser("test_user", "test_password");
     ASSERT_EQ(out.second, OK);
 }
 
@@ -21,6 +21,19 @@ TEST(User, is_exist) {
 
     int out = usr.IsExist("test_user");
     ASSERT_EQ(out, true);
+}
+
+TEST(User, auth_user) {
+    SafetyConnection conn;
+    ASSERT_EQ(conn.IsConnected(), true);
+
+    User usr;
+
+    auto out = usr.AuthUser("test_user", "test_password");
+    ASSERT_EQ(out.second, OK);
+    user_t user_struct = out.first;
+    ASSERT_EQ(user_struct.login, "test_user");
+    ASSERT_EQ(user_struct.password, "test_password");
 }
 
 TEST(User, get_user__in_database) {
@@ -59,6 +72,7 @@ TEST(User, update_params) {
     ASSERT_EQ(usr.UpdateUsername(user_struct.id, "new_username"), OK);
     ASSERT_EQ(usr.UpdateAvatar(user_struct.id, "new_path_to_avatar"), OK);
     ASSERT_EQ(usr.UpdateMoney(user_struct.id, 25.0), OK);
+    ASSERT_EQ(usr.UpdateMoneyByDelta(user_struct.id, -7.0), OK);
 
     user_struct = usr.GetUser("new_test_user", true);
     ASSERT_EQ(user_struct.status_code, OK);
@@ -66,7 +80,7 @@ TEST(User, update_params) {
     ASSERT_EQ(user_struct.password, "new_test_password");
     ASSERT_EQ(user_struct.username, "new_username");
     ASSERT_EQ(user_struct.avatar, "new_path_to_avatar");
-    ASSERT_EQ(user_struct.money, 25.0);
+    ASSERT_EQ(user_struct.money, 18.0);
 }
 
 TEST(User, delete_user) {

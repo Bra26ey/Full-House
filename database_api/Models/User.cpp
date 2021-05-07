@@ -79,18 +79,17 @@ bool User::IsExist(const std::string &login) {
 }
 
 
-user_t User::GetUser(const std::size_t& id, bool with_password=false) {
+user_t User::GetUser(const std::size_t& id, bool with_password) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     user_t u;
-
-    std::string query_string = "SELECT * FROM user WHERE id = ?";
-
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
     if (!conn_.GetConnection().IsOpen()) {
         u.status_code = DATABASE_NOT_CONNECTED;
         return u;
     }
 
+    std::string query_string = "SELECT * FROM user WHERE id = ?";
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int)id);
 
@@ -126,18 +125,17 @@ user_t User::GetUser(const std::size_t& id, bool with_password=false) {
 }
 
 
-user_t User::GetUser(const std::string & login, bool with_password=false) {
+user_t User::GetUser(const std::string & login, bool with_password) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     user_t u;
-
-    std::string query_string = "SELECT * FROM user WHERE login = ?";
-
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
     if (!conn_.GetConnection().IsOpen()) {
         u.status_code = DATABASE_NOT_CONNECTED;
         return u;
     }
 
+    std::string query_string = "SELECT * FROM user WHERE login = ?";
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setString(1, login);
 
@@ -173,16 +171,29 @@ user_t User::GetUser(const std::string & login, bool with_password=false) {
 }
 
 
-std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std::string &password) {
-    conn_.Lock();
+std::pair<std::size_t, int> User::RegUser(const std::string & login, const std::string & password) {
+    return InsertUser(login, password);
+}
 
+
+std::pair<user_t , int> User::AuthUser(const std::string &login, const std::string &password) {
+    user_t usr = GetUser(login, true);
+    if (usr.status_code != OK) {
+        return std::pair<user_t, int> (usr, usr.status_code);
+    }
+
+    int answer = (usr.login == login && usr.password == password) ? OK : WRONG_PASSWORD;
+    return std::pair<user_t, int> (usr, answer);
+}
+
+
+std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std::string &password) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     if (login.empty() || password.empty()) {
-        conn_.Unlock();
         return std::pair<std::size_t, int> (0, EMPTY_DATA);
     }
 
     if (IsExist(login)) {
-        conn_.Unlock();
         return std::pair<std::size_t, int> (0, OBJECT_ALREADY_EXIST);
     }
 
@@ -192,11 +203,6 @@ std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std
     double money = 0.0;
 
     sql::PreparedStatement *pstmt;
-    if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
-        return std::pair<std::size_t, int> (0, DATABASE_NOT_CONNECTED);
-    }
-
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setString(1, login);
     pstmt->setString(2, password);
@@ -207,7 +213,6 @@ std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return std::pair<std::size_t, int> (0, OBJECT_ALREADY_EXIST);
     }
@@ -219,7 +224,6 @@ std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std
     if (res->next()) {
         last_id = res->getInt(1);
     }
-    conn_.Unlock();
 
     delete pstmt;
     delete stmt;
@@ -229,11 +233,12 @@ std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std
 
 
 int User::UpdateStringField(const std::string &field_name, const std::size_t &id, const std::string &data) {
-    sql::PreparedStatement *pstmt;
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     if (!conn_.GetConnection().IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
+    sql::PreparedStatement *pstmt;
     std::string query_string = "UPDATE user SET " + field_name + " = ? WHERE id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setString(1, data);
@@ -255,91 +260,81 @@ int User::UpdateStringField(const std::string &field_name, const std::size_t &id
 
 
 int User::UpdateLogin(const std::size_t &id, const std::string &new_login) {
-    conn_.Lock();
-
     if (new_login.empty()) {
-        conn_.Unlock();
         return EMPTY_DATA;
     }
-    conn_.Unlock();
     return UpdateStringField("login", id, new_login);
 }
 
 
 int User::UpdatePassword(const size_t &id, const std::string &new_password) {
-    conn_.Lock();
-
     if (new_password.empty()) {
-        conn_.Unlock();
         return EMPTY_DATA;
     }
-    conn_.Unlock();
     return UpdateStringField("password", id, new_password);
 }
 
 
 int User::UpdateUsername(const size_t &id, const std::string &new_username) {
-    conn_.Lock();
-
     if (new_username.empty()) {
-        conn_.Unlock();
         return EMPTY_DATA;
     }
-    conn_.Unlock();
     return UpdateStringField("username", id, new_username);
 }
 
 
 int User::UpdateAvatar(const size_t &id, const std::string &new_avatar) {
-    conn_.Lock();
-
     if (new_avatar.empty()) {
-        conn_.Unlock();
         return EMPTY_DATA;
     }
-    conn_.Unlock();
     return UpdateStringField("avatar", id, new_avatar);
 }
 
 
-int User::UpdateMoney(const size_t &id, double new_money) {
-    conn_.Lock();
+int User::UpdateMoney(const std::size_t &id, const double &new_money) {
+    std::string query_string = "UPDATE user SET money = ? WHERE id = ?";
+    return UpdateMoney(id, new_money, query_string);
+}
+
+
+int User::UpdateMoneyByDelta(const std::size_t &id, const double &delta_money) {
+    std::string query_string = "UPDATE user SET money = money + ? WHERE id = ?";
+    return UpdateMoney(id, delta_money, query_string);
+}
+
+
+int User::UpdateMoney(const size_t &id, const double& money, const std::string& query_string) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
 
     sql::PreparedStatement *pstmt;
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "UPDATE user SET money = ? WHERE id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
-    pstmt->setDouble(1, new_money);
+    pstmt->setDouble(1, money);
     pstmt->setInt(2, (int) id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_UPDATED;
         }
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
 
-    conn_.Unlock();
     delete pstmt;
     return OK;
 }
 
 
 int User::DeleteUser(const size_t &id) {
-    conn_.Lock();
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
 
     sql::PreparedStatement *pstmt;
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
@@ -349,16 +344,13 @@ int User::DeleteUser(const size_t &id) {
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_EXIST;
         }
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
-    conn_.Unlock();
 
     delete pstmt;
     return OK;

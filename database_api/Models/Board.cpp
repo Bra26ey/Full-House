@@ -2,19 +2,17 @@
 
 
 board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false) {
-    conn_.Lock();
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     board_t b;
 
-    std::string query_string = "SELECT * FROM board WHERE id = ?";
-
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         b.status_code = DATABASE_NOT_CONNECTED;
         return b;
     }
 
+    std::string query_string = "SELECT * FROM board WHERE id = ?";
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
@@ -36,13 +34,11 @@ board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false)
             b.status_code = EMPTY_DATA;
         }
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         delete res;
         b.status_code = OBJECT_NOT_EXIST;
         return b;
     }
-    conn_.Unlock();
     delete pstmt;
     delete res;
     return b;
@@ -50,51 +46,66 @@ board_t Board::GetBoard(const std::size_t &board_id, bool with_password = false)
 
 
 active_board_t Board::GetActiveBoard(const std::size_t &board_id) {
-    conn_.Lock();
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     active_board_t act_board;
-    std::string query_string = "SELECT * FROM active_board WHERE board_id = ?";
 
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         act_board.status_code = DATABASE_NOT_CONNECTED;
         return act_board;
     }
 
+    // std::string query_string = "SELECT * FROM active_board WHERE board_id = ?";
+    std::string query_string = "SELECT user.id, user.username, user.avatar, active_board.reserved_money, active_board.position, "
+                               "board.button_pos, board.small_blind_pos, board.big_blind_pos, board.small_blind_bet, board.big_blind_bet, "
+                               "board.max_size_of_players, board.count_of_player_cards FROM user JOIN active_board ON user.id = "
+                               "active_board.player_id JOIN board ON active_board.board_id = board.id WHERE board.id = ?;";
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
     try {
         res = pstmt->executeQuery();
-        std::pair<std::size_t, double> pr(0, 0.0);
+        player_t cur_player;
         if (res->next()) {
-            act_board.board_id = res->getInt("board_id");
-            pr.first = res->getInt("player_id");
-            pr.second = (double) res->getDouble("reserved_money");
-            act_board.users.push_back(pr);
+            act_board.board_id = board_id;
+            cur_player.id = res->getInt("id");
+            cur_player.username = res->getString("username");
+            cur_player.avatar = res->getString("avatar");
+            cur_player.reserved_money = (double) res->getDouble("reserved_money");
+            cur_player.position = res->getInt("position");
+            act_board.players.push_back(cur_player);
+            act_board.hand_config.button_pos = res->getInt("button_pos");
+            act_board.hand_config.small_blind_pos = res->getInt("small_blind_pos");
+            act_board.hand_config.big_blind_pos = res->getInt("big_blind_pos");
+            act_board.hand_config.small_blind_bet = res->getInt("small_blind_bet");
+            act_board.hand_config.big_blind_bet = res->getInt("big_blind_bet");
+            act_board.hand_config.max_size_of_players = res->getInt("max_size_of_players");
+            act_board.hand_config.count_of_player_cards = res->getInt("count_of_player_cards");
         }
         while (res->next()) {
-            pr.first = res->getInt("player_id");
-            pr.second = (double) res->getDouble("reserved_money");
-            act_board.users.push_back(pr);
+            cur_player.id = res->getInt("id");
+            cur_player.username = res->getString("username");
+            cur_player.avatar = res->getString("avatar");
+            cur_player.reserved_money = (double) res->getDouble("reserved_money");
+            cur_player.position = res->getInt("position");
+            act_board.players.push_back(cur_player);
         }
         act_board.status_code = OK;
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         delete res;
         act_board.status_code = OBJECT_NOT_EXIST;
         return act_board;
     }
-    conn_.Unlock();
+
     delete pstmt;
     delete res;
 
     return act_board;
 }
 
-
+/*
 user_t Board::GetUserId(const std::string &login) {
     user_t u;
 
@@ -112,19 +123,17 @@ user_t Board::GetUserId(const std::string &login) {
 
     u = usr.GetUser(login, false);
     return u;
-}
+}*/
 
 
 std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const std::string& password) {
-    conn_.Lock();
-    std::string query_string = "INSERT INTO board(admin_id, password) VALUES (?, ?)";
-
-    sql::PreparedStatement *pstmt;
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return std::pair<std::size_t, int> (0, DATABASE_NOT_CONNECTED);
     }
 
+    std::string query_string = "INSERT INTO board(admin_id, password) VALUES (?, ?)";
+    sql::PreparedStatement *pstmt;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) user_id);
     pstmt->setString(2, password);
@@ -132,7 +141,6 @@ std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return std::pair<std::size_t, int> (0, OBJECT_NOT_EXIST);
     }
@@ -145,7 +153,6 @@ std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const
     if (res->next()) {
         last_id = res->getInt(1);
     }
-    conn_.Unlock();
 
     delete stmt;
     delete res;
@@ -158,30 +165,97 @@ std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const
 }
 
 
-int Board::DeleteBoard(const std::size_t &board_id) {
-    conn_.Lock();
-    sql::PreparedStatement *pstmt;
+int Board::UpdateBoardAdmin(const std::size_t& board_id, const std::size_t& new_admin_id) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
+
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
+    User usr;
+    auto user_out = usr.GetUser(new_admin_id, false);
+    if (user_out.status_code != OK) {
+        return (int) user_out.status_code;
+    }
+
+    std::string query_string = "UPDATE board SET admin_id = ? WHERE id = ?";
+    sql::PreparedStatement *pstmt;
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt->setInt(1, (int) new_admin_id);
+    pstmt->setInt(2, (int) board_id);
+
+    try {
+        if (pstmt->executeUpdate() == 0) {
+            delete pstmt;
+            return OBJECT_NOT_UPDATED;
+        }
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        return OBJECT_NOT_EXIST;
+    }
+
+    delete pstmt;
+    return OK;
+}
+
+
+int Board::DeleteBoard(const std::size_t &board_id) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
+    if (!conn_.GetConnection().IsOpen()) {
+        return DATABASE_NOT_CONNECTED;
+    }
+
+    sql::PreparedStatement *pstmt;
     std::string query_string = "DELETE FROM board WHERE id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_EXIST;
         }
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
-    conn_.Unlock();
+
+    delete pstmt;
+    return OK;
+}
+
+
+int Board::UpdateHandConfiguration(const std::size_t &board_id, const hand_configuration_t &hand_config) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
+
+    if (!conn_.GetConnection().IsOpen()) {
+        return DATABASE_NOT_CONNECTED;
+    }
+
+    //board.button_pos, board.small_blind_pos, board.big_blind_pos, board.small_blind_bet, board.big_blind_bet, "
+    //                               "board.max_size_of_players, board.count_of_player_cards
+    std::string query_string = "UPDATE board SET button_pos = ?, small_blind_pos = ?, big_blind_pos = ?, small_blind_bet = ?, "
+                               "big_blind_bet = ?, max_size_of_players = ?, count_of_player_cards = ? WHERE id = ?";
+    sql::PreparedStatement *pstmt;
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt->setInt(1, (int) hand_config.button_pos);
+    pstmt->setInt(2, (int) hand_config.small_blind_pos);
+    pstmt->setInt(3, (int) hand_config.big_blind_pos);
+    pstmt->setInt(4,       hand_config.small_blind_bet);
+    pstmt->setInt(5,       hand_config.big_blind_bet);
+    pstmt->setInt(6, (int) hand_config.max_size_of_players);
+    pstmt->setInt(7, (int) hand_config.count_of_player_cards);
+    pstmt->setInt(8, (int) board_id);
+
+    try {
+        if (pstmt->executeUpdate() == 0) {
+            delete pstmt;
+            return OBJECT_NOT_UPDATED;
+        }
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        return OBJECT_NOT_EXIST;
+    }
 
     delete pstmt;
     return OK;
@@ -190,13 +264,13 @@ int Board::DeleteBoard(const std::size_t &board_id) {
 
 int Board::CheckPassword(const std::size_t &board_id, const std::string &password) {
     std::string query_string = "SELECT password FROM board WHERE id = ?";
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
 
     if (!conn_.GetConnection().IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
+    sql::PreparedStatement *pstmt;
+    sql::ResultSet *res;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
 
@@ -222,10 +296,9 @@ int Board::CheckPassword(const std::size_t &board_id, const std::string &passwor
 
 
 int Board::AddUserToBoard(const std::size_t &board_id, const std::size_t &player_id, const std::string &password) {
-    conn_.Lock();
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     int out = CheckPassword(board_id, password);
     if (out != OK) {
-        conn_.Unlock();
         return out;
     }
 
@@ -233,7 +306,6 @@ int Board::AddUserToBoard(const std::size_t &board_id, const std::size_t &player
 
     sql::PreparedStatement *pstmt;
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
@@ -245,24 +317,21 @@ int Board::AddUserToBoard(const std::size_t &board_id, const std::size_t &player
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return OBJECT_ALREADY_EXIST;
     }
-    conn_.Unlock();
     delete pstmt;
     return OK;
 }
 
 
 int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::size_t &player_id) {
-    conn_.Lock();
-    sql::PreparedStatement *pstmt;
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
+    sql::PreparedStatement *pstmt;
     std::string query_string = "DELETE FROM active_board WHERE board_id = ? AND player_id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setInt(1, (int) board_id);
@@ -270,48 +339,68 @@ int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::size_t &p
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_EXIST;
         }
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
-    conn_.Unlock();
     delete pstmt;
     return OK;
 }
 
 
 int Board::SetReservedMoney(const std::size_t &board_id, const std::size_t &player_id, const double &reserved_money) {
-    conn_.Lock();
-    sql::PreparedStatement *pstmt;
+    User usr;
+    auto user_out = usr.GetUser(player_id);
+    if (user_out.status_code != OK) {
+        return (int) user_out.status_code;
+    }
+    if (user_out.money < reserved_money) {
+        return INSUFFICIENT_FUNDS;
+    }
+
+    auto func = [](sql::PreparedStatement *&pstmt, const double &data) {
+        pstmt->setDouble(1, data);
+    };
+    return UpdateField<double>(board_id, player_id, "reserved_money", reserved_money, func);
+}
+
+
+int Board::UpdateUserPosition(const std::size_t &board_id, const std::size_t &player_id, const int &pos) {
+    auto func = [](sql::PreparedStatement *&pstmt, const int &data) {
+        pstmt->setInt(1, data);
+    };
+    return UpdateField<int>(board_id, player_id, "position", pos, func);
+}
+
+
+template<class T>
+int Board::UpdateField(const std::size_t &board_id, const std::size_t &player_id, const std::string &field_name,
+                       const T &data, void (*functor)(sql::PreparedStatement *&, const T&)) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     if (!conn_.GetConnection().IsOpen()) {
-        conn_.Unlock();
         return DATABASE_NOT_CONNECTED;
     }
 
-    std::string query_string = "UPDATE active_board SET reserved_money = ? WHERE board_id = ? AND player_id = ?";
+    sql::PreparedStatement *pstmt;
+    std::string query_string = "UPDATE active_board SET " + field_name + " = ? WHERE board_id = ? AND player_id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
-    pstmt->setDouble(1, reserved_money);
+    functor(pstmt, data);
+    // pstmt->setDouble(1, reserved_money);
     pstmt->setInt(2, (int) board_id);
     pstmt->setInt(3, (int) player_id);
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            conn_.Unlock();
             delete pstmt;
             return OBJECT_NOT_UPDATED;
         }
     } catch (sql::SQLException &e) {
-        conn_.Unlock();
         delete pstmt;
         return OBJECT_NOT_EXIST;
     }
-    conn_.Unlock();
-
     delete pstmt;
     return OK;
 }
