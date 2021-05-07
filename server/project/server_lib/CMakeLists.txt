@@ -4,6 +4,9 @@ find_package(Threads)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 include_directories(../msgfabric_lib/include)
+include_directories(../logic_lib/Player)
+include_directories(../logic_lib/Utilities)
+include_directories(../logic_lib/GameEntities)
 
 include_directories(include)
 
@@ -16,6 +19,7 @@ add_library(server_lib SHARED ${SERVER_LIB_SRC})
 
 target_link_libraries(server_lib
                       msgfabric_lib
+                      logic_lib
                       ${CMAKE_THREAD_LIBS_INIT}
                       ${Boost_LIBRARIES} 
                      )

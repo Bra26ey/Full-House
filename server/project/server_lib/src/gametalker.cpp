@@ -15,7 +15,7 @@ namespace network {
 uint64_t GameTalker::counter_ = 0;
 
 void GameTalker::Start() {
-    BOOST_LOG_TRIVIAL(info) << "GameRoom start work with connection";
+    BOOST_LOG_TRIVIAL(info) << "GameRoom Start Game";
     boost::asio::post(context_, boost::bind(&GameTalker::HandleGameProcess, this));
 }
 
@@ -32,6 +32,7 @@ void GameTalker::HandleAdminRequest(std::shared_ptr<User> &user) {
             user->out << MsgServer::StartGameFailed();
         }
         async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+        boost::asio::post(context_, boost::bind(&GameTalker::Start, this));
         return;
     }
 
@@ -155,11 +156,41 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 }
 
 void GameTalker::HandleGameProcess() {
-    // reenter(this) {
-    //     while (true) {
-    //         
-    //     }
-    // }
+    reenter(this) {
+        while (true) {
+            yield {
+                // handprocess_.INICIALIZE()
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.ShuffleCards();
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.DealCards();
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.Preflop();
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.Flop();
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.Turn();
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.River();
+                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
+            }
+            yield {
+                // handprocess_.PotDistribution
+            }
+        }
+    }
 }
 
 }  // namespace network

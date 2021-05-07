@@ -102,7 +102,6 @@ void Server::CreateRooms() {
     }
 
     gametalkers_mutex_.lock();
-    gametalker->Start();
     gametalkers_.push_back(gametalker);
     gametalkers_mutex_.unlock();
     context_.post(boost::bind(&Server::CreateRooms, this));
