@@ -1,3 +1,7 @@
+add_subdirectory(msgfabric_lib)
+
+include_directories(msgfabric_lib/include)
+
 add_subdirectory(server_lib)
 
 include_directories(server_lib/include)

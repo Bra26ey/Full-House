@@ -3,6 +3,8 @@ find_package(Threads)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
+include_directories(../msgfabric_lib/include)
+
 include_directories(include)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_ALL_DYN_LINK --coverage -lboost_thread -pthread")
@@ -13,6 +15,7 @@ file(GLOB SERVER_LIB_SRC "src/*.cpp")
 add_library(server_lib SHARED ${SERVER_LIB_SRC})
 
 target_link_libraries(server_lib
+                      msgfabric_lib
                       ${CMAKE_THREAD_LIBS_INIT}
                       ${Boost_LIBRARIES} 
                      )

@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main(int argc, const char *argv[]) {
-    MsgFabric msgfabric;
+    MsgClient msgfabric;
     // std::cout << msgfabric.Autorisation("Mike", "Password");
     // std::cout << msgfabric.CreateRoom("Password");
     // std::cout << msgfabric.Disconnect();
@@ -27,26 +27,37 @@ int main(int argc, const char *argv[]) {
     out << msgfabric.Autorisation("Mike", "Password");
     client.Send(write_buffer);
     client.Read(read_buffer);
+    sleep(1);
 
     out << msgfabric.Logout();
     client.Send(write_buffer);
     client.Read(read_buffer);
+    sleep(1);
 
     out << msgfabric.Autorisation("Nick", "Password");
     client.Send(write_buffer);
     client.Read(read_buffer);
+    sleep(1);
 
     out << msgfabric.CreateRoom("Password");
     client.Send(write_buffer);
     client.Read(read_buffer);
+    sleep(1);
+
+    out << msgfabric.CreateRoomReault();
+    client.Send(write_buffer);
+    client.Read(read_buffer);
+    sleep(1);
 
     out << msgfabric.LeaveRoom();
     client.Send(write_buffer);
     client.Read(read_buffer);
+    sleep(1);
 
     out << msgfabric.Disconnect();
     client.Send(write_buffer);
     client.Read(read_buffer);
+    sleep(1);
 
     client.Disconnect();
 

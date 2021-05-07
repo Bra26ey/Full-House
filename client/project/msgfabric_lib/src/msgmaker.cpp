@@ -1,0 +1,331 @@
+#include "msgmaker.h"
+
+#include <sstream>
+
+#include <boost/property_tree/json_parser.hpp>
+
+namespace pt = boost::property_tree;
+
+MsgFabric::~MsgFabric() {}
+
+inline std::string MsgFabric::MsgFromPtree(boost::property_tree::ptree const &request) {
+    std::stringstream json_request;
+    pt::write_json(json_request, request);
+    return json_request.str() + "\r\n\r";
+}
+
+
+
+std::string MsgClient::Autorisation(std::string const &login, std::string const &password) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("login", login);
+    parametrs.put("password", password);
+
+    request.put("command-type", "basic");
+    request.put("command", "autorisation");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::Logout() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "basic");
+    request.put("command", "logout");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::Ping() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "ping");
+    request.put("command", "ping");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::Disconnect() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "basic");
+    request.put("command", "disconnect");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::CreateRoom(std::string const &password) {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("password", password);
+
+    request.put("command-type", "basic");
+    request.put("command", "create-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::CreateRoomReault() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "basic");
+    request.put("command", "create-room-result");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::JoinRoom(uint64_t const &id, std::string const &password) {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("id", id);
+    parametrs.put("password", password);
+
+    request.put("command-type", "basic");
+    request.put("command", "join-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::JoinRoomReault() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "basic");
+    request.put("command", "join-room-result");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::StartGame() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "room-admin");
+    request.put("command", "start-game");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::LeaveRoom() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "room-basic");
+    request.put("command", "leave");
+
+    return MsgFromPtree(request);
+}
+
+
+
+
+std::string MsgServer::AutorisationDone() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "autorisation");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::AutorisationFaild() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "autorisation");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::Logout() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "logout");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::Ping() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "ping");
+    request.put("command", "ping");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::Error() {
+    pt::ptree request;
+
+    request.put("command-type", "error");
+    request.put("command", "error");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::Disconnect() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "disconnect");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::CreateRoomOn() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "on");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "create-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::CreateRoomDone(uint64_t const &id, std::string const &password) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+    parametrs.put("id", id);
+    parametrs.put("password", password);
+
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "create-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::CreateRoomFailed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "create-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::JoinRoomOn(uint64_t const &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "on");
+    parametrs.put("id", id);
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "join-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+
+std::string MsgServer::JoinRoomDone(uint64_t const &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+    parametrs.put("id", id);
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "join-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::JoinRoomFaild(uint64_t const &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+    parametrs.put("id", id);
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "join-room");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::LeaveRoomDone() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "room-basic-answer");
+    request.put("command", "leave");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::LeaveRoomFailed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "room-basic-answer");
+    request.put("command", "leave");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::StartGameDone() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "room-admin-answer");
+    request.put("command", "start");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::StartGameFailed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "room-admin-answer");
+    request.put("command", "start");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}

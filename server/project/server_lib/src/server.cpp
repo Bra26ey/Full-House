@@ -4,6 +4,8 @@
 
 #include <boost/log/trivial.hpp>
 
+#include "msgmaker.h"
+
 namespace network {
 
 Server::~Server() {}
@@ -41,7 +43,6 @@ void Server::CleanUserTalkers() {
         } else if (!usertalkers_[i]->IsUserWorks()) {
             BOOST_LOG_TRIVIAL(info) << "user start work in pos " << i;
             usertalkers_[i]->Start();
-            // context_.post(boost::bind(&UserTalker::Start, usertalkers_[i]));
         }
     }
     usertalkers_mutex_.unlock();
@@ -94,6 +95,9 @@ void Server::CreateRooms() {
     int code = gametalker->JoinPlayer(user);
     if (code != 0) {
         context_.post(boost::bind(&Server::CreateRooms, this));
+        read_until(user->socket, user->read_buffer, "/n/r/n/r");
+        user->out << MsgServer::CreateRoomFailed();
+        write(user->socket, user->write_buffer);
         return;
     }
 
@@ -123,6 +127,9 @@ void Server::JoinPlayers() {
 
     if (flag) {
         BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. can't find room-id: " << user->room_id;
+        read_until(user->socket, user->read_buffer, "/n/r/n/r");
+        user->out << MsgServer::JoinRoomFaild(user->room_id);
+        write(user->socket, user->write_buffer);
         user->room_id = __UINT64_MAX__;
         user->is_talking.store(false);
     }

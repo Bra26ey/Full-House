@@ -3,6 +3,8 @@
 #include <boost/asio/yield.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#include "msgmaker.h"
+
 using boost::asio::async_read;
 using boost::asio::async_write;
 
@@ -25,10 +27,10 @@ void UserTalker::HandleAutorisation() {
     if (user_->is_autorised) {
         const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
         user_->name = parametrs.get<std::string>("login");
-        user_->out << "{ok}";
+        user_->out << MsgServer::AutorisationDone();
         BOOST_LOG_TRIVIAL(info) << "user is autorised. name: " << user_->name;
     } else {
-        user_->out << "{not ok}";
+        user_->out << MsgServer::AutorisationFaild();
         BOOST_LOG_TRIVIAL(info) << "autorisation: invalid data";
     }
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
@@ -36,7 +38,7 @@ void UserTalker::HandleAutorisation() {
 
 void UserTalker::CreateGame() {
     BOOST_LOG_TRIVIAL(info) << user_->name << " trying to create room";
-    user_->out << "{status: trying to create;}";
+    user_->out << MsgServer::CreateRoomOn();
     async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.creating_game, user_));
 }
 
@@ -47,21 +49,21 @@ void UserTalker::JoinPlayer() {
     const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
     user_->room_id = parametrs.get<uint64_t>("id");
 
-    user_->out << "{status: trying to accept; room-id: " << user_->room_id << ";}";
+    user_->out << MsgServer::JoinRoomOn(user_->room_id);
     async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.accepting_game, user_));
 }
 
 void UserTalker::HandleError() {
     BOOST_LOG_TRIVIAL(info) << user_->name << "'s request is anknown";
 
-    user_->out << "{error: unknown format;}";
+    user_->out << MsgServer::Error();
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
 void UserTalker::Disconnect() {
     BOOST_LOG_TRIVIAL(info) << user_->name << "is disconnected";
 
-    user_->out << "{status: disconnected;}";
+    user_->out << MsgServer::Disconnect();
     write(user_->socket, user_->write_buffer);
     is_remove.store(true);
 }
@@ -72,7 +74,7 @@ void UserTalker::Logout() {
     user_->name.clear();
     user_->is_autorised = false;
 
-    user_->out << "{status: notloged;}";
+    user_->out << MsgServer::Logout();
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
