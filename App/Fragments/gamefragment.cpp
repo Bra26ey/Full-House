@@ -21,25 +21,14 @@ GameFragment::GameFragment() : num_players(0) {
     mChips->setParent(mPlayTable);
     mChips->setGeometry(mPlayTable->width()/2 + base_card_coefficient + 5 * card_move_coefficient + 30, mPlayTable->height()/2 - 50, 400, 400);
 
-    WinLabel = new QLabel;
-    WinLabel->setParent(mPlayTable);
-    WinLabel->setGeometry(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
-    WinLabel->setStyleSheet("background:rgba(33,33,33,0.5);font-size:30px;color:rgb(0, 255, 255);");
-    WinLabel->hide();
+    mWinLabel = new QLabel;
+    mWinLabel->setParent(mPlayTable);
+    mWinLabel->setGeometry(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
+    mWinLabel->setStyleSheet("background:rgba(33,33,33,0.5);font-size:26px;color:rgb(0, 255, 255);");
+    mWinLabel->hide();
 
-
-
-    bool up;  // тоже дебаг
-    for(size_t i = 0; i < 5; ++i) {
-        i < 3 ? up = true : up = false;
-        auto card = new Card(1 * i + 2, (i + 1) % 4, up);
-        CardOnTable.push_back(card);
-        CardOnTable[i]->setParent(mPlayTable);
-        CardOnTable[i]->setGeometry(mPlayTable->width()/2 + base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
-    }
-    CardOnTable[3]->Flip();
-
-
+    mTurnIndicator = new TurnSpark;
+    mTurnIndicator->hide();
 
 
     QVBoxLayout *mainVLayout = new QVBoxLayout;
@@ -126,6 +115,17 @@ GameFragment::GameFragment() : num_players(0) {
 
     DrawMainPlayer();
     // кайнда дебаг
+
+    bool up;  // тоже дебаг
+    for(size_t i = 0; i < 5; ++i) {
+        i < 3 ? up = true : up = false;
+        auto card = new Card(1 * i + 2, (i + 1) % 4, up);
+        CardOnTable.push_back(card);
+        CardOnTable[i]->setParent(mPlayTable);
+        CardOnTable[i]->setGeometry(mPlayTable->width()/2 + base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
+    }
+
+    CardOnTable[3]->Flip();
     mPlayer->GiveCards(14,2, 14,3);
     mPlayer->FlipCards();
 
@@ -143,7 +143,7 @@ GameFragment::GameFragment() : num_players(0) {
     mOtherPlayers[4]->GiveCards(4,3,2,3);
     mOtherPlayers[4]->FlipCards();
 
-    MakeDealer(0);
+
     mOtherPlayers[3]->setBet(400);
     mOtherPlayers[2]->DiscardCards();
     mOtherPlayers[2]->setFold();
@@ -152,13 +152,19 @@ GameFragment::GameFragment() : num_players(0) {
     mOtherPlayers[1]->setCheck();
     mOtherPlayers[4]->setRaise();
 
+
+    CurrentTurn(mOtherPlayers[4]);
+    MakeDealer(2);
+    DisplayWinner(mPlayer);
+
 }
 
 GameFragment::~GameFragment() {
     delete mPlayer;
     delete mPlayTable;
     delete mDealerLogo;
-    delete WinLabel;
+    delete mWinLabel;
+    delete mTurnIndicator;
 
     delete BetButton;
     delete RaiseButton;
@@ -265,18 +271,27 @@ void GameFragment::UnBlockActions() {
     }
 }
 
-void GameFragment::DisplayWinner(OtherPlayer*& winner) {
+void GameFragment::DisplayWinner(OtherPlayer *winner) {
     winner->AddMoney(mChips->GetBank());
 
     QString text = "Winner is " + winner->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
     mChips->Wipe();
-    WinLabel->setText(text);
-    WinLabel->setAlignment(Qt::AlignCenter);
+    mWinLabel->setText(text);
+    mWinLabel->setAlignment(Qt::AlignCenter);
 
-    WinLabel->show();
-    qDebug() << WinLabel->text();
+    mWinLabel->show();
+}
+
+void GameFragment::CurrentTurn(OtherPlayer *player) {
+    mTurnIndicator->setParent(player);
+    if (player == mPlayer) {
+        mTurnIndicator->setGeometry(95, -25, 300, 300);
+    } else {
+        mTurnIndicator->setGeometry(100, -80, 300, 300);
+    }
+    mTurnIndicator->show();
 }
 
 void GameFragment::DeleteWinnerDisplay() {
-    WinLabel->hide();
+    mWinLabel->hide();
 }

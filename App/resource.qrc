@@ -8,6 +8,7 @@
         <file alias="DealerLogo">Media/DealerLogo.png</file>
         <file alias="chips">Media/chips.png</file>
         <file alias="icon">Media/icon.ico</file>
+        <file alias="spark">Media/spark.png</file>
     </qresource>
     <qresource prefix="/players">
         <file alias="Cartman">Media/Players/Cartman.png</file>

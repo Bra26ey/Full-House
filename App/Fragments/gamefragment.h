@@ -7,6 +7,7 @@
 #include "card.h"
 #include "dealerlogo.h"
 #include "player.h"
+#include "turnspark.h"
 
 #include <QVector>
 #include <QWidget>
@@ -27,7 +28,8 @@ public:
     void MakeDealer(size_t player_id);
     void FlipAllCards();
 
-    void DisplayWinner(OtherPlayer*& winner);
+    void DisplayWinner(OtherPlayer* winner);
+    void CurrentTurn(OtherPlayer* player);
     void DeleteWinnerDisplay();
 
 public slots:
@@ -54,12 +56,13 @@ private:
     QLabel *mPlayTable;
     QLabel *mDealerLogo;
     Chips *mChips;
+    QLabel *mTurnIndicator;
 
     QVector <Card*> CardOnTable;
 
     QSlider *BetSlider;
     QLineEdit *BetValue;
-    QLabel *WinLabel;
+    QLabel *mWinLabel;
 
     QVector<QPushButton*> ActionButtons;
     QPushButton *CallButton;
