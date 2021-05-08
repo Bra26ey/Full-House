@@ -15,9 +15,13 @@ public:
     ~RulesFragment();
 public slots:
     void onExitPressed();
+    void onNextPressed();
+    void onPrevPressed();
 
 private:
-    QLabel *Rules;
+    QLabel *Rules1;
+    QLabel *Rules2;
+    QPushButton* ControlButton;
     QPushButton *ExitButton;
 };
 
