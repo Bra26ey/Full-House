@@ -45,6 +45,9 @@ public:
     void ClearStatus();
     void setBet(size_t bet);
 
+    QString GetName();
+    void AddMoney(size_t add);
+
 protected:
     QWidget *mChips;
     QPair<Card*, Card*> mCards;

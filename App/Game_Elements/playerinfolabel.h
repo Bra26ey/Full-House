@@ -19,6 +19,7 @@ public:
     void setTotal(size_t total);
     size_t GetBet();
     size_t GetTotal();
+    QString GetName();
 
 private:
     QLabel *mNickname;

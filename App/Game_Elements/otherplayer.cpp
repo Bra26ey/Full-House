@@ -1,4 +1,4 @@
-#include "otherplayer.h"
+﻿#include "otherplayer.h"
 
 OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) {
     mPlayerInfo = new PlayerInfoLabel(nickname, money);
@@ -120,4 +120,13 @@ bool OtherPlayer::GetCardSide() {
 
 size_t OtherPlayer::GetBet() {
     return mPlayerInfo->GetBet();
+}
+
+void OtherPlayer::AddMoney(size_t add) {
+    size_t temp = mPlayerInfo->GetTotal();
+    mPlayerInfo->setTotal(temp + add);
+}
+
+QString OtherPlayer::GetName() {
+    return mPlayerInfo->GetName();
 }

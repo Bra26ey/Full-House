@@ -12,7 +12,7 @@ Player::Player(std::string name, size_t money) {
     this->setStyleSheet("margin:50px;margin-left:80px");
 
     mPlayerInfo->setParent(this);
-    mPlayerInfo->setGeometry(QRect(150, 50, 400, 300));
+    mPlayerInfo->setGeometry(QRect(100, 60, 400, 300));
 
 }
 

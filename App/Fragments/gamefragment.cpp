@@ -1,6 +1,7 @@
 #include "gamefragment.h"
 #include "mainwindow.h"
 
+#include <QDebug>
 #include <QImage>
 #include <QPixmap>
 #include <QSound>
@@ -15,10 +16,18 @@ using namespace screens;
 GameFragment::GameFragment() : num_players(0) {
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
-    mChips = new Chips;
 
+    mChips = new Chips;
     mChips->setParent(mPlayTable);
     mChips->setGeometry(mPlayTable->width()/2 + base_card_coefficient + 5 * card_move_coefficient + 30, mPlayTable->height()/2 - 50, 400, 400);
+
+    WinLabel = new QLabel;
+    WinLabel->setParent(mPlayTable);
+    WinLabel->setGeometry(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
+    WinLabel->setStyleSheet("background:rgba(33,33,33,0.5);font-size:30px;color:rgb(0, 255, 255);");
+    WinLabel->hide();
+
+
 
     bool up;  // тоже дебаг
     for(size_t i = 0; i < 5; ++i) {
@@ -149,6 +158,7 @@ GameFragment::~GameFragment() {
     delete mPlayer;
     delete mPlayTable;
     delete mDealerLogo;
+    delete WinLabel;
 
     delete BetButton;
     delete RaiseButton;
@@ -170,7 +180,7 @@ void GameFragment::setval() {
 void GameFragment::onBetPressed() {
     mPlayer->setBet(BetValue->text().toUInt());
     mChips->AddToBank(BetValue->text().toUInt());
-    BlockActions();
+//    BlockActions();
 
 }
 
@@ -188,11 +198,13 @@ void GameFragment::onCheckPressed() {
 
 void GameFragment::onRaisePressed() {
     mPlayer->setRaise();
+    DisplayWinner(mOtherPlayers[2]);
     //BlockActions();
 }
 
 void GameFragment::onFoldPressed() {
     mPlayer->setFold();
+    DeleteWinnerDisplay();
     //BlockActions();
 }
 
@@ -251,4 +263,20 @@ void GameFragment::UnBlockActions() {
         btn->blockSignals(false);
         btn->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     }
+}
+
+void GameFragment::DisplayWinner(OtherPlayer*& winner) {
+    winner->AddMoney(mChips->GetBank());
+
+    QString text = "Winner is " + winner->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
+    mChips->Wipe();
+    WinLabel->setText(text);
+    WinLabel->setAlignment(Qt::AlignCenter);
+
+    WinLabel->show();
+    qDebug() << WinLabel->text();
+}
+
+void GameFragment::DeleteWinnerDisplay() {
+    WinLabel->hide();
 }

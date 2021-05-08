@@ -12,18 +12,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "--coverage -Wall")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-configure_file(CMakeLists.txt.in
-        googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+#configure_file(CMakeLists.txt.in
+#        googletest-download/CMakeLists.txt)
+#execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+#        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+#execute_process(COMMAND ${CMAKE_COMMAND} --build .
+#        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
 
-add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
-        ${CMAKE_BINARY_DIR}/googletest-build)
+#add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
+#        ${CMAKE_BINARY_DIR}/googletest-build)
 
-enable_testing()
-add_subdirectory(test)
+#enable_testing()
+#add_subdirectory(test)
 
 find_package(Boost 1.65.1 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
@@ -109,4 +109,26 @@ else()
     add_executable(FullHouse)
 endif()
 
-target_link_libraries(FullHouse PRIVATE MyLib)
+target_link_libraries(FullHouse MyLib)
+
+#cmake . && cmake --build . && cmake --build . --target package
+#install(TARGETS FullHouse MyLib
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION lib)
+
+#install(TARGETS FullHouse DESTINATION /home/poker)
+
+
+
+## Задать некоторые характеристики пакета:
+#set(CPACK_PACKAGE_NAME "FullHouse")
+#set(CPACK_PACKAGE_VENDOR "4 retard production")
+#set(CPACK_DEBIAN_PACKAGE_MAINTAINER "alexander.klonov@mail.ru")
+#set(CPACK_PACKAGE_DESCRIPTION "Made by Techopark students")
+
+
+## Задать используемый генератор пакетов:
+#set(CPACK_GENERATOR "DEB")
+
+## Включить стандартный модуль "CPack":
+#include(CPack)

@@ -11,17 +11,19 @@ PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) : TotalMone
     mTotalMoney->setText(total);
 
     mNickname->setParent(this);
-    mNickname->setGeometry(0, 50, 400, 30);
+    mNickname->setGeometry(0, 50, 350, 30);
     mNickname->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(242, 224, 22)");
+    mNickname->setAlignment(Qt::AlignCenter);
 
     mTotalMoney->setParent(this);
-    mTotalMoney->setGeometry(0, 80, 400, 30);
+    mTotalMoney->setGeometry(0, 80, 350, 30);
     mTotalMoney->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(242, 224, 22)");
+    mTotalMoney->setAlignment(Qt::AlignCenter);
 
     mStatus->setParent(this);
-    mStatus->setGeometry(0, 110, 400, 30);
+    mStatus->setGeometry(0, 110, 350, 30);
     mStatus->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(0, 255, 255);");
-    qDebug("All added");
+    mStatus->setAlignment(Qt::AlignCenter);
 }
 
 void PlayerInfoLabel::setTotal(size_t total) {
@@ -70,4 +72,8 @@ size_t PlayerInfoLabel::GetBet() {
 
 size_t PlayerInfoLabel::GetTotal() {
     return TotalMoney;
+}
+
+QString PlayerInfoLabel::GetName() {
+    return mNickname->text();
 }

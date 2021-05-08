@@ -27,8 +27,8 @@ public:
     void MakeDealer(size_t player_id);
     void FlipAllCards();
 
-    void BlockActions();
-    void UnBlockActions();
+    void DisplayWinner(OtherPlayer*& winner);
+    void DeleteWinnerDisplay();
 
 public slots:
     void onBetPressed();
@@ -44,6 +44,9 @@ private slots:
     void setval();
 
 private:
+    void BlockActions();
+    void UnBlockActions();
+
     size_t num_players;
 
     Player *mPlayer;
@@ -56,6 +59,7 @@ private:
 
     QSlider *BetSlider;
     QLineEdit *BetValue;
+    QLabel *WinLabel;
 
     QVector<QPushButton*> ActionButtons;
     QPushButton *CallButton;
