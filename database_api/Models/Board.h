@@ -86,6 +86,7 @@ public:
 
     // return active board with players
     active_board_t GetActiveBoard(const std::size_t &);
+    int SaveActiveBoard(const active_board_t&);
     int AddUserToBoard(const std::size_t&, const std::size_t&, const std::string&);
     int RemoveUserFromBoard(const std::size_t&, const std::size_t &);
     int SetReservedMoney(const std::size_t&, const std::size_t &, const double &);

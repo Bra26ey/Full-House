@@ -104,7 +104,7 @@ TEST(Board, upd_user_position) {
     ASSERT_EQ(brd.UpdateUserPosition(BOARD_ID, USER_ID1, 5), OK);
 }
 
-TEST(Board, get_active_board) {
+TEST(Board, active_board) {
     SafetyConnection conn;
     ASSERT_EQ(conn.IsConnected(), true);
 
@@ -114,6 +114,11 @@ TEST(Board, get_active_board) {
     ASSERT_EQ(act_board.board_id, BOARD_ID);
     ASSERT_EQ(act_board.players[0].reserved_money, 0.0);
     ASSERT_EQ(act_board.players[1].reserved_money, 10.0);
+
+    act_board.players[0].position = 3;
+    act_board.hand_config.button_pos = 4;
+    act_board.players[1].reserved_money = 50;
+    ASSERT_EQ(brd.SaveActiveBoard(act_board), OK);
 }
 
 TEST(Board, remove_user_from_board) {

@@ -105,6 +105,54 @@ active_board_t Board::GetActiveBoard(const std::size_t &board_id) {
     return act_board;
 }
 
+
+int Board::SaveActiveBoard(const active_board_t &active_brd) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
+    if (!conn_.GetConnection().IsOpen()) {
+        return DATABASE_NOT_CONNECTED;
+    }
+    // update board table
+    std::string query_string = "UPDATE board SET button_pos = ?, small_blind_pos = ?, big_blind_pos = ?, small_blind_bet = ?, "
+                               "big_blind_bet = ?, max_size_of_players = ?, count_of_player_cards = ? WHERE id = ?";
+    sql::PreparedStatement *pstmt;
+    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt->setInt(1, (int) active_brd.hand_config.button_pos);
+    pstmt->setInt(2, (int) active_brd.hand_config.small_blind_pos);
+    pstmt->setInt(3, (int) active_brd.hand_config.big_blind_pos);
+    pstmt->setInt(4, (int) active_brd.hand_config.small_blind_bet);
+    pstmt->setInt(5, (int) active_brd.hand_config.big_blind_bet);
+    pstmt->setInt(6, (int) active_brd.hand_config.max_size_of_players);
+    pstmt->setInt(7, (int) active_brd.hand_config.count_of_player_cards);
+    pstmt->setInt(8, (int) active_brd.board_id);
+
+    // we admit that the system is not updatable
+    try {
+        pstmt->executeUpdate();
+    } catch (sql::SQLException &e) {
+        delete pstmt;
+        return OBJECT_NOT_EXIST;
+    }
+    delete pstmt;
+    // update active_board table
+    query_string = "UPDATE active_board SET position = ?, reserved_money = ? WHERE board_id = ? AND player_id = ?;";
+    for (auto & player : active_brd.players) {
+        pstmt = conn_.GetConnection().PrepareQuery(query_string);
+        pstmt->setInt(   1, player.position);
+        pstmt->setDouble(2, player.reserved_money);
+        pstmt->setInt(   3, (int) active_brd.board_id);
+        pstmt->setInt(   4, (int) player.id);
+        try {
+            pstmt->executeUpdate();
+        } catch (sql::SQLException &e) {
+            delete pstmt;
+            return OBJECT_NOT_EXIST;
+        }
+    }
+
+    delete pstmt;
+    return OK;
+}
+
 /*
 user_t Board::GetUserId(const std::string &login) {
     user_t u;
@@ -352,6 +400,7 @@ int Board::RemoveUserFromBoard(const std::size_t &board_id, const std::size_t &p
 
 
 int Board::SetReservedMoney(const std::size_t &board_id, const std::size_t &player_id, const double &reserved_money) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     User usr;
     auto user_out = usr.GetUser(player_id);
     if (user_out.status_code != OK) {
@@ -369,6 +418,7 @@ int Board::SetReservedMoney(const std::size_t &board_id, const std::size_t &play
 
 
 int Board::UpdateUserPosition(const std::size_t &board_id, const std::size_t &player_id, const int &pos) {
+    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     auto func = [](sql::PreparedStatement *&pstmt, const int &data) {
         pstmt->setInt(1, data);
     };
@@ -379,7 +429,6 @@ int Board::UpdateUserPosition(const std::size_t &board_id, const std::size_t &pl
 template<class T>
 int Board::UpdateField(const std::size_t &board_id, const std::size_t &player_id, const std::string &field_name,
                        const T &data, void (*functor)(sql::PreparedStatement *&, const T&)) {
-    std::lock_guard<std::mutex> lock(conn_.GetMutex());
     if (!conn_.GetConnection().IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
@@ -388,7 +437,6 @@ int Board::UpdateField(const std::size_t &board_id, const std::size_t &player_id
     std::string query_string = "UPDATE active_board SET " + field_name + " = ? WHERE board_id = ? AND player_id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     functor(pstmt, data);
-    // pstmt->setDouble(1, reserved_money);
     pstmt->setInt(2, (int) board_id);
     pstmt->setInt(3, (int) player_id);
 
