@@ -24,7 +24,7 @@ void GameTalker::HandleAdminRequest(std::shared_ptr<User> &user) {
 
     std::string command = user->last_msg.get<std::string>("command");
 
-    if (command == "start") {
+    if (command == "start-game") {
         if (online_users_.load() > 1) {
             is_gaming.store(true);
             user->out << MsgServer::StartGameDone();
@@ -52,7 +52,7 @@ void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
     pt::read_json(user->in, user->last_msg);
     std::string command_type = user->last_msg.get<std::string>("command-type");
 
-    if (command_type == "game-command" && is_gaming) {
+    if (command_type == "game" && is_gaming) {
         boost::asio::post(context_, boost::bind(&GameTalker::HandleGameRequest, this, user));
         return;
     }
@@ -97,6 +97,8 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     user->is_gaming.store(true);
     user->is_talking.store(false);
     user->room_id = id;
+    // user->read_buffer
+    user->last_msg.clear();
 
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
@@ -150,8 +152,32 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
 
 void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << user->name << " send game-request";
+    auto command = user->last_msg.get<std::string>("command");
+
+    // if (command == "action" && handprocess_.current_player_pos == user->table_pos) {
+    if (command == "action") {
+        auto parametrs = user->last_msg.get_child("parametrs");
+        auto action = parametrs.get<std::string>("action-type");
+
+        // boost::asio::streambuf buf;
+        // std::istream is(&buf);
+        // write(handprocess_.ss, buf);
+        handprocess_.command_queue.push(action);
+
+        if (action == "raise") {
+            auto sum = parametrs.get<std::string>("sum");
+            handprocess_.command_queue.push(sum);
+        }
+    }
+
+    if (command != "status-request" && command != "action") {
+        boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
+        return;
+    }
+
     user->out << "{status: game-request is handled;}\n\r\n\r";
-    // DO STH IMPORTANT
+    // user->out << MsgServer::GameStatus(handprocess_.GetGameStatus());
+
     async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
 }
 
@@ -159,35 +185,31 @@ void GameTalker::HandleGameProcess() {
     reenter(this) {
         while (true) {
             yield {
-                // handprocess_.INICIALIZE()
+                handprocess_.Init();
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                // handprocess_.ShuffleCards();
+                handprocess_.DealCards();
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                // handprocess_.DealCards();
+                handprocess_.Preflop();
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                // handprocess_.Preflop();
+                handprocess_.Flop();
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                // handprocess_.Flop();
+                handprocess_.Turn();
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                // handprocess_.Turn();
+                handprocess_.River();
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                // handprocess_.River();
-                boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
-            }
-            yield {
-                // handprocess_.PotDistribution
+                handprocess_.PotDistribution();
             }
         }
     }

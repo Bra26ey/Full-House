@@ -19,14 +19,14 @@ struct Player: public PlayerInterface, public Profile {
     void Fold() override;
     int Call(int to_call) override;
     void Check() override;
-    int Raise(int raised_money) override;
+    int Raise(int raised_money, int reraise) override;
 
 
     std::vector<Card> cards;
     bool in_pot;
     int current_stage_money_in_pot;
 
-    int position;
+    unsigned int position;
 private:
 
     static int HighCard(std::vector<Card>& combination_detect);

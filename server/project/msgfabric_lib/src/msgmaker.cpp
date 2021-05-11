@@ -70,7 +70,7 @@ std::string MsgClient::CreateRoom(std::string const &password) {
     return MsgFromPtree(request);
 }
 
-std::string MsgClient::CreateRoomReault() {
+std::string MsgClient::CreateRoomResault() {
     boost::property_tree::ptree request;
 
     request.put("command-type", "basic");
@@ -93,7 +93,7 @@ std::string MsgClient::JoinRoom(uint64_t const &id, std::string const &password)
     return MsgFromPtree(request);
 }
 
-std::string MsgClient::JoinRoomReault() {
+std::string MsgClient::JoinRoomResault() {
     boost::property_tree::ptree request;
 
     request.put("command-type", "basic");
@@ -107,6 +107,64 @@ std::string MsgClient::StartGame() {
 
     request.put("command-type", "room-admin");
     request.put("command", "start-game");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::GetGameStatus() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "game");
+    request.put("command", "status-request");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::GameRaise(uint64_t const &sum) {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("action-type", "raise");
+    parametrs.put("sum", sum);
+
+    request.put("command-type", "game");
+    request.put("command", "action");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::GameCall() {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("action-type", "call");
+
+    request.put("command-type", "game");
+    request.put("command", "action");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::GameCheck() {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("action-type", "check");
+
+    request.put("command-type", "game");
+    request.put("command", "action");
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgClient::GameFold() {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("action-type", "skip");
+
+    request.put("command-type", "game");
+    request.put("command", "action");
 
     return MsgFromPtree(request);
 }
@@ -325,6 +383,19 @@ std::string MsgServer::StartGameFailed() {
 
     request.put("command-type", "room-admin-answer");
     request.put("command", "start");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::GameStatus(pt::ptree const &game_status) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.add_child("game-status", game_status);
+
+    request.put("command-type", "game-answer");
+    request.put("command", "game-status");
     request.add_child("parametrs", parametrs);
 
     return MsgFromPtree(request);

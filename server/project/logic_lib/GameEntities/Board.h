@@ -12,6 +12,11 @@
 struct Board {
     int pot;
     std::vector<Card> cards;
+
+    Board() {
+        pot = 0;
+        cards.clear();
+    }
 };
 
 #endif //FULL_HOUSE_BOARD_H

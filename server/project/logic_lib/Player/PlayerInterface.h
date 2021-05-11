@@ -9,7 +9,7 @@ struct PlayerInterface {
     virtual void Fold() = 0;
     virtual int Call(int to_call) = 0;
     virtual void Check() = 0;
-    virtual int Raise(int raised_money) = 0;
+    virtual int Raise(int raised_money, int reraise) = 0;
 };
 
 #endif //FULL_HOUSE_PLAYERINTERFACE_H

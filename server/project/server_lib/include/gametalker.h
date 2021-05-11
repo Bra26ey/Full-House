@@ -26,6 +26,7 @@ class GameTalker : public boost::asio::coroutine {
     GameTalker(io_context &context) : is_remove(false),
                                       is_gaming(false),
                                       context_(context),
+                                      handprocess_(DECK_SIZE),
                                       is_deleting_(false) {
        id = counter_++;
     };

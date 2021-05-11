@@ -15,11 +15,14 @@ add_library(GameEntities SHARED
         GameEntities/HandProcess.cpp GameEntities/HandProcess.h
         GameEntities/Card.cpp GameEntities/Card.h
         GameEntities/Board.h
-        GameEntities/Deck.cpp GameEntities/Deck.h)
+        GameEntities/Deck.cpp GameEntities/Deck.h
+        Utilities/SafeQueue.h)
 
 add_library(Player SHARED Player/Player.cpp Player/Player.h
         Player/PlayerInterface.h
         Player/Profile.h)
+
+target_link_libraries(GameEntities Logger ConfigurationHandler)
 
 # enable_testing()
 # find_package(GTest REQUIRED)

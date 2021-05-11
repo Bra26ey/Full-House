@@ -7,8 +7,8 @@
 #include <random>
 #include <chrono>
 
-Deck::Deck(int size): size(size) {
-    for (int i = 0; i < size; ++i) {
+Deck::Deck(size_t size): size(size) {
+    for (size_t i = 0; i < size; ++i) {
         deck.push_back({static_cast<Suit>(i / 13), static_cast<Value>(i % 13 + 2)});  // suit and value
     }
     deck.shrink_to_fit();

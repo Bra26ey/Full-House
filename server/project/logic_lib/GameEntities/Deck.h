@@ -10,7 +10,7 @@
 
 class Deck {
 public:
-    Deck(int size);
+    Deck(size_t size);
 
     void Shuffle();
     Card& Peak();
@@ -18,7 +18,7 @@ public:
 
 private:
     std::vector<Card> deck;
-    int size = 52;
+    size_t size = 52;
 };
 
 #endif //FULL_HOUSE_DECK_H
