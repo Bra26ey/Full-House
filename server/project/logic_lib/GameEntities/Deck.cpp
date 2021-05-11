@@ -27,3 +27,11 @@ Card& Deck::Peak() {
 void Deck::Erase() {
     deck.erase(deck.begin());
 }
+
+void Deck::Init() {
+    deck.clear();
+    for (size_t i = 0; i < size; ++i) {
+        deck.push_back({static_cast<Suit>(i / 13), static_cast<Value>(i % 13 + 2)});  // suit and value
+    }
+    deck.shrink_to_fit();
+}

@@ -24,15 +24,16 @@ bool HandProcess::one_player_in_pot(HandConfiguration& hand_config) {
 }
 
 
-HandProcess::HandProcess(size_t ammount_of_cards): current_player_pos(0), hand_config(), logger(std::make_shared<Logger>()), deck_(ammount_of_cards), board_() {
-    deck_.Shuffle();
-}
+HandProcess::HandProcess(size_t ammount_of_cards): current_player_pos(0), hand_config(), logger(std::make_shared<Logger>()), deck_(ammount_of_cards), board_() {}
 
 void HandProcess::Init() {
     FileHandler file_handler("/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/input.txt");
     ConfigurationHandler config_handler(file_handler);
     config_handler.Read();
     config_handler.HandConfigurationInit(hand_config);
+    need_next_stage = true;
+    deck_.Init();
+    deck_.Shuffle();
 }
 
 void HandProcess::DealCards() {
@@ -85,6 +86,7 @@ bool HandProcess::Preflop() {
     }
 
     if (one_player_in_pot(hand_config)) {
+        need_next_stage = false;
         return false;
     }
 
@@ -100,6 +102,9 @@ bool HandProcess::Preflop() {
 }
 
 bool HandProcess::Flop() {
+    if (!need_next_stage) {
+        return false;
+    }
 
     logger->Log("Flop stage...");
 
@@ -110,6 +115,7 @@ bool HandProcess::Flop() {
     }
 
     if (one_player_in_pot(hand_config)) {
+        need_next_stage = false;
         return false;
     }
 
@@ -121,6 +127,9 @@ bool HandProcess::Flop() {
 }
 
 bool HandProcess::Turn() {
+    if (!need_next_stage) {
+        return false;
+    }
 
     logger->Log("Turn stage...");
 
@@ -131,6 +140,7 @@ bool HandProcess::Turn() {
     }
 
     if (one_player_in_pot(hand_config)) {
+        need_next_stage = false;
         return false;
     }
 
@@ -142,6 +152,9 @@ bool HandProcess::Turn() {
 }
 
 bool HandProcess::River() {
+    if (!need_next_stage) {
+        return false;
+    }
 
     logger->Log("River stage...");
     logger->Log("board_ is...");
@@ -157,6 +170,7 @@ bool HandProcess::River() {
     }
 
     if (one_player_in_pot(hand_config)) {
+        need_next_stage = false;
         return false;
     }
 
@@ -164,6 +178,11 @@ bool HandProcess::River() {
 }
 
 void HandProcess::PotDistribution() {
+    if (one_player_in_pot(hand_config)) {
+        need_next_stage = false;
+        return;
+    }
+
     logger->Log("Showdown...");
 
     int max_hand_value = 0;
@@ -230,6 +249,11 @@ void HandProcess::GameLoop(bool& someone_raised, bool& first_round,
         someone_raised = false;
         auto it = first_player;
         for (size_t players = 0; players < hand_config.players.size(); it = CircularNext(hand_config.players, it), ++players) {
+            if (one_player_in_pot(hand_config)) {
+                need_next_stage = false;
+                break;
+            }
+
             current_player_pos = it->get()->position;
 
             if (!it->get()->in_pot || (it->get()->current_stage_money_in_pot == raised_money && !first_round) || it->get()->money == 0) {

@@ -53,6 +53,8 @@ private:
         {"check", CHECK_SIGNAL}
     };
 
+    bool need_next_stage;
+
     static std::list<std::shared_ptr<Player> >::iterator CircularNext(std::list<std::shared_ptr<Player> >& l, std::list<std::shared_ptr<Player> >::iterator it) {
         return std::next(it) == l.end() ? l.begin() : std::next(it);
     }

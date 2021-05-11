@@ -28,11 +28,11 @@ void GameTalker::HandleAdminRequest(std::shared_ptr<User> &user) {
         if (online_users_.load() > 1) {
             is_gaming.store(true);
             user->out << MsgServer::StartGameDone();
+            boost::asio::post(context_, boost::bind(&GameTalker::Start, this));
         } else {
             user->out << MsgServer::StartGameFailed();
         }
         async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
-        boost::asio::post(context_, boost::bind(&GameTalker::Start, this));
         return;
     }
 
@@ -210,6 +210,7 @@ void GameTalker::HandleGameProcess() {
             }
             yield {
                 handprocess_.PotDistribution();
+                is_gaming.store(false);
             }
         }
     }

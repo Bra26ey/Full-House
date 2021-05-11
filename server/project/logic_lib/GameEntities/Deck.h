@@ -15,6 +15,7 @@ public:
     void Shuffle();
     Card& Peak();
     void Erase();
+    void Init();
 
 private:
     std::vector<Card> deck;

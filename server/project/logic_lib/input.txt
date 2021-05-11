@@ -1,6 +1,6 @@
 1 2 4 1 2 8 2
-1 Sasha 3195719 100 5
-2 Edin 40810 100 8
-3 Andrey 108506 100 4
-4 Aleksandr 15810 100 2
-5 Aleksei 491610 100 1
+1 Sasha 100 5
+2 Edin 100 8
+3 Andrey 100 4
+4 Aleksandr 100 2
+5 Aleksei 100 1

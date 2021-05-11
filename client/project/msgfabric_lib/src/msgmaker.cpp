@@ -130,6 +130,8 @@ std::string MsgClient::GameRaise(uint64_t const &sum) {
     request.put("command-type", "game");
     request.put("command", "action");
 
+    request.add_child("parametrs", parametrs);
+
     return MsgFromPtree(request);
 }
 
@@ -141,6 +143,8 @@ std::string MsgClient::GameCall() {
 
     request.put("command-type", "game");
     request.put("command", "action");
+
+    request.add_child("parametrs", parametrs);
 
     return MsgFromPtree(request);
 }
@@ -154,6 +158,8 @@ std::string MsgClient::GameCheck() {
     request.put("command-type", "game");
     request.put("command", "action");
 
+    request.add_child("parametrs", parametrs);
+
     return MsgFromPtree(request);
 }
 
@@ -161,10 +167,12 @@ std::string MsgClient::GameFold() {
     boost::property_tree::ptree parametrs;
     boost::property_tree::ptree request;
 
-    parametrs.put("action-type", "skip");
+    parametrs.put("action-type", "fold");
 
     request.put("command-type", "game");
     request.put("command", "action");
+
+    request.add_child("parametrs", parametrs);
 
     return MsgFromPtree(request);
 }
