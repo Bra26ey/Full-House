@@ -95,8 +95,8 @@ Rules2->setText("5\n"
 "your cards. In Texas Hold’em, there are 5 cards on the table and 2 cards in your hand. You can create any 5-card combination using these 7 cards.\n"
 "The remaining cards aren’t counted.");
 
-    Rules1->setStyleSheet("font-family: sans-serif;background-color:rgba(164, 191, 67, 0.6); border-radius:20px;margin:5px");
-    Rules2->setStyleSheet("font-family: sans-serif;background-color:rgba(164, 191, 67, 0.6); border-radius:20px;margin:5px");
+    Rules1->setStyleSheet("font-family: sans-serif;font-size:20px;background-color:rgba(164, 191, 67, 0.6); border-radius:20px;margin:5px");
+    Rules2->setStyleSheet("font-family: sans-serif;font-size:20px;background-color:rgba(164, 191, 67, 0.6); border-radius:20px;margin:5px");
     Rules2->hide();
     controlButtons->addWidget(ControlButton);
     buttonContainer->addWidget(ExitButton);

@@ -32,6 +32,7 @@ include_directories(Ui_elements/For_Settings)
 include_directories(Ui_elements/For_Search)
 
 include_directories(../client_lib/include)
+include_directories(../msgfabric_lib/include)
 
 set(PROJECT_SOURCES
         Base/basefragment.cpp

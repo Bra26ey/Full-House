@@ -19,6 +19,8 @@ private:
     FragmentNavigator *navigator;
     BaseScreensFactory *factory;
 
+    network::Client client_;
+
     //some_client_network_implementation
 
 public:
