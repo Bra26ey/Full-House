@@ -18,6 +18,13 @@ static QRect fouthpos(850, 30, 400, 400);
 static QRect fifthpos(900, 480, 400, 400);
 static QRect mainplayerpos(500, 590, 400, 400);
 
+static QRect firstposmin(60, 420, 400, 400);           // 2   4
+static QRect secondposmin(90, 0, 400, 400);         // 1     5
+static QRect thirdposmin(390, -40, 400, 400);        //     0
+static QRect fouthposmin(700, 00, 400, 400);
+static QRect fifthposmin(740, 390, 400, 400);
+static QRect mainplayerposmin(400, 470, 400, 400);
+
 //TODO refactor
 
 
@@ -48,7 +55,12 @@ public:
     QString GetName();
     void AddMoney(size_t add);
 
+    void Resize(QSize WinSize);
+    QRect GetPos();
+
 protected:
+    QSize normal;
+    QSize min;
     QWidget *mChips;
     QPair<Card*, Card*> mCards;
     PlayerInfoLabel *mPlayerInfo;
@@ -57,6 +69,9 @@ protected:
     QImage *mypix;
     QImage player;
     size_t mTextureId;
+private:
+    void posChange();
+    bool LowRes;
 };
 
 #endif // OTHERPLAYER_H

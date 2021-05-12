@@ -31,7 +31,6 @@ public:
     void DisplayWinner(OtherPlayer* winner);
     void CurrentTurn(OtherPlayer* player);
     void DeleteWinnerDisplay();
-
 public slots:
     void onBetPressed();
     void onRaisePressed();
@@ -46,6 +45,8 @@ private slots:
     void setval();
 
 private:
+    void RedrawPlayer(OtherPlayer* player);
+    void resizeEvent(QResizeEvent *event);
     void BlockActions();
     void UnBlockActions();
 
@@ -53,10 +54,10 @@ private:
 
     Player *mPlayer;
     QVector<OtherPlayer*> mOtherPlayers;
-    QLabel *mPlayTable;
-    QLabel *mDealerLogo;
+    PlayTable *mPlayTable;
+    DealerLogo *mDealerLogo;
     Chips *mChips;
-    QLabel *mTurnIndicator;
+    TurnSpark *mTurnIndicator;
 
     QVector <Card*> CardOnTable;
 

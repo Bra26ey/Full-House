@@ -9,8 +9,11 @@ class PlayTable : public QLabel {
 public:
     PlayTable();
     ~PlayTable();
+    void Resize(QSize WinSize);
 
 private:
+    QSize min;
+    QSize normal;
     QImage *mypix;
     QImage table;
 };

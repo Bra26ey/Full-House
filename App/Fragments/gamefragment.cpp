@@ -295,3 +295,20 @@ void GameFragment::CurrentTurn(OtherPlayer *player) {
 void GameFragment::DeleteWinnerDisplay() {
     mWinLabel->hide();
 }
+
+void GameFragment::RedrawPlayer(OtherPlayer* player) {
+    auto pos = player->GetPos();
+    player->setParent(mPlayTable);
+    player->setGeometry(pos);
+    player->SetPosition(pos);
+}
+
+
+void GameFragment::resizeEvent(QResizeEvent *event) {
+    qDebug() << this->size();
+    mPlayTable->Resize(this->size());
+    foreach(auto player, mOtherPlayers) {
+        player->Resize(this->size());
+        RedrawPlayer(player);
+    }
+}

@@ -1,4 +1,5 @@
 ﻿#include "otherplayer.h"
+#include <QDebug>
 
 OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) {
     mPlayerInfo = new PlayerInfoLabel(nickname, money);
@@ -25,10 +26,13 @@ OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) {
     }
     }
 
-    player = mypix->scaled(200, 200, Qt::IgnoreAspectRatio);
+    normal.setWidth(200);
+    normal.setHeight(200);
+    min.setWidth(166);
+    min.setHeight(166);
+    player = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
 
     this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
-    this->resize(200, 200);
     this->setStyleSheet("margin:50px;margin-left:100px");
 
     mPlayerInfo->setParent(this);
@@ -129,4 +133,53 @@ void OtherPlayer::AddMoney(size_t add) {
 
 QString OtherPlayer::GetName() {
     return mPlayerInfo->GetName();
+}
+
+QRect OtherPlayer::GetPos() {
+    return mPos;
+}
+
+void OtherPlayer::Resize(QSize WinSize) {
+    if (WinSize.width() <= 1378 && WinSize.height() <= 1093) {
+        player = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
+        this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
+        this->setStyleSheet("margin:50px;margin-left:80px");
+        LowRes = 1;
+        posChange();
+    } else {
+        player = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
+        this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
+        this->setStyleSheet("margin:50px;margin-left:100px");
+        LowRes = 0;
+        posChange();
+    }
+}
+
+void OtherPlayer::posChange() {
+    if (LowRes) {
+        qDebug("MinSet");
+        if (mPos == firstpos) {
+            mPos = firstposmin;
+        } else if (mPos == secondpos) {
+            mPos = secondposmin;
+        } else if (mPos == thirdpos) {
+            mPos = thirdposmin;
+        } else if (mPos == fouthpos) {
+            mPos = fouthposmin;
+        } else if (mPos == fifthpos) {
+            mPos = fifthposmin;
+        }
+    } else {
+        if (mPos == firstposmin) {
+            mPos = firstpos;
+        } else if (mPos == secondposmin) {
+            mPos = secondpos;
+        } else if (mPos == thirdposmin) {
+            mPos = thirdpos;
+        } else if (mPos == fouthposmin) {
+            mPos = fouthpos;
+        } else if (mPos == fifthposmin) {
+            mPos = fifthpos;
+        }
+    }
 }

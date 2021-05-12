@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.14.2, 2021-05-05T00:32:44. -->
+<!-- Written by QtCreator 4.14.2, 2021-05-09T01:39:18. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -64,57 +64,7 @@
     <value type="bool" key="AutoTest.Framework.QtQuickTest">true</value>
     <value type="bool" key="AutoTest.Framework.QtTest">true</value>
    </valuemap>
-   <valuemap type="QVariantMap" key="AutoTest.CheckStates">
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test01_mainfunctions.cpp:main_function">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test01_mainfunctions.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:ScreenFactory">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test4">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test5">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test6">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test7">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test02_screenfactory.cpp:test8">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test03_navigator.cpp:Navigator">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test03_navigator.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test04_loginfragment.cpp:LoginFragment">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test04_loginfragment.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test04_loginfragment.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test04_loginfragment.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test05_registrationfragment.cpp:Registration">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test05_registrationfragment.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test05_registrationfragment.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test05_registrationfragment.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test06_menu.cpp:Menu">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test06_menu.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test06_menu.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test06_menu.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test07_settings.cpp:Settings">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test07_settings.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test07_settings.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test07_settings.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test08_search.cpp:search">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test08_search.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test08_search.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test08_search.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test09_game.cpp:game">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test09_game.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test09_game.cpp:test2">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test09_game.cpp:test3">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:cards">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:chips">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:otherplayer">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:player">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:playerinfo">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:playtable">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test10_game_elements.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test11_ui_elements.cpp:buttons">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test11_ui_elements.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test12_ui_elements_pt2.cpp:sliders">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test12_ui_elements_pt2.cpp:test1">Checked</value>
-    <value type="Qt::CheckState" key="/home/zennoma/Full-House/App/test/test12_ui_elements_pt2.cpp:textboxes">Checked</value>
-   </valuemap>
+   <valuemap type="QVariantMap" key="AutoTest.CheckStates"/>
    <value type="int" key="AutoTest.RunAfterBuild">0</value>
    <value type="bool" key="AutoTest.UseGlobal">true</value>
    <valuelist type="QVariantList" key="ClangCodeModel.CustomCommandLineKey"/>
@@ -463,7 +413,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.10">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -534,7 +483,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.11">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -605,7 +553,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.12">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -676,7 +623,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.13">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -818,7 +764,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.3">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -889,7 +834,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.4">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -960,7 +904,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.5">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1031,7 +974,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.6">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1102,7 +1044,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.7">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1173,7 +1114,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.8">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1244,7 +1184,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.9">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1315,7 +1254,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/zennoma/Full-House/build-App-Desktop-Debug/test</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">14</value>
   </valuemap>
