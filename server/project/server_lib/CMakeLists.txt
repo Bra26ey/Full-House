@@ -21,7 +21,7 @@ target_link_libraries(server_lib
                       msgfabric_lib
                       logic_lib
                       ${CMAKE_THREAD_LIBS_INIT}
-                      ${Boost_LIBRARIES} 
+                      ${Boost_LIBRARIES}
                      )
 
 add_subdirectory(tests)
