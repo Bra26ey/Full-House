@@ -5,10 +5,14 @@ Player::Player(std::string name, size_t money) {
 
     mypix = new QImage(":/players/Kyle");
 
-    player = mypix->scaled(200, 200, Qt::IgnoreAspectRatio);
+    normal.setHeight(200);
+    normal.setWidth(200);
+    min.setHeight(166);
+    min.setWidth(166);
+
+    player = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
 
     this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
-    this->resize(200, 200);
     this->setStyleSheet("margin:50px;margin-left:80px");
 
     mPlayerInfo->setParent(this);
@@ -22,6 +26,31 @@ Player::~Player() {
     delete mTexture;
 }
 
-void Player::DisplayCards() {
-
+void Player::Resize(QSize WinSize) {
+    if (WinSize.width() <= 1378 && WinSize.height() <= 1093) {
+        player = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
+        this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
+        LowRes = 1;
+        posChange();
+    } else {
+        player = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
+        this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
+        LowRes = 0;
+        posChange();
+    }
 }
+
+void Player::posChange() {
+    if (LowRes) {
+        qDebug("MinSet");
+        if (mPos == mainplayerpos) {
+            mPos = mainplayerposmin;
+        }
+    } else {
+        if (mPos == mainplayerposmin) {
+            mPos = mainplayerpos;
+        }
+    }
+}
+
+

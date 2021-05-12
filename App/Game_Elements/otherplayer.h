@@ -55,7 +55,7 @@ public:
     QString GetName();
     void AddMoney(size_t add);
 
-    void Resize(QSize WinSize);
+    virtual void Resize(QSize WinSize);
     QRect GetPos();
 
 protected:

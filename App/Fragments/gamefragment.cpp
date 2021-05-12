@@ -311,4 +311,6 @@ void GameFragment::resizeEvent(QResizeEvent *event) {
         player->Resize(this->size());
         RedrawPlayer(player);
     }
+    mPlayer->Resize(this->size());
+    RedrawPlayer(mPlayer);
 }
