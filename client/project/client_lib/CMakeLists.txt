@@ -12,4 +12,4 @@ add_library(client_lib SHARED ${CLIENT_LIB_SRC})
 
 target_link_libraries(client_lib ${Boost_LIBRARIES})
 
-add_subdirectory(tests)
+# add_subdirectory(tests)
