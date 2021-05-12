@@ -8,6 +8,7 @@
 #include "dealerlogo.h"
 #include "player.h"
 #include "turnspark.h"
+#include "winlabel.h"
 
 #include <QVector>
 #include <QWidget>
@@ -40,6 +41,7 @@ public slots:
 
     void onLeavePressed();
     void onSettingsPressed();
+    void onStartPressed();
 
 private slots:
     void setval();
@@ -63,7 +65,7 @@ private:
 
     QSlider *BetSlider;
     QLineEdit *BetValue;
-    QLabel *mWinLabel;
+    WinLabel *mWinLabel;
 
     QVector<QPushButton*> ActionButtons;
     QPushButton *CallButton;
@@ -73,6 +75,7 @@ private:
     QPushButton *CheckButton;
 
     QPushButton *LeaveButton;
+    QPushButton *StartGameButton;
     QPushButton *SettingsButton;
 };
 

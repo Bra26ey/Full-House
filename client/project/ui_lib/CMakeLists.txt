@@ -54,6 +54,7 @@ set(PROJECT_SOURCES
         Game_Elements/playerinfolabel.cpp
         Game_Elements/dealerlogo.cpp
         Game_Elements/turnspark.cpp
+        Game_Elements/winlabel.cpp
 
         Game_Elements/Gameplay_Buttons/betbutton.cpp
         Game_Elements/Gameplay_Buttons/checkbutton.cpp

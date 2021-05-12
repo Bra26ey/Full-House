@@ -1,7 +1,7 @@
 ﻿#include "otherplayer.h"
 #include <QDebug>
 
-OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) {
+OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) : LowRes(0), HasCards(0) {
     mPlayerInfo = new PlayerInfoLabel(nickname, money);
     switch(id) {
     case 1: {
@@ -40,7 +40,6 @@ OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) {
 }
 
 OtherPlayer::~OtherPlayer() {
-    delete mChips;
     delete mPlayerInfo;
     delete mypix;
 }
@@ -73,35 +72,18 @@ void OtherPlayer::SetPosition(QRect &pos) {
 void OtherPlayer::GiveCards(size_t value1, size_t suit1, size_t value2, size_t suit2) {
     Card* firstCard = new Card(value1, suit1);
     Card* secondCard = new Card(value2, suit2);
+    HasCards = true;
 
     mCards.first = firstCard;
     mCards.second = secondCard;
 
     mCards.first->setParent(this);
     mCards.second->setParent(this);
-
-    if (mPos == mainplayerpos) {
-        mCards.first->setGeometry(40, -50, 220, 220);
-        mCards.second->setGeometry(90, -50, 220, 220);
-    } else if (mPos == firstpos) {
-        mCards.first->setGeometry(180, 80, 220, 220);
-        mCards.second->setGeometry(220, 80, 220, 220);
-    } else if (mPos == secondpos) {
-        mCards.first->setGeometry(150, 220, 220, 220);
-        mCards.second->setGeometry(210, 220, 220, 220);
-    } else if (mPos == thirdpos) {
-        mCards.first->setGeometry(30, 245, 220, 220);
-        mCards.second->setGeometry(90, 245, 220, 220);
-    } else if (mPos == fouthpos) {
-        mCards.first->setGeometry(-50, 220, 220, 220);
-        mCards.second->setGeometry(10, 220, 220, 220);
-    } else if (mPos == fifthpos) {
-        mCards.first->setGeometry(-100, 80, 220, 220);
-        mCards.second->setGeometry(-60, 80, 220, 220);
-    }
+    setCardPos();
 }
 
 void OtherPlayer::DiscardCards() {
+    HasCards = false;
     delete mCards.first;
     delete mCards.second;
     mCards.first = nullptr;
@@ -139,25 +121,73 @@ QRect OtherPlayer::GetPos() {
     return mPos;
 }
 
+QPair<Card*, Card*> OtherPlayer::GetCard() {
+    return mCards;
+}
+
 void OtherPlayer::Resize(QSize WinSize) {
     if (WinSize.height() <= 1093) {
         player = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
         this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
         this->setStyleSheet("margin:50px;margin-left:80px");
         LowRes = 1;
-        posChange();
     } else {
         player = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
         this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
         this->setStyleSheet("margin:50px;margin-left:100px");
         LowRes = 0;
-        posChange();
+    }
+    posChange();
+    setCardPos();
+}
+
+void OtherPlayer::setCardPos() {
+    if(HasCards)
+    if(!LowRes) {
+        if (mPos == mainplayerpos) {
+            mCards.first->setGeometry(40, -50, 220, 220);
+            mCards.second->setGeometry(90, -50, 220, 220);
+        } else if (mPos == firstpos) {
+            mCards.first->setGeometry(180, 80, 220, 220);
+            mCards.second->setGeometry(220, 80, 220, 220);
+        } else if (mPos == secondpos) {
+            mCards.first->setGeometry(150, 220, 220, 220);
+            mCards.second->setGeometry(210, 220, 220, 220);
+        } else if (mPos == thirdpos) {
+            mCards.first->setGeometry(30, 245, 220, 220);
+            mCards.second->setGeometry(90, 245, 220, 220);
+        } else if (mPos == fouthpos) {
+            mCards.first->setGeometry(-50, 220, 220, 220);
+            mCards.second->setGeometry(10, 220, 220, 220);
+        } else if (mPos == fifthpos) {
+            mCards.first->setGeometry(-100, 80, 220, 220);
+            mCards.second->setGeometry(-60, 80, 220, 220);
+        }
+    } else {
+        if (mPos == mainplayerposmin) {
+            mCards.first->setGeometry(35, -45, 220, 220);
+            mCards.second->setGeometry(85, -45, 220, 220);
+        } else if (mPos == firstposmin) {
+            mCards.first->setGeometry(160, 60, 220, 220);
+            mCards.second->setGeometry(200, 60, 220, 220);
+        } else if (mPos == secondposmin) {
+            mCards.first->setGeometry(130, 210, 220, 220);
+            mCards.second->setGeometry(190, 210, 220, 220);
+        } else if (mPos == thirdposmin) {
+            mCards.first->setGeometry(30, 235, 220, 220);
+            mCards.second->setGeometry(90, 235, 220, 220);
+        } else if (mPos == fouthposmin) {
+            mCards.first->setGeometry(-50, 210, 220, 220);
+            mCards.second->setGeometry(10, 210, 220, 220);
+        } else if (mPos == fifthposmin) {
+            mCards.first->setGeometry(-80, 40, 220, 220);
+            mCards.second->setGeometry(-40, 40, 220, 220);
+        }
     }
 }
 
 void OtherPlayer::posChange() {
     if (LowRes) {
-        qDebug("MinSet");
         if (mPos == firstpos) {
             mPos = firstposmin;
         } else if (mPos == secondpos) {

@@ -2,10 +2,15 @@
 
 Chips::Chips() : mValue(0) {
     mypix = new QImage(":/other_textures/chips");
-    chips = mypix->scaled(120, 120, Qt::IgnoreAspectRatio);
+    normal.setWidth(120);
+    normal.setHeight(120);
+
+    min.setWidth(100);
+    min.setHeight(100);
+
+    chips = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
 
     this->setPixmap(QPixmap::fromImage(chips, Qt::AutoColor));
-    this->resize(120, 120);
 
     mAmount = new QLabel;
     QString text = "Total $: " + QString::number(mValue);
@@ -36,4 +41,28 @@ Chips::~Chips() {
 
 size_t Chips::GetBank() {
     return mValue;
+}
+
+void Chips::Resize(QSize WinSize) {
+    if (WinSize.height() <= 1093) {
+        chips = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
+        this->setPixmap(QPixmap::fromImage(chips, Qt::AutoColor));
+        LowRes = 1;
+    } else {
+        chips = mypix->scaled(normal.width(), normal.height(), Qt::IgnoreAspectRatio);
+        this->setPixmap(QPixmap::fromImage(chips, Qt::AutoColor));
+        LowRes = 0;
+    }
+    ChangePos();
+}
+
+void Chips::ChangePos() {
+    if(LowRes) {
+        mAmount->setGeometry(-25, 165, 500, 200);
+        Pos = QRect(580, 90, 480, 500);
+    } else {
+        mAmount->setGeometry(-25, 165, 550, 225);
+        Pos = QRect(760, 140, 780, 550);
+    }
+    this->setGeometry(Pos);
 }
