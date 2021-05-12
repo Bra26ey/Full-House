@@ -18,7 +18,7 @@ PlayTable::~PlayTable() {
 }
 
 void PlayTable::Resize(QSize WinSize) {
-    if (WinSize.width() <= 1378 && WinSize.height() <= 1093) {
+    if (WinSize.height() <= 1093) {
         table = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
         this->setPixmap(QPixmap::fromImage(table, Qt::AutoColor));
         this->setStyleSheet("margin-left:166px;margin-top:166px;margin-right:166px");
