@@ -66,6 +66,7 @@ set(PROJECT_SOURCES
         ${PROJECT_SOURCE_DIR}/Game_Elements/playerinfolabel.cpp
         ${PROJECT_SOURCE_DIR}/Game_Elements/dealerlogo.cpp
         ${PROJECT_SOURCE_DIR}/Game_Elements/turnspark.cpp
+        ${PROJECT_SOURCE_DIR}/Game_Elements/winlabel.cpp
 
         ${PROJECT_SOURCE_DIR}/Game_Elements/Gameplay_Buttons/betbutton.cpp
         ${PROJECT_SOURCE_DIR}/Game_Elements/Gameplay_Buttons/checkbutton.cpp

@@ -24,12 +24,11 @@ GameFragment::GameFragment() : num_players(0) {
     mChips->setParent(mPlayTable);
     mChips->setGeometry(base_card_coefficient + 5 * card_move_coefficient + 30, mPlayTable->height()/2 - 50, 400, 400);
 
-    mWinLabel = new QLabel;
+    mWinLabel = new WinLabel;
     mWinLabel->setParent(mPlayTable);
     qDebug() << QRect(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
     mWinLabel->setGeometry(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
-    mWinLabel->setStyleSheet("background:rgba(33,33,33,0.5);font-size:26px;color:rgb(0, 255, 255);");
-    mWinLabel->hide();
+
 
     mTurnIndicator = new TurnSpark;
     mTurnIndicator->hide();
@@ -335,10 +334,5 @@ void GameFragment::resizeEvent(QResizeEvent *event) {
         }
     }
     mChips->Resize(this->size());
-
-    if (this->size().height() <= 1093) {
-        mWinLabel->setGeometry(mPlayTable->width()/2 - 365, mPlayTable->size().height()/2 - 90, 780, 200);
-    } else {
-        mWinLabel->setGeometry(mPlayTable->width()/2 - 350, mPlayTable->size().height()/2 - 120, 780, 250);
-    }
+    mWinLabel->Resize(this->size());
 }

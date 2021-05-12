@@ -8,6 +8,7 @@
 #include "dealerlogo.h"
 #include "player.h"
 #include "turnspark.h"
+#include "winlabel.h"
 
 #include <QVector>
 #include <QWidget>
@@ -63,7 +64,7 @@ private:
 
     QSlider *BetSlider;
     QLineEdit *BetValue;
-    QLabel *mWinLabel;
+    WinLabel *mWinLabel;
 
     QVector<QPushButton*> ActionButtons;
     QPushButton *CallButton;
