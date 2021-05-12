@@ -22,7 +22,6 @@ Player::Player(std::string name, size_t money) : LowRes(0) {
 
 Player::~Player() {
     delete mPlayerInfo;
-    delete mTexture;
 }
 
 void Player::Resize(QSize WinSize) {

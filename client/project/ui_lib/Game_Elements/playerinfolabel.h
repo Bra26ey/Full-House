@@ -14,6 +14,7 @@ public:
     void setFold();
     void setRaise();
     void setCheck();
+    void setCall();
     void ClearStatus();
 
     void setTotal(size_t total);

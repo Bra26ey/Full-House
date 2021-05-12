@@ -49,6 +49,7 @@ public:
     void setRaise();
     void setFold();
     void setCheck();
+    void setCall();
     void ClearStatus();
     void setBet(size_t bet);
 

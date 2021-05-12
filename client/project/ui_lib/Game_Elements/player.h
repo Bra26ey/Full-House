@@ -15,7 +15,6 @@ private:
     QSize normal;
     QSize min;
     size_t mTextureId;
-    QPixmap *mTexture;
 };
 
 #endif // PLAYER_H

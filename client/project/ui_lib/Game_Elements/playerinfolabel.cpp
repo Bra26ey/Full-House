@@ -56,6 +56,11 @@ void PlayerInfoLabel::setCheck() {
     mStatus->setText(status);
 }
 
+void PlayerInfoLabel::setCall() {
+    QString status = "Call";
+    mStatus->setText(status);
+}
+
 void PlayerInfoLabel::ClearStatus() {
     mStatus->setText("");
 }

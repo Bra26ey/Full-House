@@ -47,7 +47,6 @@ void FragmentNavigator::back() {
 }
 
 void FragmentNavigator::replace(QString tag) {
-    qDebug("Navigator replace");
     BaseFragment *newFragment = this->screensFactory->create(tag);
     currentContainer->removeWidget(stack.back());
     delete stack.back();

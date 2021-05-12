@@ -171,9 +171,6 @@ GameFragment::GameFragment() : num_players(0) {
 GameFragment::~GameFragment() {
     delete mPlayer;
     delete mPlayTable;
-    delete mDealerLogo;
-    delete mWinLabel;
-    delete mTurnIndicator;
 
     delete BetButton;
     delete RaiseButton;
@@ -185,6 +182,7 @@ GameFragment::~GameFragment() {
     delete LeaveButton;
     delete SettingsButton;
     delete StartGameButton;
+    qDebug("Dest");
 }
 
 void GameFragment::setval() {
@@ -204,6 +202,7 @@ void GameFragment::onCallPressed() {
     ActionButtons[0]->hide();
     ActionButtons[1]->hide();
     ActionButtons[1]->show();
+    mPlayer->setCall();
 }
 
 void GameFragment::onCheckPressed() {
@@ -226,7 +225,7 @@ void GameFragment::onFoldPressed() {
 
 void GameFragment::onLeavePressed() {
     // disconnect
-    navigateTo(SEARCH_TAG);
+    back();
 }
 void GameFragment::onStartPressed() {
     foreach (auto btn, ActionButtons) {
