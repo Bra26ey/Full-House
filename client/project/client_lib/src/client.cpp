@@ -7,6 +7,10 @@
 
 using boost::asio::ip::address;
 
+// namespace time = boost::posix_time;
+
+constexpr uint32_t PING_TIME = 500;
+
 // constexpr std::string_view SERVER_IP = "127.0.0.1";
 constexpr size_t SERVER_PORT = 2000;
 
@@ -22,6 +26,7 @@ bool Client::Connect() {
     tcp::endpoint endpoint(address::from_string("127.0.1.1"), SERVER_PORT);
     socket_.connect(endpoint);
     std::cout << "connection done on ep = " << endpoint << std::endl;
+    last_ping = boost::posix_time::microsec_clock::local_time();
     return true;
 }
 
@@ -49,6 +54,10 @@ int Client::Read(boost::asio::streambuf &buffer) {
 void Client::Run() {
     while (true) {
         if (msg_queue_.IsEmpty()) {
+            auto delta = boost::posix_time::microsec_clock::local_time() - last_ping;
+            if (delta.total_milliseconds() < PING_TIME) {
+                continue;
+            }
             out_ << MsgClient::Ping();
         } else {
             out_ << msg_queue_.Pop();
@@ -57,8 +66,23 @@ void Client::Run() {
         boost::asio::write(socket_, write_buffer_);
 
         boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
+
+        last_ping = boost::posix_time::microsec_clock::local_time();
     }
 }
+
+    // void on_check_ping() {
+    //     boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+    //     if ( (now - last_ping).total_milliseconds() > 5000) {
+    //         std::cout << "stopping " << username_ << " - no ping in time" << std::endl;
+    //         stop();
+    //     }
+    //     last_ping = boost::posix_time::microsec_clock::local_time();
+    // }
+    // void post_check_ping() {
+    //     timer_.expires_from_now(boost::posix_time::millisec(5000));
+    //     timer_.async_wait( MEM_FN(on_check_ping));
+    // }
 
 void Client::Autorise(std::string const &login, std::string const &password) {
     auto msg = MsgClient::Autorisation(login, password);

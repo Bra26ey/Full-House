@@ -4,7 +4,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include "boost/date_time/posix_time/posix_time.hpp" 
 
 #include "tsqueue.h"
 
@@ -54,7 +53,7 @@ class Client {
 
     TSQueue<std::string> msg_queue_;
 
-    boost::posix_time::ptime since_last_ping;
+    boost::posix_time::ptime last_ping;
 };
 
 }  // namespace network
