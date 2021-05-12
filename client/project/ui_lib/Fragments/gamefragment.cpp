@@ -9,8 +9,11 @@
 #include <QIntValidator>
 
 
-int base_card_coefficient = -50;
+int base_card_coefficient = 280;
 int card_move_coefficient = 90;
+
+int min_base_card_coefficient = 166;
+int min_card_move_coefficient = 80;
 
 using namespace screens;
 GameFragment::GameFragment() : num_players(0) {
@@ -19,13 +22,10 @@ GameFragment::GameFragment() : num_players(0) {
 
     mChips = new Chips;
     mChips->setParent(mPlayTable);
-    mChips->setGeometry(mPlayTable->width()/2 + base_card_coefficient + 5 * card_move_coefficient + 30, mPlayTable->height()/2 - 50, 400, 400);
 
-    mWinLabel = new QLabel;
+    mWinLabel = new WinLabel;
     mWinLabel->setParent(mPlayTable);
-    mWinLabel->setGeometry(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
-    mWinLabel->setStyleSheet("background:rgba(33,33,33,0.5);font-size:26px;color:rgb(0, 255, 255);");
-    mWinLabel->hide();
+
 
     mTurnIndicator = new TurnSpark;
     mTurnIndicator->hide();
@@ -86,6 +86,7 @@ GameFragment::GameFragment() : num_players(0) {
     ActionButtons.append(CheckButton);
     foreach (auto btn, ActionButtons) {
         mainHLayout->addWidget(btn);
+        btn->hide();
     }
     mainVLayout->addLayout(mainHLayout);
 
@@ -95,6 +96,8 @@ GameFragment::GameFragment() : num_players(0) {
     SliderLayout->addWidget(BetValue);
 
     mainVLayout->addLayout(SliderLayout);
+    BetSlider->hide();
+    BetValue->hide();
 
     QHBoxLayout *extraHLayout = new QHBoxLayout;
 
@@ -102,11 +105,17 @@ GameFragment::GameFragment() : num_players(0) {
     SettingsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SettingsButton, &QPushButton::clicked, this, &GameFragment::onSettingsPressed);
 
+    StartGameButton = new QPushButton("StartGame");
+    StartGameButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(StartGameButton, &QPushButton::clicked, this, &GameFragment::onStartPressed);
+
     LeaveButton = new QPushButton("Exit");
     LeaveButton->setStyleSheet("color:#242424;font-size:24px");
     connect(LeaveButton, &QPushButton::clicked, this, &GameFragment::onLeavePressed);
 
+
     extraHLayout->addWidget(SettingsButton);
+    extraHLayout->addWidget(StartGameButton);
     extraHLayout->addWidget(LeaveButton);
 
     mainVLayout->addLayout(extraHLayout);
@@ -117,12 +126,12 @@ GameFragment::GameFragment() : num_players(0) {
     // кайнда дебаг
 
     bool up;  // тоже дебаг
+    qDebug() << mPlayTable->size();
     for(size_t i = 0; i < 5; ++i) {
         i < 3 ? up = true : up = false;
         auto card = new Card(1 * i + 2, (i + 1) % 4, up);
         CardOnTable.push_back(card);
         CardOnTable[i]->setParent(mPlayTable);
-        CardOnTable[i]->setGeometry(mPlayTable->width()/2 + base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
     }
 
     CardOnTable[3]->Flip();
@@ -153,8 +162,8 @@ GameFragment::GameFragment() : num_players(0) {
     mOtherPlayers[4]->setRaise();
 
 
-    CurrentTurn(mOtherPlayers[4]);
-    MakeDealer(2);
+    CurrentTurn(mPlayer);
+    MakeDealer(4);
     DisplayWinner(mPlayer);
 
 }
@@ -175,6 +184,7 @@ GameFragment::~GameFragment() {
 
     delete LeaveButton;
     delete SettingsButton;
+    delete StartGameButton;
 }
 
 void GameFragment::setval() {
@@ -218,7 +228,14 @@ void GameFragment::onLeavePressed() {
     // disconnect
     navigateTo(SEARCH_TAG);
 }
-
+void GameFragment::onStartPressed() {
+    foreach (auto btn, ActionButtons) {
+        btn->show();
+    }
+    BetSlider->show();
+    BetValue->show();
+    StartGameButton->hide();
+}
 void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
 }
@@ -243,7 +260,7 @@ void GameFragment::DrawMainPlayer() {
 void GameFragment::MakeDealer(size_t player_id) {
     if (player_id > 0) {
         mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
-        mDealerLogo->setGeometry(20, 30, 150, 150);
+        mDealerLogo->setGeometry(10, 20, 200, 200);
     } else {
         mDealerLogo->setParent(mPlayer);
         mDealerLogo->setGeometry(-20, -10, 200, 200);
@@ -285,9 +302,9 @@ void GameFragment::DisplayWinner(OtherPlayer *winner) {
 void GameFragment::CurrentTurn(OtherPlayer *player) {
     mTurnIndicator->setParent(player);
     if (player == mPlayer) {
-        mTurnIndicator->setGeometry(95, -25, 300, 300);
+        mTurnIndicator->setGeometry(85, -25, 300, 300);
     } else {
-        mTurnIndicator->setGeometry(100, -80, 300, 300);
+        mTurnIndicator->setGeometry(90, -80, 300, 300);
     }
     mTurnIndicator->show();
 }
@@ -298,19 +315,38 @@ void GameFragment::DeleteWinnerDisplay() {
 
 void GameFragment::RedrawPlayer(OtherPlayer* player) {
     auto pos = player->GetPos();
-    player->setParent(mPlayTable);
     player->setGeometry(pos);
     player->SetPosition(pos);
 }
 
 
 void GameFragment::resizeEvent(QResizeEvent *event) {
-    qDebug() << this->size();
     mPlayTable->Resize(this->size());
     foreach(auto player, mOtherPlayers) {
         player->Resize(this->size());
+        if(player->HasCards) {
+            player->GetCard().first->Resize(this->size());
+            player->GetCard().second->Resize(this->size());
+        }
         RedrawPlayer(player);
     }
     mPlayer->Resize(this->size());
+    if (mPlayer->HasCards) {
+        mPlayer->GetCard().first->Resize(this->size());
+        mPlayer->GetCard().second->Resize(this->size());
+    }
     RedrawPlayer(mPlayer);
+    int i = 0;
+    foreach(auto card, CardOnTable) {
+        card->Resize(this->size());
+        if (this->size().height() <= 1093) {
+           card->setGeometry(min_base_card_coefficient + i * min_card_move_coefficient, mPlayTable->height()/2 - 270, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
+           i++;
+        } else {
+            card->setGeometry(base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2 - 330, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
+            i++;
+        }
+    }
+    mChips->Resize(this->size());
+    mWinLabel->Resize(this->size());
 }

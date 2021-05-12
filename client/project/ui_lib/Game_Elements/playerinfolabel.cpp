@@ -11,18 +11,18 @@ PlayerInfoLabel::PlayerInfoLabel(std::string nickname, size_t money) : TotalMone
     mTotalMoney->setText(total);
 
     mNickname->setParent(this);
-    mNickname->setGeometry(0, 50, 350, 30);
-    mNickname->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(242, 224, 22)");
+    mNickname->setGeometry(0, 50, 300, 30);
+    mNickname->setStyleSheet("background:rgba(33,33,33,0.5);font-size:21px;color:rgb(242, 224, 22)");
     mNickname->setAlignment(Qt::AlignCenter);
 
     mTotalMoney->setParent(this);
-    mTotalMoney->setGeometry(0, 80, 350, 30);
-    mTotalMoney->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(242, 224, 22)");
+    mTotalMoney->setGeometry(0, 80, 300, 30);
+    mTotalMoney->setStyleSheet("background:rgba(33,33,33,0.5);font-size:21px;color:rgb(242, 224, 22)");
     mTotalMoney->setAlignment(Qt::AlignCenter);
 
     mStatus->setParent(this);
-    mStatus->setGeometry(0, 110, 350, 30);
-    mStatus->setStyleSheet("background:rgba(33,33,33,0.5);font-size:24px;color:rgb(0, 255, 255);");
+    mStatus->setGeometry(0, 110, 300, 30);
+    mStatus->setStyleSheet("background:rgba(33,33,33,0.5);font-size:21px;color:rgb(0, 255, 255);");
     mStatus->setAlignment(Qt::AlignCenter);
 }
 

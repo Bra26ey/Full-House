@@ -58,10 +58,13 @@ public:
     virtual void Resize(QSize WinSize);
     QRect GetPos();
 
+    QPair<Card*, Card*> GetCard();
+    bool HasCards;
+
 protected:
+    void setCardPos();
     QSize normal;
     QSize min;
-    QWidget *mChips;
     QPair<Card*, Card*> mCards;
     PlayerInfoLabel *mPlayerInfo;
 

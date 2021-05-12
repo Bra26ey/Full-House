@@ -17,8 +17,12 @@ public:
     size_t GetSuit();
     bool GetSide();
 
+    void Resize(QSize WinSize);
 
 private:
+    bool LowRes;
+    QSize normal;
+    QSize min;
     bool mUpSided;
     size_t mUpSideTextureId;
     size_t mDownSideTextureId = 0;

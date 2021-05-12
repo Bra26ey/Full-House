@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player(std::string name, size_t money) {
+Player::Player(std::string name, size_t money) : LowRes(0) {
     mPlayerInfo = new PlayerInfoLabel(name, money);
 
     mypix = new QImage(":/players/Kyle");
@@ -21,7 +21,6 @@ Player::Player(std::string name, size_t money) {
 }
 
 Player::~Player() {
-    delete mChips;
     delete mPlayerInfo;
     delete mTexture;
 }
@@ -42,7 +41,6 @@ void Player::Resize(QSize WinSize) {
 
 void Player::posChange() {
     if (LowRes) {
-        qDebug("MinSet");
         if (mPos == mainplayerpos) {
             mPos = mainplayerposmin;
         }
