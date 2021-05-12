@@ -10,6 +10,8 @@
 #include <map>
 #include <ConfigurationHandler.h>
 
+#include <boost/property_tree/ptree.hpp>
+
 #include "Player.h"
 #include "Board.h"
 #include "HandConfiguration.h"
@@ -35,6 +37,8 @@ public:
     bool Turn();  // TODO: using GameStage
     bool River();  // TODO: using GameStage
     void PotDistribution();  // TODO: using HandValue from Player and sort for all players to determine winner
+
+    boost::property_tree::ptree GetGameStatus();
 
     std::atomic<unsigned int> current_player_pos;
     HandConfiguration hand_config;

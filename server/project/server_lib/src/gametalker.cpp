@@ -162,6 +162,9 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
         // boost::asio::streambuf buf;
         // std::istream is(&buf);
         // write(handprocess_.ss, buf);
+        // int pos_id
+        // string command
+        // int sum
         handprocess_.command_queue.push(action);
 
         if (action == "raise") {
