@@ -24,6 +24,8 @@ class Client {
     bool Disconnect();
     bool IsConnected();
 
+    std::string GetLastMsg();
+
     int Send(boost::asio::streambuf &buffer);
     int Read(boost::asio::streambuf &buffer);
 
@@ -52,6 +54,7 @@ class Client {
     std::istream in_;
 
     TSQueue<std::string> msg_queue_;
+    TSQueue<std::string> answers_queue_;
 
     boost::posix_time::ptime last_ping;
 };

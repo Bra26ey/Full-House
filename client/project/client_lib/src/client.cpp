@@ -3,6 +3,8 @@
 #include <string_view>
 #include <iostream>
 
+#include <boost/thread/thread.hpp>
+
 #include "msgmaker.h"
 
 using boost::asio::ip::address;
@@ -67,8 +69,19 @@ void Client::Run() {
 
         boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
 
+        std::string answer(std::istreambuf_iterator<char>(in_), {});
+        answers_queue_.Push(answer);
+
         last_ping = boost::posix_time::microsec_clock::local_time();
     }
+}
+
+std::string Client::GetLastMsg() {
+    while (answers_queue_.IsEmpty()) {
+        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+    }
+
+    return answers_queue_.Pop();
 }
 
     // void on_check_ping() {
