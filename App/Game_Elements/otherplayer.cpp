@@ -140,7 +140,7 @@ QRect OtherPlayer::GetPos() {
 }
 
 void OtherPlayer::Resize(QSize WinSize) {
-    if (WinSize.width() <= 1378 && WinSize.height() <= 1093) {
+    if (WinSize.height() <= 1093) {
         player = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
         this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
         this->setStyleSheet("margin:50px;margin-left:80px");

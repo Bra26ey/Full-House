@@ -27,7 +27,7 @@ Player::~Player() {
 }
 
 void Player::Resize(QSize WinSize) {
-    if (WinSize.width() <= 1378 && WinSize.height() <= 1093) {
+    if (WinSize.height() <= 1093) {
         player = mypix->scaled(min.width(), min.height(), Qt::IgnoreAspectRatio);
         this->setPixmap(QPixmap::fromImage(player, Qt::AutoColor));
         LowRes = 1;
