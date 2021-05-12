@@ -22,12 +22,9 @@ GameFragment::GameFragment() : num_players(0) {
 
     mChips = new Chips;
     mChips->setParent(mPlayTable);
-    mChips->setGeometry(base_card_coefficient + 5 * card_move_coefficient + 30, mPlayTable->height()/2 - 50, 400, 400);
 
     mWinLabel = new WinLabel;
     mWinLabel->setParent(mPlayTable);
-    qDebug() << QRect(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
-    mWinLabel->setGeometry(mPlayTable->width()/2 - 30, mPlayTable->size().height()/2 + 100, 780, 250);
 
 
     mTurnIndicator = new TurnSpark;
@@ -89,6 +86,7 @@ GameFragment::GameFragment() : num_players(0) {
     ActionButtons.append(CheckButton);
     foreach (auto btn, ActionButtons) {
         mainHLayout->addWidget(btn);
+        btn->hide();
     }
     mainVLayout->addLayout(mainHLayout);
 
@@ -98,6 +96,8 @@ GameFragment::GameFragment() : num_players(0) {
     SliderLayout->addWidget(BetValue);
 
     mainVLayout->addLayout(SliderLayout);
+    BetSlider->hide();
+    BetValue->hide();
 
     QHBoxLayout *extraHLayout = new QHBoxLayout;
 
@@ -105,11 +105,17 @@ GameFragment::GameFragment() : num_players(0) {
     SettingsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SettingsButton, &QPushButton::clicked, this, &GameFragment::onSettingsPressed);
 
+    StartGameButton = new QPushButton("StartGame");
+    StartGameButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(StartGameButton, &QPushButton::clicked, this, &GameFragment::onStartPressed);
+
     LeaveButton = new QPushButton("Exit");
     LeaveButton->setStyleSheet("color:#242424;font-size:24px");
     connect(LeaveButton, &QPushButton::clicked, this, &GameFragment::onLeavePressed);
 
+
     extraHLayout->addWidget(SettingsButton);
+    extraHLayout->addWidget(StartGameButton);
     extraHLayout->addWidget(LeaveButton);
 
     mainVLayout->addLayout(extraHLayout);
@@ -178,6 +184,7 @@ GameFragment::~GameFragment() {
 
     delete LeaveButton;
     delete SettingsButton;
+    delete StartGameButton;
 }
 
 void GameFragment::setval() {
@@ -221,7 +228,14 @@ void GameFragment::onLeavePressed() {
     // disconnect
     navigateTo(SEARCH_TAG);
 }
-
+void GameFragment::onStartPressed() {
+    foreach (auto btn, ActionButtons) {
+        btn->show();
+    }
+    BetSlider->show();
+    BetValue->show();
+    StartGameButton->hide();
+}
 void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
 }
