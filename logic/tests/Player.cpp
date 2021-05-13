@@ -27,10 +27,7 @@ TEST(Player, check) {
 
 TEST(Player, hand_value) {
     Player player;
-    ASSERT_NO_THROW(player.HandValue());
+    std::vector<Card> cards;
+    ASSERT_NO_THROW(player.HandValue(cards));
 }
 
-TEST(Player, action) {
-    Player player;
-    ASSERT_NO_THROW(player.Action());
-}

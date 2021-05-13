@@ -14,7 +14,7 @@ TEST(HandProcess, deal_cards) {
 }
 
 TEST(HandProcess, preflop) {
-    HandProcess hand_process;
+    HandProcess hand_process(52);
     ASSERT_NO_THROW(hand_process.Preflop());
 }
 
