@@ -1,0 +1,67 @@
+name: CI
+
+on: [push]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Windows or Mac.  You can convert this to a matrix build if you need
+    # cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: install gtest
+        run: |
+          sudo apt-get install libgtest-dev
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+          
+      - name: install spdlog
+        run: |
+          sudo apt-get install libspdlog-dev
+          
+      - name: install boost
+        run: |
+          sudo apt-get install libboost-dev
+
+      - name: build
+        working-directory: ${{runner.workspace}}/Full-House/logic
+        shell: bash
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+
+      - name: test
+        working-directory: ${{runner.workspace}}/Full-House/logic
+        shell: bash
+        run: |
+          cd build
+          ./tests
+
+      - name: ci coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+  lintets:
+    name: cppcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: run cppcheck
+        uses: deep5050/cppcheck-action@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          enable: all
