@@ -27,6 +27,10 @@ jobs:
       - name: install spdlog
         run: |
           sudo apt-get install libspdlog-dev
+          
+      - name: install boost
+        run: |
+          sudo apt-get install libboost-dev
 
       - name: build
         working-directory: ${{runner.workspace}}/Full-House/logic
