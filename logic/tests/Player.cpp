@@ -12,12 +12,12 @@ TEST(Player, fold) {
 
 TEST(Player, call) {
     Player player;
-    ASSERT_NO_THROW(player.Call());
+    ASSERT_NO_THROW(player.Call(5));
 }
 
 TEST(Player, raise) {
     Player player;
-    ASSERT_NO_THROW(player.Raise());
+    ASSERT_NO_THROW(player.Raise(2, 5));
 }
 
 TEST(Player, check) {
