@@ -22,6 +22,8 @@ public:
 private:
     std::ifstream log_file;
     std::shared_ptr<spdlog::logger> logger_;
+
+    static uint64_t count;
 };
 
 #endif //FULL_HOUSE_LOGGER_H

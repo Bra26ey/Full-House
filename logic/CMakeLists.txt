@@ -1,8 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
-project(Full_House)
-
-set(CMAKE_CXX_STANDARD 14)
-
+project(Full-House)
+cmake_minimum_required(VERSION 3.11)
 include_directories(Player Utilities GameEntities)
 
 
@@ -20,41 +17,35 @@ add_library(GameEntities SHARED
         GameEntities/HandProcess.cpp GameEntities/HandProcess.h
         GameEntities/Card.cpp GameEntities/Card.h
         GameEntities/Board.h
-        GameEntities/Deck.cpp GameEntities/Deck.h)
+        GameEntities/Deck.cpp GameEntities/Deck.h
+        Utilities/SafeQueue.h)
 
 add_library(Player SHARED Player/Player.cpp Player/Player.h
         Player/PlayerInterface.h
         Player/Profile.h)
 
-add_executable(logic
-        main.cpp)
-target_link_libraries(logic Logger GameEntities Player ConfigurationHandler)
+target_link_libraries(GameEntities Logger ConfigurationHandler)
 
-enable_testing()
-find_package(GTest REQUIRED)
+# enable_testing()
+# find_package(GTest REQUIRED)
 
-include_directories(${GTEST_INCLUDE_DIRS})
-message(${GTEST_LIBRARIES})
-message(${GTEST_INCLUDE_DIRS})
+# include_directories(${GTEST_INCLUDE_DIRS})
+# message(${GTEST_LIBRARIES})
+# message(${GTEST_INCLUDE_DIRS})
 
-add_executable(tests
-        tests/main.cpp
-        tests/GameEntities.cpp
-        tests/Player.cpp
-        tests/Utilities.cpp
-        )
+# add_executable(tests
+#         tests/main.cpp
+#         tests/GameEntities.cpp
+#         tests/Player.cpp
+#         tests/Utilities.cpp
+#         )
 
-target_link_libraries(tests ${GTEST_LIBRARIES} pthread Logger GameEntities Player ConfigurationHandler)
+# target_link_libraries(tests ${GTEST_LIBRARIES} pthread Logger GameEntities Player ConfigurationHandler)
 
 if(NOT TARGET spdlog)
     # Stand-alone build
     find_package(spdlog REQUIRED)
 endif()
 
-
-
-# ---------------------------------------------------------------------------------------
-# Example of using pre-compiled library
-# ---------------------------------------------------------------------------------------
-target_link_libraries(logic spdlog::spdlog)
-
+add_library(logic_lib INTERFACE)
+target_link_libraries(logic_lib INTERFACE spdlog::spdlog Logger GameEntities Player ConfigurationHandler)

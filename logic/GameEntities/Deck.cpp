@@ -7,11 +7,15 @@
 #include <random>
 #include <chrono>
 
-Deck::Deck(int size): size(size) {
-    for (int i = 0; i < size; ++i) {
+inline void Deck::Construct() {
+    for (size_t i = 0; i < size; ++i) {
         deck.push_back({static_cast<Suit>(i / 13), static_cast<Value>(i % 13 + 2)});  // suit and value
     }
     deck.shrink_to_fit();
+}
+
+Deck::Deck(size_t size): size(size) {
+    Construct();
 }
 
 void Deck::Shuffle() {
@@ -26,4 +30,9 @@ Card& Deck::Peak() {
 
 void Deck::Erase() {
     deck.erase(deck.begin());
+}
+
+void Deck::Init() {
+    deck.clear();
+    Construct();
 }

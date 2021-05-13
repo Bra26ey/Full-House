@@ -20,6 +20,8 @@ struct HandConfiguration {
     unsigned int max_size_of_players;
     unsigned int count_of_player_cards;
 
+
+
     std::list<std::shared_ptr<Player> > players;
 };
 

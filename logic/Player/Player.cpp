@@ -46,10 +46,7 @@ void Player::Check() {
     return;
 }
 
-int Player::Raise(int raised_money) {
-    int reraise;
-    std::cout << "Enter reraise for " << raised_money << " :\t";
-    std::cin >> reraise;
+int Player::Raise(int raised_money, int reraise) {
     if (reraise < raised_money * 2) {
         throw ("Bad Reraise");
     }

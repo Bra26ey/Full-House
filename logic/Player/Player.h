@@ -15,18 +15,18 @@
 
 struct Player: public PlayerInterface, public Profile {
     Player();
-    int HandValue(std::vector<Card>& board_cards);  // TODO: Make one vector from player cards and board cards, Sort() it and analyze
+    int HandValue(std::vector<Card>& board_cards);
     void Fold() override;
     int Call(int to_call) override;
     void Check() override;
-    int Raise(int raised_money) override;
+    int Raise(int raised_money, int reraise) override;
 
 
     std::vector<Card> cards;
     bool in_pot;
     int current_stage_money_in_pot;
 
-    int position;
+    unsigned int position;
 private:
 
     static int HighCard(std::vector<Card>& combination_detect);
