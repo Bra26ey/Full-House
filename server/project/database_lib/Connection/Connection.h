@@ -1,7 +1,4 @@
 #pragma once
-#ifndef FULL_HOUSE_CONNECTION_H
-#define FULL_HOUSE_CONNECTION_H
-
 
 #include "mysql_connection.h"
 #include <cppconn/driver.h>
@@ -12,7 +9,7 @@
 
 #include <mutex>
 
-#include "../FileHandler/FileHandler.h"
+#include "FileHandler.h"
 
 namespace database {
 
@@ -41,5 +38,3 @@ private:
 };
 
 }  // namespace database
-
-#endif //FULL_HOUSE_CONNECTION_H

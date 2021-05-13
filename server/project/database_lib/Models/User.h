@@ -3,8 +3,8 @@
 #define FULL_HOUSE_USER_H
 
 
-#include "../Connection/PoolConnections.h"
-#include "../Connection/SafetyConnection.h"
+#include "PoolConnections.h"
+#include "SafetyConnection.h"
 
 namespace database {
 

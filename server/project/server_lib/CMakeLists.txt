@@ -24,6 +24,7 @@ add_library(server_lib SHARED ${SERVER_LIB_SRC})
 target_link_libraries(server_lib
                       msgfabric_lib
                       logic_lib
+                      database_lib
                       ${CMAKE_THREAD_LIBS_INIT}
                       ${Boost_LIBRARIES}
                      )

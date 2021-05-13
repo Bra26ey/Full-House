@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -DBOOST_ALL_DYN_LINK --coverage  -shared -Wl,-soname,libmsgfabric_lib.so -o libmsgfabric_lib.so CMakeFiles/msgfabric_lib.dir/src/msgmaker.o  /usr/lib/x86_64-linux-gnu/libboost_system.so.1.71.0 
