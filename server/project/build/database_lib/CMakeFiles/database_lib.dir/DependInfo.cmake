@@ -28,7 +28,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../database_lib/Connection"
   "../database_lib/Models"
   "../database_lib/FileHandler"
-  "../database_lib/."
+  "../database_lib/include"
   )
 
 # Targets to which this target links.

@@ -57,18 +57,18 @@ include logic_lib/CMakeFiles/ConfigurationHandler.dir/progress.make
 # Include the compile flags for this target's objects.
 include logic_lib/CMakeFiles/ConfigurationHandler.dir/flags.make
 
-logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o: logic_lib/CMakeFiles/ConfigurationHandler.dir/flags.make
-logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o: ../logic_lib/Utilities/FileHandler.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o"
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/FileHandler.cpp
+logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o: logic_lib/CMakeFiles/ConfigurationHandler.dir/flags.make
+logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o: ../logic_lib/Utilities/LogicFileHandler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o"
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/LogicFileHandler.cpp
 
-logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.i"
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/FileHandler.cpp > CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.i
+logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.i"
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/LogicFileHandler.cpp > CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.i
 
-logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.s"
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/FileHandler.cpp -o CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.s
+logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.s"
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/LogicFileHandler.cpp -o CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.s
 
 logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/ConfigurationHandler.o: logic_lib/CMakeFiles/ConfigurationHandler.dir/flags.make
 logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/ConfigurationHandler.o: ../logic_lib/Utilities/ConfigurationHandler.cpp
@@ -98,14 +98,14 @@ logic_lib/CMakeFiles/ConfigurationHandler.dir/Player/Player.s: cmake_force
 
 # Object files for target ConfigurationHandler
 ConfigurationHandler_OBJECTS = \
-"CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o" \
+"CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o" \
 "CMakeFiles/ConfigurationHandler.dir/Utilities/ConfigurationHandler.o" \
 "CMakeFiles/ConfigurationHandler.dir/Player/Player.o"
 
 # External object files for target ConfigurationHandler
 ConfigurationHandler_EXTERNAL_OBJECTS =
 
-logic_lib/libConfigurationHandler.so: logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o
+logic_lib/libConfigurationHandler.so: logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o
 logic_lib/libConfigurationHandler.so: logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/ConfigurationHandler.o
 logic_lib/libConfigurationHandler.so: logic_lib/CMakeFiles/ConfigurationHandler.dir/Player/Player.o
 logic_lib/libConfigurationHandler.so: logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make

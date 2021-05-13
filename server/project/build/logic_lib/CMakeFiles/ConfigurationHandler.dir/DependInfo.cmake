@@ -6,7 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Player/Player.cpp" "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib/CMakeFiles/ConfigurationHandler.dir/Player/Player.o"
   "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/ConfigurationHandler.cpp" "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/ConfigurationHandler.o"
-  "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/FileHandler.cpp" "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o"
+  "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/Utilities/LogicFileHandler.cpp" "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

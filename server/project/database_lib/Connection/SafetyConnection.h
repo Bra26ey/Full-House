@@ -1,6 +1,4 @@
-#ifndef FULL_HOUSE_SAFETYCONNECTION_H
-#define FULL_HOUSE_SAFETYCONNECTION_H
-
+#pragma once
 
 #include "PoolConnections.h"
 
@@ -30,6 +28,3 @@ private:
 };
 
 }  // namespace database
-
-
-#endif //FULL_HOUSE_SAFETYCONNECTION_H

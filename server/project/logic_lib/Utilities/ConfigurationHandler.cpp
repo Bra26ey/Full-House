@@ -2,7 +2,7 @@
 // Created by aleksandr on 17.04.2021.
 //
 #include <algorithm>
-#include "FileHandler.h"
+#include "LogicFileHandler.h"
 #include "HandConfiguration.h"
 #include "ConfigurationHandler.h"
 #include "Player.h"

@@ -57,22 +57,9 @@ include database_lib/CMakeFiles/database_lib.dir/progress.make
 # Include the compile flags for this target's objects.
 include database_lib/CMakeFiles/database_lib.dir/flags.make
 
-database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o: database_lib/CMakeFiles/database_lib.dir/flags.make
-database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o: ../database_lib/FileHandler/FileHandler.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o"
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/database_lib.dir/FileHandler/FileHandler.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/FileHandler/FileHandler.cpp
-
-database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/database_lib.dir/FileHandler/FileHandler.i"
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/FileHandler/FileHandler.cpp > CMakeFiles/database_lib.dir/FileHandler/FileHandler.i
-
-database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/database_lib.dir/FileHandler/FileHandler.s"
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/FileHandler/FileHandler.cpp -o CMakeFiles/database_lib.dir/FileHandler/FileHandler.s
-
 database_lib/CMakeFiles/database_lib.dir/Connection/Connection.o: database_lib/CMakeFiles/database_lib.dir/flags.make
 database_lib/CMakeFiles/database_lib.dir/Connection/Connection.o: ../database_lib/Connection/Connection.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object database_lib/CMakeFiles/database_lib.dir/Connection/Connection.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object database_lib/CMakeFiles/database_lib.dir/Connection/Connection.o"
 	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/database_lib.dir/Connection/Connection.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/Connection/Connection.cpp
 
 database_lib/CMakeFiles/database_lib.dir/Connection/Connection.i: cmake_force
@@ -85,7 +72,7 @@ database_lib/CMakeFiles/database_lib.dir/Connection/Connection.s: cmake_force
 
 database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.o: database_lib/CMakeFiles/database_lib.dir/flags.make
 database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.o: ../database_lib/Connection/PoolConnections.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.o"
 	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/database_lib.dir/Connection/PoolConnections.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/Connection/PoolConnections.cpp
 
 database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.i: cmake_force
@@ -98,7 +85,7 @@ database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.s: cmake_for
 
 database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.o: database_lib/CMakeFiles/database_lib.dir/flags.make
 database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.o: ../database_lib/Connection/SafetyConnection.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.o"
 	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/database_lib.dir/Connection/SafetyConnection.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/Connection/SafetyConnection.cpp
 
 database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.i: cmake_force
@@ -108,6 +95,19 @@ database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.i: cmake_fo
 database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/database_lib.dir/Connection/SafetyConnection.s"
 	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/Connection/SafetyConnection.cpp -o CMakeFiles/database_lib.dir/Connection/SafetyConnection.s
+
+database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o: database_lib/CMakeFiles/database_lib.dir/flags.make
+database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o: ../database_lib/FileHandler/FileHandler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o"
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/database_lib.dir/FileHandler/FileHandler.o -c /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/FileHandler/FileHandler.cpp
+
+database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/database_lib.dir/FileHandler/FileHandler.i"
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/FileHandler/FileHandler.cpp > CMakeFiles/database_lib.dir/FileHandler/FileHandler.i
+
+database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/database_lib.dir/FileHandler/FileHandler.s"
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build/database_lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/database_lib/FileHandler/FileHandler.cpp -o CMakeFiles/database_lib.dir/FileHandler/FileHandler.s
 
 database_lib/CMakeFiles/database_lib.dir/Models/Board.o: database_lib/CMakeFiles/database_lib.dir/flags.make
 database_lib/CMakeFiles/database_lib.dir/Models/Board.o: ../database_lib/Models/Board.cpp
@@ -137,20 +137,20 @@ database_lib/CMakeFiles/database_lib.dir/Models/User.s: cmake_force
 
 # Object files for target database_lib
 database_lib_OBJECTS = \
-"CMakeFiles/database_lib.dir/FileHandler/FileHandler.o" \
 "CMakeFiles/database_lib.dir/Connection/Connection.o" \
 "CMakeFiles/database_lib.dir/Connection/PoolConnections.o" \
 "CMakeFiles/database_lib.dir/Connection/SafetyConnection.o" \
+"CMakeFiles/database_lib.dir/FileHandler/FileHandler.o" \
 "CMakeFiles/database_lib.dir/Models/Board.o" \
 "CMakeFiles/database_lib.dir/Models/User.o"
 
 # External object files for target database_lib
 database_lib_EXTERNAL_OBJECTS =
 
-database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o
 database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/Connection/Connection.o
 database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/Connection/PoolConnections.o
 database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/Connection/SafetyConnection.o
+database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/FileHandler/FileHandler.o
 database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/Models/Board.o
 database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/Models/User.o
 database_lib/libdatabase_lib.so: database_lib/CMakeFiles/database_lib.dir/build.make

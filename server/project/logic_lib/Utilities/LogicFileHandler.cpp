@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "FileHandler.h"
+#include "LogicFileHandler.h"
 
 
 FileHandler::FileHandler(const std::string& input, const std::string& output): input_file(input), output_file(output) {

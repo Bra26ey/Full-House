@@ -5,7 +5,7 @@
 #ifndef FULL_HOUSE_CONFIGURATIONHANDLER_H
 #define FULL_HOUSE_CONFIGURATIONHANDLER_H
 
-#include "FileHandler.h"
+#include "LogicFileHandler.h"
 #include "HandConfiguration.h"
 
 class ConfigurationHandler {

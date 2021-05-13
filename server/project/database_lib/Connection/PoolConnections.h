@@ -1,6 +1,4 @@
-#ifndef FULL_HOUSE_POOLCONNECTIONS_H
-#define FULL_HOUSE_POOLCONNECTIONS_H
-
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -40,6 +38,3 @@ private:
 };
 
 }  // namespace database
-
-
-#endif //FULL_HOUSE_POOLCONNECTIONS_H

@@ -1,6 +1,4 @@
-#ifndef FULL_HOUSE_FILEHANDLER_H
-#define FULL_HOUSE_FILEHANDLER_H
-
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -60,5 +58,3 @@ private:
 };
 
 }  // namespace database
-
-#endif //FULL_HOUSE_FILEHANDLER_H

@@ -7,7 +7,7 @@ include_directories(logic_lib/Utilities)
 include_directories(logic_lib/GameEntities)
 
 add_subdirectory(database_lib)
-include_directories(database_lib)
+include_directories(database_lib/include)
 include_directories(database_lib/Connection)
 include_directories(database_lib/FileHandler)
 include_directories(database_lib/Models)

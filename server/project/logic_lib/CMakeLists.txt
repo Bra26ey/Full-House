@@ -6,7 +6,7 @@ add_library(Logger SHARED
         Utilities/Logger.cpp Utilities/Logger.h)
 
 add_library(ConfigurationHandler SHARED
-        Utilities/FileHandler.cpp Utilities/FileHandler.h
+        Utilities/LogicFileHandler.cpp Utilities/LogicFileHandler.h
         Utilities/ConfigurationHandler.cpp Utilities/ConfigurationHandler.h
         Utilities/HandConfiguration.h
         Player/Player.cpp Player/Player.h)

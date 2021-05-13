@@ -6,6 +6,8 @@
 #include "PoolConnections.h"
 #include "SafetyConnection.h"
 
+#include "Constants.h"
+
 namespace database {
 
 typedef struct user user_t;

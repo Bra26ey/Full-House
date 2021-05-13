@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ConfigurationHandler.dir/Player/Player.o"
   "CMakeFiles/ConfigurationHandler.dir/Utilities/ConfigurationHandler.o"
-  "CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o"
+  "CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o"
   "libConfigurationHandler.pdb"
   "libConfigurationHandler.so"
 )

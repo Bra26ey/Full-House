@@ -249,21 +249,6 @@ Utilities/ConfigurationHandler.s:
 .PHONY : Utilities/ConfigurationHandler.s
 
 # target to build an object file
-Utilities/FileHandler.o:
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.o
-.PHONY : Utilities/FileHandler.o
-
-# target to preprocess a source file
-Utilities/FileHandler.i:
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.i
-.PHONY : Utilities/FileHandler.i
-
-# target to generate assembly for a file
-Utilities/FileHandler.s:
-	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/FileHandler.s
-.PHONY : Utilities/FileHandler.s
-
-# target to build an object file
 Utilities/Logger.o:
 	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/Logger.dir/build.make logic_lib/CMakeFiles/Logger.dir/Utilities/Logger.o
 .PHONY : Utilities/Logger.o
@@ -277,6 +262,21 @@ Utilities/Logger.i:
 Utilities/Logger.s:
 	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/Logger.dir/build.make logic_lib/CMakeFiles/Logger.dir/Utilities/Logger.s
 .PHONY : Utilities/Logger.s
+
+# target to build an object file
+Utilities/LogicFileHandler.o:
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.o
+.PHONY : Utilities/LogicFileHandler.o
+
+# target to preprocess a source file
+Utilities/LogicFileHandler.i:
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.i
+.PHONY : Utilities/LogicFileHandler.i
+
+# target to generate assembly for a file
+Utilities/LogicFileHandler.s:
+	cd /home/andrey/mail-technopark/cpp-programming/Full-House/server/project/build && $(MAKE) -f logic_lib/CMakeFiles/ConfigurationHandler.dir/build.make logic_lib/CMakeFiles/ConfigurationHandler.dir/Utilities/LogicFileHandler.s
+.PHONY : Utilities/LogicFileHandler.s
 
 # Help Target
 help:
@@ -305,12 +305,12 @@ help:
 	@echo "... Utilities/ConfigurationHandler.o"
 	@echo "... Utilities/ConfigurationHandler.i"
 	@echo "... Utilities/ConfigurationHandler.s"
-	@echo "... Utilities/FileHandler.o"
-	@echo "... Utilities/FileHandler.i"
-	@echo "... Utilities/FileHandler.s"
 	@echo "... Utilities/Logger.o"
 	@echo "... Utilities/Logger.i"
 	@echo "... Utilities/Logger.s"
+	@echo "... Utilities/LogicFileHandler.o"
+	@echo "... Utilities/LogicFileHandler.i"
+	@echo "... Utilities/LogicFileHandler.s"
 .PHONY : help
 
 

@@ -28,7 +28,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../logic_lib/Player"
   "../logic_lib/Utilities"
   "../logic_lib/GameEntities"
-  "../database_lib"
+  "../database_lib/include"
   "../database_lib/Connection"
   "../database_lib/FileHandler"
   "../database_lib/Models"
