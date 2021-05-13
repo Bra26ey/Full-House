@@ -41,9 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
         mClientThread = std::make_unique<std::thread>([&] {Client->Run();});
         mClientThread->detach();
 
-
-
-
         this->resize(QApplication::screens().at(0)->availableGeometry().size() * 0.7);
         this->setCentralWidget(container);
     } catch (std::exception& e) {

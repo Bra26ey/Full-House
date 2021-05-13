@@ -1,5 +1,6 @@
 #include "gamesearchfragment.h"
 #include "screenfactory.h"
+#include "client_impl.h"
 
 #include <QLabel>
 #include <QMessageBox>
@@ -55,8 +56,8 @@ GameSearchFragment::GameSearchFragment() {
     connect(MenuButton, &QPushButton::clicked, this, &GameSearchFragment::onMenuPressed);
 
     HostButton = new QPushButton("Host");
-    MenuButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(MenuButton, &QPushButton::clicked, this, &GameSearchFragment::onMenuPressed);
+    HostButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(HostButton, &QPushButton::clicked, this, &GameSearchFragment::onHostPressed);
 
     buttonContainer->addWidget(roomIdEdit);
     buttonContainer->addWidget(passwordEdit);
@@ -90,17 +91,16 @@ GameSearchFragment::~GameSearchFragment() {
 }
 
 int GameSearchFragment::CheckData() {
-    if (roomIdEdit->text().length() < 1 || passwordEdit->text().length() < 5) {
+    if (passwordEdit->text().length() < 5) {
         return 1;
     } else {
-        // проверка по сетке
         return 0;
     }
 }
 
 
 void GameSearchFragment::onMenuPressed() {
-    navigateTo(MAIN_TAG);
+    back();
 }
 
 void GameSearchFragment::onHostPressed() {
@@ -110,7 +110,8 @@ void GameSearchFragment::onHostPressed() {
         msgBox.setWindowTitle("Error finding room");
         msgBox.exec();
     } else {
-        // host game
+         Client->CreateRoom(passwordEdit->text().toStdString());
+         navigateTo(GAME_TAG);
     }
 }
 
@@ -121,6 +122,7 @@ void GameSearchFragment::onSearchPressed() {
         msgBox.setWindowTitle("Error finding room");
         msgBox.exec();
     } else {
+        Client->JoinRoom(roomIdEdit->text().toULongLong(), passwordEdit->text().toStdString());
         navigateTo(GAME_TAG);
     }
     // возможно сделать потом кейс свитч для разных ошибок

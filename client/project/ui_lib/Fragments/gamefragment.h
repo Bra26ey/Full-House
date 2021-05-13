@@ -9,6 +9,7 @@
 #include "player.h"
 #include "turnspark.h"
 #include "winlabel.h"
+#include "client_impl.h"
 
 #include <QVector>
 #include <QWidget>

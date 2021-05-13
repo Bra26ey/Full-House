@@ -224,7 +224,7 @@ void GameFragment::onFoldPressed() {
 }
 
 void GameFragment::onLeavePressed() {
-    // disconnect
+    Client->LeaveRoom();
     back();
 }
 void GameFragment::onStartPressed() {
