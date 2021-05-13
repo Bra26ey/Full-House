@@ -16,7 +16,7 @@ int min_base_card_coefficient = 166;
 int min_card_move_coefficient = 80;
 
 using namespace screens;
-GameFragment::GameFragment() : num_players(0) {
+GameFragment::GameFragment() : num_players(0), mMinbet(0), mMaxbet(0) {
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
 
@@ -61,15 +61,16 @@ GameFragment::GameFragment() : num_players(0) {
     BetSlider->setFocusPolicy(Qt::NoFocus);
     BetSlider->setMaximumWidth(500);
     BetSlider->setStyleSheet("color:#242424;margin-top:50px");
-    BetSlider->setRange(1, 1000);
-    BetSlider->setTickInterval(1);
-    int minbet = 10;
-    BetSlider->setValue(minbet);/*minbet*/
 
-    QString value = QString::number(minbet);
-    BetValue = new QLineEdit(value, this); /*minbet*/ // ввод размера ставки
+    SetMinBet(10);
+    SetMaxBet(1000);
+
+    BetSlider->setRange(mMinbet, mMaxbet);
+    BetSlider->setTickInterval(1);
+    QString value = QString::number(mMinbet);
+    BetValue = new QLineEdit(value, this);
     BetValue->setMaximumWidth(70);
-    BetValue->setValidator(new QIntValidator(1, 1000, this));  // ограничиваем ставку
+    BetValue->setValidator(new QIntValidator(mMinbet, mMaxbet, this));  // ограничиваем ставку
     BetValue->setStyleSheet("font-size:20px");
 
     connect(BetSlider, &QSlider::valueChanged, this, &GameFragment::setval);  //  напрямую нельзя связать qlinedit и slider
@@ -134,27 +135,21 @@ GameFragment::GameFragment() : num_players(0) {
     mPlayer->GiveCards(14,2, 14,3);
     mPlayer->FlipCards();
 
-    mOtherPlayers[0]->GiveCards(4,3,2,3);
-    mOtherPlayers[1]->GiveCards(4,3,2,3);
-    mOtherPlayers[0]->FlipCards();
-    mOtherPlayers[2]->GiveCards(4,3,2,3);
-    mOtherPlayers[3]->GiveCards(4,3,2,3);
-    mOtherPlayers[4]->GiveCards(4,3,2,3);
-    mOtherPlayers[4]->FlipCards();
+    GiveCards(1, 4,3,2,5);
+    GiveCards(2, 14,3,2,5);
+    GiveCards(3, 12,3,2,5);
+    GiveCards(4, 13,3,2,5);
+    GiveCards(5, 11,3,2,5);
+    FlipCards(1);
 
 
-    mOtherPlayers[3]->setBet(400);
-    mOtherPlayers[2]->DiscardCards();
-    mOtherPlayers[2]->setFold();
-    mOtherPlayers[3]->setRaise();
-    mOtherPlayers[3]->ClearStatus();
-    mOtherPlayers[1]->setCheck();
-    mOtherPlayers[4]->setRaise();
+    SetBet(4, 400);
+    SetFold(3);
 
 
-    CurrentTurn(mPlayer);
+    CurrentTurn(0);
     MakeDealer(4);
-    DisplayWinner(mPlayer);
+    DisplayWinner(0);
 
     AddCardToTable(4, 2, true);
     AddCardToTable(5, 2, true);
@@ -186,8 +181,17 @@ void GameFragment::setval() {
 }
 
 void GameFragment::onBetPressed() {
-    mPlayer->setBet(BetValue->text().toUInt());
-    mChips->AddToBank(BetValue->text().toUInt());
+    auto bet = BetValue->text().toInt();
+    if (bet > mMaxbet) {
+        bet = mMaxbet;
+        BetValue->setText(QString::number(bet));
+    }
+    if (bet < mMinbet) {
+        bet = mMinbet;
+        BetValue->setText(QString::number(bet));
+    }
+    mPlayer->setBet(bet);
+    mChips->AddToBank(bet);
 //    BlockActions();
 
 }
@@ -207,7 +211,7 @@ void GameFragment::onCheckPressed() {
 
 void GameFragment::onRaisePressed() {
     mPlayer->setRaise();
-    DisplayWinner(mOtherPlayers[2]);
+    DisplayWinner(3);
     //BlockActions();
 }
 
@@ -229,8 +233,17 @@ void GameFragment::onStartPressed() {
     BetValue->show();
     StartGameButton->hide();
 }
+
 void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
+}
+
+void GameFragment::SetMinBet(int minbet) {
+    mMinbet = minbet;
+}
+
+void GameFragment::SetMaxBet(int maxbet) {
+    mMaxbet = maxbet;
 }
 
 void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
@@ -283,6 +296,65 @@ void GameFragment::GiveCards(size_t player_id, size_t value1, size_t suit1, size
     }
 }
 
+void GameFragment::SetCall(size_t player_id) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->setCall();
+    } else {
+        mPlayer->setCall();
+    }
+}
+
+void GameFragment::SetFold(size_t player_id) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->setFold();
+        mOtherPlayers[player_id - 1]->DiscardCards();
+    } else {
+        mPlayer->setFold();
+        mPlayer->DiscardCards();
+    }
+}
+
+void GameFragment::SetCheck(size_t player_id) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->setCheck();
+    } else {
+        mPlayer->setCheck();
+    }
+}
+
+void GameFragment::SetRaise(size_t player_id) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->setRaise();
+    } else {
+        mPlayer->setRaise();
+    }
+}
+
+void GameFragment::SetBet(size_t player_id, size_t bet) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->setBet(bet);
+    } else {
+        mPlayer->setBet(bet);
+    }
+}
+
+void GameFragment::ClearStatus(size_t player_id) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->ClearStatus();
+    } else {
+        mPlayer->ClearStatus();
+    }
+}
+
+void GameFragment::FlipCards(size_t player_id) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->FlipCards();
+    } else {
+        mPlayer->FlipCards();
+    }
+}
+
+
 void GameFragment::MakeDealer(size_t player_id) {
     if (player_id > 0) {
         mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
@@ -314,10 +386,16 @@ void GameFragment::UnBlockActions() {
     }
 }
 
-void GameFragment::DisplayWinner(OtherPlayer *winner) {
-    winner->AddMoney(mChips->GetBank());
+void GameFragment::DisplayWinner(size_t player_id) {
+    QString text;
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->AddMoney(mChips->GetBank());
+        text = "Winner is " + mOtherPlayers[player_id - 1]->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
+    } else {
+        mPlayer->AddMoney(mChips->GetBank());
+        text = "Winner is " + mPlayer->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
+    }
 
-    QString text = "Winner is " + winner->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
     mChips->Wipe();
     mWinLabel->setText(text);
     mWinLabel->setAlignment(Qt::AlignCenter);
@@ -325,12 +403,13 @@ void GameFragment::DisplayWinner(OtherPlayer *winner) {
     mWinLabel->show();
 }
 
-void GameFragment::CurrentTurn(OtherPlayer *player) {
-    mTurnIndicator->setParent(player);
-    if (player == mPlayer) {
-        mTurnIndicator->setGeometry(85, -25, 300, 300);
-    } else {
+void GameFragment::CurrentTurn(size_t player_id) {
+    if (player_id > 0) {
+        mTurnIndicator->setParent(mOtherPlayers[player_id - 1]);
         mTurnIndicator->setGeometry(90, -80, 300, 300);
+    } else {
+        mTurnIndicator->setParent(mPlayer);
+        mTurnIndicator->setGeometry(85, -25, 300, 300);
     }
     mTurnIndicator->show();
 }

@@ -26,17 +26,17 @@ public:
     GameFragment();
     ~GameFragment();
     void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
-    void DrawMainPlayer();
-    void MakeDealer(size_t player_id);
-    void FlipAllCards();
 
-    void DisplayWinner(OtherPlayer* winner);
-    void CurrentTurn(OtherPlayer* player);
-    void DeleteWinnerDisplay();
+    void SetMinBet(int minbet);
+    void SetMaxBet(int maxbet);
 
     void AddCardToTable(size_t value, size_t suit, bool upsided);
     void DeleteAllCardsFromTable();
+    void FlipAllCards();
 
+    void MakeDealer(size_t player_id);
+    void DisplayWinner(size_t player_id);
+    void CurrentTurn(size_t player_id);
     void GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2);
     void FlipCards(size_t player_id);
     void SetBet(size_t player_id, size_t bet);
@@ -60,12 +60,16 @@ private slots:
     void setval();
 
 private:
+    void DrawMainPlayer();
+    void DeleteWinnerDisplay();
     void RedrawPlayer(OtherPlayer* player);
     void resizeEvent(QResizeEvent *event);
     void BlockActions();
     void UnBlockActions();
 
     size_t num_players;
+    int mMinbet;
+    int mMaxbet;
 
     Player *mPlayer;
     QVector<OtherPlayer*> mOtherPlayers;
