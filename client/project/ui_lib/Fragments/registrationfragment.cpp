@@ -1,6 +1,7 @@
 #include "registrationfragment.h"
 
 #include <boost/functional/hash/hash.hpp>
+#include <QSound>
 #include <QLabel>
 #include <QMessageBox>
 
@@ -96,6 +97,7 @@ RegistrationFragment::RegistrationFragment() {
 
 
 void RegistrationFragment::onRegistrationPressed() {
+    QSound::play(":/music/click");
     if (CheckData()) {
         QMessageBox msgBox;
          msgBox.setText("В пароле или логине недостаточно символов");

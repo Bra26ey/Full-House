@@ -3,6 +3,7 @@
 #include "client_impl.h"
 
 #include <QLabel>
+#include <QSound>
 #include <QMessageBox>
 using namespace screens;
 
@@ -100,10 +101,12 @@ int GameSearchFragment::CheckData() {
 
 
 void GameSearchFragment::onMenuPressed() {
+    QSound::play(":/music/click");
     back();
 }
 
 void GameSearchFragment::onHostPressed() {
+    QSound::play(":/music/click");
     if (CheckData()) {
         QMessageBox msgBox;
         msgBox.setText("Id and/or password incorrect");
@@ -116,6 +119,7 @@ void GameSearchFragment::onHostPressed() {
 }
 
 void GameSearchFragment::onSearchPressed() {
+    QSound::play(":/music/click");
     if (CheckData()) {
         QMessageBox msgBox;
         msgBox.setText("Id and/or password incorrect");

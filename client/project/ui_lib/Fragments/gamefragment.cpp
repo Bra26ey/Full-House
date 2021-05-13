@@ -2,8 +2,6 @@
 #include "mainwindow.h"
 
 #include <QDebug>
-#include <QImage>
-#include <QPixmap>
 #include <QSound>
 #include <QVector>
 #include <QIntValidator>
@@ -180,6 +178,7 @@ void GameFragment::setval() {
 }
 
 void GameFragment::onBetPressed() {
+    QSound::play(":/music/click");
     auto bet = BetValue->text().toInt();
     if (bet > mMaxbet) {
         bet = mMaxbet;
@@ -196,35 +195,46 @@ void GameFragment::onBetPressed() {
 }
 
 void GameFragment::onCallPressed() {
+    QSound::play(":/music/click");
     SetCall(0);
     Client->GameCall();
     //BlockActions();
 }
 
 void GameFragment::onCheckPressed() {
+    QSound::play(":/music/click");
     SetCheck(0);
     Client->GameCheck();
     //BlockActions();
 }
 
 void GameFragment::onRaisePressed() {
+    QSound::play(":/music/click");
     SetRaise(0);
     Client->GameRaise(BetValue->text().toUInt());
     //BlockActions();
 }
 
 void GameFragment::onFoldPressed() {
+    QSound::play(":/music/click");
     SetFold(0);
     Client->GameFold();
     //BlockActions();
 }
 
 void GameFragment::onLeavePressed() {
+    QSound::play(":/music/click");
     Client->LeaveRoom();
     back();
 }
 
+void GameFragment::onSettingsPressed() {
+    QSound::play(":/music/click");
+    navigateTo(SETTINGS_TAG);
+}
+
 void GameFragment::onStartPressed() {
+    QSound::play(":/music/click");
     foreach (auto btn, ActionButtons) {
         btn->show();
     }
@@ -246,10 +256,6 @@ void GameFragment::EndGame(bool admin) {
 
 void GameFragment::JoinNotAdmin() {
     StartGameButton->hide();
-}
-
-void GameFragment::onSettingsPressed() {
-    navigateTo(SETTINGS_TAG);
 }
 
 void GameFragment::SetMinBet(int minbet) {
@@ -307,6 +313,7 @@ void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t tot
 
 void GameFragment::DrawMainPlayer() {
     mPlayer = new Player("Sample Text", 9999);
+//    mPlayer = new Player(LoggedUserName, LoggedUserMoney);
     mPlayer->setParent(mPlayTable);
     mPlayer->setGeometry(mainplayerpos);
     mPlayer->SetPosition(mainplayerpos);

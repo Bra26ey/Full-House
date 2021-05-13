@@ -2,6 +2,7 @@
     <qresource prefix="/music">
         <file>Media/BackGround.mp3</file>
         <file>Media/EasterEgg.mp3</file>
+        <file alias="click">Media/click.wav</file>
     </qresource>
     <qresource prefix="/other_textures">
         <file>Media/table.png</file>

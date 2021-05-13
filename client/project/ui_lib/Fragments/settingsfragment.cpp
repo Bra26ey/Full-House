@@ -1,6 +1,7 @@
 #include "settingsfragment.h"
 #include "mediaplayer.h"
 
+#include <QSound>
 #include <QLabel>
 
 SettingsFragment::SettingsFragment() : EasterEgg(0) {
@@ -71,6 +72,7 @@ void SettingsFragment::ChangedSlider() {
 }
 
 void SettingsFragment::onMenuPressed() {
+    QSound::play(":/music/click");
     back();
 }
 

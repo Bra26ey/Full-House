@@ -10,6 +10,8 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#include <QSound>
+
 #include "screenfactory.h"
 using namespace screens;
 
@@ -101,6 +103,7 @@ LoginFragment::~LoginFragment() {
 }
 
 void LoginFragment::onLoginPressed() {
+    QSound::play(":/music/click");
     if (CheckData()) {
         QMessageBox msgBox;
          msgBox.setText("В пароле или логине недостаточно символов");
@@ -113,10 +116,12 @@ void LoginFragment::onLoginPressed() {
 }
 
 void LoginFragment::onRegistrationPressed() {
+    QSound::play(":/music/click");
     navigateTo(REGISTRATION_TAG);
 }
 
 void LoginFragment::onExitPressed() {
+    QSound::play(":/music/click");
     QApplication::quit();
 }
 

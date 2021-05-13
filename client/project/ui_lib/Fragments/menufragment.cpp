@@ -1,6 +1,8 @@
 #include "menufragment.h"
 #include "client_impl.h"
 
+#include <QSound>
+
 using namespace screens;
 
 MenuFragment::MenuFragment() {
@@ -74,18 +76,22 @@ MenuFragment::~MenuFragment() {
 }
 
 void MenuFragment::onSearchPressed() {
+    QSound::play(":/music/click");
     navigateTo(SEARCH_TAG);
 }
 
 void MenuFragment::onSettingsPressed() {
+    QSound::play(":/music/click");
     navigateTo(SETTINGS_TAG);
 }
 
 void MenuFragment::onLoginPressed() {
+    QSound::play(":/music/click");
     Client->Logout(); // выход не залогинненого юзера все крашит
     navigateTo(LOGIN_TAG);
 }
 
 void MenuFragment::onRulesPressed() {
+    QSound::play(":/music/click");
     navigateTo(RULE_TAG);
 }
