@@ -122,14 +122,17 @@ GameFragment::GameFragment() : num_players(0) {
     DrawMainPlayer();
     // кайнда дебаг
 
+
+
+    DrawPlayer(1, "Cartman", 5000);
+    DrawPlayer(2, "Kenny", 2000);
+    DrawPlayer(3, "Stan", 6000);
+    DrawPlayer(4, "Wendy", 1000);
+    DrawPlayer(5, "Dougie", 500);
+
+
     mPlayer->GiveCards(14,2, 14,3);
     mPlayer->FlipCards();
-
-    DrawPlayer(fouthpos, 1, "Cartman", 5000);
-    DrawPlayer(secondpos, 2, "Kenny", 2000);
-    DrawPlayer(thirdpos, 3, "Stan", 6000);
-    DrawPlayer(firstpos, 4, "Wendy", 1000);
-    DrawPlayer(fifthpos, 5, "Dougie", 500);
 
     mOtherPlayers[0]->GiveCards(4,3,2,3);
     mOtherPlayers[1]->GiveCards(4,3,2,3);
@@ -230,12 +233,38 @@ void GameFragment::onSettingsPressed() {
     navigateTo(SETTINGS_TAG);
 }
 
-void GameFragment::DrawPlayer(QRect pos, size_t player_id, std::string nickname, size_t total_money) {
+void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
+    qDebug() << player_id;
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
     mOtherPlayers.append(player);
     mOtherPlayers[num_players]->setParent(mPlayTable);
-    mOtherPlayers[num_players]->setGeometry(pos);
-    mOtherPlayers[num_players]->SetPosition(pos);
+    switch (player_id) {
+        case 1: {
+        mOtherPlayers[num_players]->setGeometry(firstpos);
+        mOtherPlayers[num_players]->SetPosition(firstpos);
+        break;
+        }
+        case 2: {
+        mOtherPlayers[num_players]->setGeometry(secondpos);
+        mOtherPlayers[num_players]->SetPosition(secondpos);
+        break;
+        }
+        case 3: {
+        mOtherPlayers[num_players]->setGeometry(thirdpos);
+        mOtherPlayers[num_players]->SetPosition(thirdpos);
+        break;
+        }
+        case 4: {
+        mOtherPlayers[num_players]->setGeometry(fouthpos);
+        mOtherPlayers[num_players]->SetPosition(fouthpos);
+        break;
+        }
+        case 5: {
+        mOtherPlayers[num_players]->setGeometry(fifthpos);
+        mOtherPlayers[num_players]->SetPosition(fifthpos);
+        break;
+        }
+    }
     num_players++;
 }
 
@@ -246,6 +275,13 @@ void GameFragment::DrawMainPlayer() {
     mPlayer->SetPosition(mainplayerpos);
 }
 
+void GameFragment::GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2) {
+    if (player_id > 0) {
+        mOtherPlayers[player_id - 1]->GiveCards(value1, suit1, value2, suit2);
+    } else {
+        mPlayer->GiveCards(value1, suit1, value2, suit2);
+    }
+}
 
 void GameFragment::MakeDealer(size_t player_id) {
     if (player_id > 0) {

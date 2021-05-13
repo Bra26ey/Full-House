@@ -25,7 +25,7 @@ class GameFragment: public BaseFragment {
 public:
     GameFragment();
     ~GameFragment();
-    void DrawPlayer(QRect pos, size_t player_id, std::string nickname, size_t total_money);
+    void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
     void DrawMainPlayer();
     void MakeDealer(size_t player_id);
     void FlipAllCards();
@@ -36,6 +36,15 @@ public:
 
     void AddCardToTable(size_t value, size_t suit, bool upsided);
     void DeleteAllCardsFromTable();
+
+    void GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2);
+    void FlipCards(size_t player_id);
+    void SetBet(size_t player_id, size_t bet);
+    void SetFold(size_t player_id);
+    void SetCall(size_t player_id);
+    void SetRaise(size_t player_id);
+    void SetCheck(size_t player_id);
+    void ClearStatus(size_t player_id);
 public slots:
     void onBetPressed();
     void onRaisePressed();
