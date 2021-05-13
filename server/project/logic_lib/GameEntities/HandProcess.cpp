@@ -27,7 +27,7 @@ bool HandProcess::one_player_in_pot(HandConfiguration& hand_config) {
 HandProcess::HandProcess(size_t ammount_of_cards): current_player_pos(0), hand_config(), logger(std::make_shared<Logger>()), deck_(ammount_of_cards), board_() {}
 
 void HandProcess::Init() {
-    FileHandler file_handler("/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/input.txt");
+    FileHandler file_handler("/home/zennoma/Full-House/server/project/logic_lib/input.txt");
     ConfigurationHandler config_handler(file_handler);
     config_handler.Read();
     config_handler.HandConfigurationInit(hand_config);

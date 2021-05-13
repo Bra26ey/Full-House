@@ -37,7 +37,7 @@ class Client {
     void LeaveRoom();
 
     void GetGameStatus();
-
+    void StartGame();
     void GameRaise(uint64_t const &sum);
     void GameCall();
     void GameFold();

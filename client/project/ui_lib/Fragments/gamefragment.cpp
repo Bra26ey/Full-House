@@ -16,7 +16,7 @@ int min_base_card_coefficient = 166;
 int min_card_move_coefficient = 80;
 
 using namespace screens;
-GameFragment::GameFragment() : num_players(0), mMinbet(0), mMaxbet(0) {
+GameFragment::GameFragment() : num_players(0), mMinbet(1), mMaxbet(10) {
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
 
@@ -62,8 +62,7 @@ GameFragment::GameFragment() : num_players(0), mMinbet(0), mMaxbet(0) {
     BetSlider->setMaximumWidth(500);
     BetSlider->setStyleSheet("color:#242424;margin-top:50px");
 
-    SetMinBet(10);
-    SetMaxBet(1000);
+
 
     BetSlider->setRange(mMinbet, mMaxbet);
     BetSlider->setTickInterval(1);
@@ -122,7 +121,8 @@ GameFragment::GameFragment() : num_players(0), mMinbet(0), mMaxbet(0) {
 
     DrawMainPlayer();
     // кайнда дебаг
-
+    SetMinBet(10);
+    SetMaxBet(1000);
 
 
     DrawPlayer(1, "Cartman", 5000);
@@ -132,20 +132,19 @@ GameFragment::GameFragment() : num_players(0), mMinbet(0), mMaxbet(0) {
     DrawPlayer(5, "Dougie", 500);
 
 
-    mPlayer->GiveCards(14,2, 14,3);
-    mPlayer->FlipCards();
+    GiveCards(0, 14,2, 14,3);
+    FlipCards(0);
 
-    GiveCards(1, 4,3,2,5);
-    GiveCards(2, 14,3,2,5);
-    GiveCards(3, 12,3,2,5);
-    GiveCards(4, 13,3,2,5);
-    GiveCards(5, 11,3,2,5);
+    GiveCards(1, 4,3,2,1);
+    GiveCards(2, 14,3,2,0);
+    GiveCards(3, 12,3,2,3);
+    GiveCards(4, 13,3,2,2);
+    GiveCards(5, 11,3,2,1);
     FlipCards(1);
 
 
     SetBet(4, 400);
     SetFold(3);
-
 
     CurrentTurn(0);
     MakeDealer(4);
@@ -192,32 +191,31 @@ void GameFragment::onBetPressed() {
     }
     mPlayer->setBet(bet);
     mChips->AddToBank(bet);
-//    BlockActions();
-
+    Client->GameRaise(BetValue->text().toUInt());
+    //BlockActions();
 }
 
 void GameFragment::onCallPressed() {
-    ActionButtons[0]->hide();
-    ActionButtons[1]->hide();
-    ActionButtons[1]->show();
-    mPlayer->setCall();
+    SetCall(0);
+    Client->GameCall();
+    //BlockActions();
 }
 
 void GameFragment::onCheckPressed() {
-    mPlayer->setCheck();
-    FlipAllCards();
+    SetCheck(0);
+    Client->GameCheck();
     //BlockActions();
 }
 
 void GameFragment::onRaisePressed() {
-    mPlayer->setRaise();
-    DisplayWinner(3);
+    SetRaise(0);
+    Client->GameRaise(BetValue->text().toUInt());
     //BlockActions();
 }
 
 void GameFragment::onFoldPressed() {
-    mPlayer->setFold();
-    DeleteWinnerDisplay();
+    SetFold(0);
+    Client->GameFold();
     //BlockActions();
 }
 
@@ -225,12 +223,28 @@ void GameFragment::onLeavePressed() {
     Client->LeaveRoom();
     back();
 }
+
 void GameFragment::onStartPressed() {
     foreach (auto btn, ActionButtons) {
         btn->show();
     }
     BetSlider->show();
     BetValue->show();
+    StartGameButton->hide();
+    Client->StartGame();
+}
+
+void GameFragment::EndGame(bool admin) {
+    foreach (auto btn, ActionButtons) {
+        btn->hide();
+    }
+    BetSlider->hide();
+    BetValue->hide();
+    if (admin)
+    StartGameButton->show();
+}
+
+void GameFragment::JoinNotAdmin() {
     StartGameButton->hide();
 }
 
@@ -239,11 +253,21 @@ void GameFragment::onSettingsPressed() {
 }
 
 void GameFragment::SetMinBet(int minbet) {
-    mMinbet = minbet;
+    if (minbet > 0) {
+        mMinbet = minbet;
+        BetSlider->setRange(mMinbet, mMaxbet);
+        QString value = QString::number(mMinbet);
+        BetValue->setText(value);
+        BetValue->setValidator(new QIntValidator(mMinbet, mMaxbet, this));
+    }
 }
 
 void GameFragment::SetMaxBet(int maxbet) {
-    mMaxbet = maxbet;
+    if (maxbet > 0) {
+        mMaxbet = maxbet;
+        BetSlider->setRange(mMinbet, mMaxbet);
+        BetValue->setValidator(new QIntValidator(mMinbet, mMaxbet, this));
+    }
 }
 
 void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {

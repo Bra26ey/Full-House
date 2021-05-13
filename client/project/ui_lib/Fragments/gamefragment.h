@@ -30,6 +30,9 @@ public:
     void SetMinBet(int minbet);
     void SetMaxBet(int maxbet);
 
+    void EndGame(bool is_admin);
+    void JoinNotAdmin();
+
     void AddCardToTable(size_t value, size_t suit, bool upsided);
     void DeleteAllCardsFromTable();
     void FlipAllCards();

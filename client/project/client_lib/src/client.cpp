@@ -125,6 +125,11 @@ void Client::JoinRoom(uint64_t const &id, std::string const &password) {
     msg_queue_.Push(msg);
 }
 
+void Client::StartGame() {
+    auto msg = MsgClient::StartGame();
+    msg_queue_.Push(msg);
+}
+
 void Client::LeaveRoom() {
     auto msg = MsgClient::LeaveRoom();
     msg_queue_.Push(msg);
