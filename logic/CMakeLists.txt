@@ -26,21 +26,21 @@ add_library(Player SHARED Player/Player.cpp Player/Player.h
 
 target_link_libraries(GameEntities Logger ConfigurationHandler)
 
-# enable_testing()
-# find_package(GTest REQUIRED)
+ enable_testing()
+ find_package(GTest REQUIRED)
 
-# include_directories(${GTEST_INCLUDE_DIRS})
-# message(${GTEST_LIBRARIES})
-# message(${GTEST_INCLUDE_DIRS})
+ include_directories(${GTEST_INCLUDE_DIRS})
+ message(${GTEST_LIBRARIES})
+ message(${GTEST_INCLUDE_DIRS})
 
-# add_executable(tests
-#         tests/main.cpp
-#         tests/GameEntities.cpp
-#         tests/Player.cpp
-#         tests/Utilities.cpp
-#         )
+ add_executable(tests
+         tests/main.cpp
+         tests/GameEntities.cpp
+         tests/Player.cpp
+         tests/Utilities.cpp
+         )
 
-# target_link_libraries(tests ${GTEST_LIBRARIES} pthread Logger GameEntities Player ConfigurationHandler)
+ target_link_libraries(tests ${GTEST_LIBRARIES} pthread Logger GameEntities Player ConfigurationHandler)
 
 if(NOT TARGET spdlog)
     # Stand-alone build
