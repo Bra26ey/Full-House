@@ -3,7 +3,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "Board.h"
+#include "TableBoard.h"
 #include "Card.h"
 #include "HandProcess.h"
 

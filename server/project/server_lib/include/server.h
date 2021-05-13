@@ -9,6 +9,9 @@
 #include "usertalker.h"
 #include "gametalker.h"
 
+#include "User.h"
+#include "Board.h"
+
 using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
@@ -50,6 +53,9 @@ class Server {
 
     tcp::endpoint endpoint_;
     tcp::acceptor acceptor_;
+
+    database::User user_database_;
+    database::Board board_database_;
 
     boost::thread_group threads_;
 };

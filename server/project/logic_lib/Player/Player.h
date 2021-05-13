@@ -11,7 +11,7 @@
 #include "Card.h"
 #include "PlayerInterface.h"
 #include "Profile.h"
-#include "Board.h"
+#include "TableBoard.h"
 
 struct Player: public PlayerInterface, public Profile {
     Player();

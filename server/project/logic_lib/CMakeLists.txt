@@ -14,7 +14,7 @@ add_library(ConfigurationHandler SHARED
 add_library(GameEntities SHARED
         GameEntities/HandProcess.cpp GameEntities/HandProcess.h
         GameEntities/Card.cpp GameEntities/Card.h
-        GameEntities/Board.h
+        GameEntities/TableBoard.h
         GameEntities/Deck.cpp GameEntities/Deck.h
         Utilities/SafeQueue.h)
 

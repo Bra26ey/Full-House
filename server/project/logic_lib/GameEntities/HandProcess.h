@@ -13,7 +13,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include "Player.h"
-#include "Board.h"
+#include "TableBoard.h"
 #include "HandConfiguration.h"
 #include "Logger.h"
 #include "Deck.h"

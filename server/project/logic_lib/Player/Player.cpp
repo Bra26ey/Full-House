@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "Board.h"
+#include "TableBoard.h"
 #include "Player.h"
 #include "Logger.h"
 
