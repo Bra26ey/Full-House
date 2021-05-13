@@ -9,7 +9,7 @@
 
 
 TEST(HandProcess, deal_cards) {
-    HandProcess hand_process;
+    HandProcess hand_process(52);
     ASSERT_NO_THROW(hand_process.DealCards());
 }
 
@@ -19,27 +19,21 @@ TEST(HandProcess, preflop) {
 }
 
 TEST(HandProcess, flop) {
-    HandProcess hand_process;
+    HandProcess hand_process(52);
     ASSERT_NO_THROW(hand_process.Flop());
 }
 
 TEST(HandProcess, turn) {
-    HandProcess hand_process;
+    HandProcess hand_process(52);
     ASSERT_NO_THROW(hand_process.Turn());
 }
 
 TEST(HandProcess, river) {
-    HandProcess hand_process;
+    HandProcess hand_process(52);
     ASSERT_NO_THROW(hand_process.River());
 }
 
 TEST(HandProcess, pot_distribution) {
-    HandProcess hand_process;
+    HandProcess hand_process(52);
     ASSERT_NO_THROW(hand_process.PotDistribution());
 }
-
-/*TEST(Card, show_card) {
-    Card card = {2, 11};
-    card.Show();
-    EXPECT_EQ(card.show_everyone, true);
-}*/
