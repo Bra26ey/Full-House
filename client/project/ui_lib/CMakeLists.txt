@@ -22,14 +22,15 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Multimedia REQUIRED)
 
 include_directories(Base)
 include_directories(Fragments)
-include_directories(Game_Elements)
-include_directories(Game_Elements/Gameplay_Buttons)
+include_directories(GameElements)
+include_directories(GameStatus)
+include_directories(GameElements/Gameplay_Buttons)
 
-include_directories(Ui_elements/For_Login)
-include_directories(Ui_elements/For_Registration)
-include_directories(Ui_elements/For_Menu)
-include_directories(Ui_elements/For_Settings)
-include_directories(Ui_elements/For_Search)
+include_directories(UiElements/For_Login)
+include_directories(UiElements/For_Registration)
+include_directories(UiElements/For_Menu)
+include_directories(UiElements/For_Settings)
+include_directories(UiElements/For_Search)
 
 include_directories(../client_lib/include)
 include_directories(../msgfabric_lib/include)
@@ -39,6 +40,8 @@ set(PROJECT_SOURCES
         Base/basescreensfactory.cpp
         Base/navigator.cpp
 
+        GameStatus/gamestatus.cpp
+
         Fragments/loginfragment.cpp
         Fragments/registrationfragment.cpp
         Fragments/menufragment.cpp
@@ -47,42 +50,42 @@ set(PROJECT_SOURCES
         Fragments/gamefragment.cpp
         Fragments/rulesfragment.cpp
 
-        Game_Elements/otherplayer.cpp
-        Game_Elements/player.cpp
-        Game_Elements/card.cpp
-        Game_Elements/chips.cpp
-        Game_Elements/playtable.cpp
-        Game_Elements/playerinfolabel.cpp
-        Game_Elements/dealerlogo.cpp
-        Game_Elements/turnspark.cpp
-        Game_Elements/winlabel.cpp
+        GameElements/otherplayer.cpp
+        GameElements/player.cpp
+        GameElements/card.cpp
+        GameElements/chips.cpp
+        GameElements/playtable.cpp
+        GameElements/playerinfolabel.cpp
+        GameElements/dealerlogo.cpp
+        GameElements/turnspark.cpp
+        GameElements/winlabel.cpp
 
-        Game_Elements/Gameplay_Buttons/betbutton.cpp
-        Game_Elements/Gameplay_Buttons/checkbutton.cpp
-        Game_Elements/Gameplay_Buttons/foldbutton.cpp
-        Game_Elements/Gameplay_Buttons/raisebutton.cpp
-        Game_Elements/Gameplay_Buttons/betslider.cpp
+        GameElements/Gameplay_Buttons/betbutton.cpp
+        GameElements/Gameplay_Buttons/checkbutton.cpp
+        GameElements/Gameplay_Buttons/foldbutton.cpp
+        GameElements/Gameplay_Buttons/raisebutton.cpp
+        GameElements/Gameplay_Buttons/betslider.cpp
 
-        Ui_elements/For_Login/gotoregistrationbutton.cpp
-        Ui_elements/For_Login/loginbutton.cpp
-        Ui_elements/For_Login/logintextbox.cpp
-        Ui_elements/For_Login/passwordtextbox.cpp
+        UiElements/For_Login/gotoregistrationbutton.cpp
+        UiElements/For_Login/loginbutton.cpp
+        UiElements/For_Login/logintextbox.cpp
+        UiElements/For_Login/passwordtextbox.cpp
 
-        Ui_elements/For_Registration/emailtextbox.cpp
-        Ui_elements/For_Registration/registrationbutton.cpp
+        UiElements/For_Registration/emailtextbox.cpp
+        UiElements/For_Registration/registrationbutton.cpp
 
-        Ui_elements/For_Menu/gotologinbutton.cpp
-        Ui_elements/For_Menu/gotosearchbutton.cpp
-        Ui_elements/For_Menu/gotosettingsbutton.cpp
+        UiElements/For_Menu/gotologinbutton.cpp
+        UiElements/For_Menu/gotosearchbutton.cpp
+        UiElements/For_Menu/gotosettingsbutton.cpp
 
-        Ui_elements/For_Settings/mutebutton.cpp
-        Ui_elements/For_Settings/playerinfo.cpp
-        Ui_elements/For_Settings/volumeslider.cpp
+        UiElements/For_Settings/mutebutton.cpp
+        UiElements/For_Settings/playerinfo.cpp
+        UiElements/For_Settings/volumeslider.cpp
 
-        Ui_elements/For_Search/connecttoroombutton.cpp
-        Ui_elements/For_Search/gotomenubutton.cpp
-        Ui_elements/For_Search/roomidtextbox.cpp
-        Ui_elements/For_Search/roompasswordtextbox.cpp
+        UiElements/For_Search/connecttoroombutton.cpp
+        UiElements/For_Search/gotomenubutton.cpp
+        UiElements/For_Search/roomidtextbox.cpp
+        UiElements/For_Search/roompasswordtextbox.cpp
 
         screenfactory.cpp
         mainwindow.cpp

@@ -26,10 +26,8 @@ GameFragment::GameFragment() : num_players(0) {
     mWinLabel = new WinLabel;
     mWinLabel->setParent(mPlayTable);
 
-
     mTurnIndicator = new TurnSpark;
     mTurnIndicator->hide();
-
 
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     mainVLayout->setAlignment(Qt::AlignCenter);
@@ -57,7 +55,6 @@ GameFragment::GameFragment() : num_players(0) {
     CheckButton = new QPushButton("Check");
     CheckButton->setStyleSheet("background:rgb(74, 212, 104);color:#242424;font-size:24px");
     connect(CheckButton, &QPushButton::clicked, this, &GameFragment::onCheckPressed);
-
 
 
     BetSlider = new QSlider(Qt::Horizontal); // слайдер ставки
@@ -125,16 +122,6 @@ GameFragment::GameFragment() : num_players(0) {
     DrawMainPlayer();
     // кайнда дебаг
 
-    bool up;  // тоже дебаг
-    qDebug() << mPlayTable->size();
-    for(size_t i = 0; i < 5; ++i) {
-        i < 3 ? up = true : up = false;
-        auto card = new Card(1 * i + 2, (i + 1) % 4, up);
-        CardOnTable.push_back(card);
-        CardOnTable[i]->setParent(mPlayTable);
-    }
-
-    CardOnTable[3]->Flip();
     mPlayer->GiveCards(14,2, 14,3);
     mPlayer->FlipCards();
 
@@ -166,6 +153,11 @@ GameFragment::GameFragment() : num_players(0) {
     MakeDealer(4);
     DisplayWinner(mPlayer);
 
+    AddCardToTable(4, 2, true);
+    AddCardToTable(5, 2, true);
+    AddCardToTable(7, 2, true);
+    AddCardToTable(14, 3, true);
+    AddCardToTable(2, 1, true);
 }
 
 GameFragment::~GameFragment() {
@@ -182,7 +174,6 @@ GameFragment::~GameFragment() {
     delete LeaveButton;
     delete SettingsButton;
     delete StartGameButton;
-    qDebug("Dest");
 }
 
 void GameFragment::setval() {
@@ -312,6 +303,16 @@ void GameFragment::DeleteWinnerDisplay() {
     mWinLabel->hide();
 }
 
+void GameFragment::AddCardToTable(size_t value, size_t suit, bool upsided) {
+    auto card = new Card(value, suit, upsided);
+    card->setParent(mPlayTable);
+    CardOnTable.push_back(card);
+}
+
+void GameFragment::DeleteAllCardsFromTable() {
+    CardOnTable.clear();
+}
+
 void GameFragment::RedrawPlayer(OtherPlayer* player) {
     auto pos = player->GetPos();
     player->setGeometry(pos);
@@ -337,15 +338,10 @@ void GameFragment::resizeEvent(QResizeEvent *event) {
     RedrawPlayer(mPlayer);
     int i = 0;
     foreach(auto card, CardOnTable) {
-        card->Resize(this->size());
-        if (this->size().height() <= 1093) {
-           card->setGeometry(min_base_card_coefficient + i * min_card_move_coefficient, mPlayTable->height()/2 - 270, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
-           i++;
-        } else {
-            card->setGeometry(base_card_coefficient + i * card_move_coefficient, mPlayTable->height()/2 - 330, mPlayTable->width()/2 + 200, mPlayTable->height()/2 + 50);
-            i++;
-        }
+        card->ResizeOnTable(this->size(), i);
+        i++;
     }
     mChips->Resize(this->size());
     mWinLabel->Resize(this->size());
 }
+

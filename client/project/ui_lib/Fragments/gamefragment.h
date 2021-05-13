@@ -33,6 +33,9 @@ public:
     void DisplayWinner(OtherPlayer* winner);
     void CurrentTurn(OtherPlayer* player);
     void DeleteWinnerDisplay();
+
+    void AddCardToTable(size_t value, size_t suit, bool upsided);
+    void DeleteAllCardsFromTable();
 public slots:
     void onBetPressed();
     void onRaisePressed();
