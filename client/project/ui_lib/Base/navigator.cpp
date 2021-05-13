@@ -46,14 +46,7 @@ void FragmentNavigator::back() {
     currentContainer->setCurrentWidget(stack.back());
 }
 
-void FragmentNavigator::replace(QString tag) {
-    BaseFragment *newFragment = this->screensFactory->create(tag);
-    currentContainer->removeWidget(stack.back());
-    delete stack.back();
-    stack.pop_back();
-    connectFragment(newFragment);
-    currentContainer->addWidget(newFragment);
-}
+
 
 void FragmentNavigator::newRootScreen(QString tag) {
     qDebug("Navigator newRootScreen");
@@ -79,7 +72,6 @@ BaseFragment* FragmentNavigator::getStartScreen() {
 void FragmentNavigator::connectFragment(BaseFragment *fragment) {
     qDebug("Navigator connect slots");
     connect(fragment, &BaseFragment::back, this, &FragmentNavigator::back);
-    connect(fragment, &BaseFragment::replace, this, &FragmentNavigator::replace);
     connect(fragment, &BaseFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     connect(fragment, &BaseFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
 }
@@ -87,7 +79,6 @@ void FragmentNavigator::connectFragment(BaseFragment *fragment) {
 void FragmentNavigator::disconnectFragment(BaseFragment *fragment) {
     qDebug("Navigator disconnect slots");
     disconnect(fragment, &BaseFragment::back, this, &FragmentNavigator::back);
-    disconnect(fragment, &BaseFragment::replace, this, &FragmentNavigator::replace);
     disconnect(fragment, &BaseFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     disconnect(fragment, &BaseFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
 }

@@ -2,26 +2,22 @@
 #define MAINWINDOW_H
 
 #include "screenfactory.h"
-
-#include <QMainWindow>
-#include <QStackedWidget>
-#include <QUrl>
-
 #include "navigator.h"
 
-#include "client.h"
+#include <QMainWindow>
+#include <thread>
+#include <memory>
+#include <QStackedWidget>
+#include <QUrl>
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 private:
+    std::unique_ptr<std::thread>  mClientThread;
     QStackedWidget *container;
     FragmentNavigator *navigator;
     BaseScreensFactory *factory;
-
-    network::Client client_;
-
-    //some_client_network_implementation
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

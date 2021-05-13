@@ -21,8 +21,6 @@ public slots:
 
     void back();
 
-    void replace(QString tag);
-
     void newRootScreen(QString tag);
 
 private:

@@ -6,6 +6,7 @@
 #include <QException>
 #include <QDir>
 #include "mediaplayer.h"
+#include "client_impl.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -33,7 +34,14 @@ MainWindow::MainWindow(QWidget *parent)
 
         player->setPlaylist(playlist);
         player->setVolume(20);
-        // player->play();
+         // player->play();
+
+        Client = std::make_unique<network::Client>();
+        Client->Connect();
+        mClientThread = std::make_unique<std::thread>([&] {Client->Run();});
+        mClientThread->detach();
+
+
 
 
         this->resize(QApplication::screens().at(0)->availableGeometry().size() * 0.7);
@@ -44,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    qDebug("MainWindowDest");
+    Client->Disconnect();
     delete navigator;
     delete container;
     delete factory;

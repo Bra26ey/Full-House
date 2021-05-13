@@ -1,6 +1,7 @@
 #include "loginfragment.h"
 
 #include <boost/functional/hash/hash.hpp>
+#include <QApplication>
 #include <iostream>
 #include <QLabel>
 #include <QPushButton>
@@ -64,7 +65,7 @@ LoginFragment::LoginFragment() {
     RegistrationButton = new QPushButton("Sign up");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &LoginFragment::onRegistrationPressed);
-
+this->close();
     quitButton = new QPushButton("Exit");
     quitButton->setStyleSheet("color:#242424;font-size:24px");
     connect(quitButton, &QPushButton::clicked, this, &LoginFragment::onExitPressed);
@@ -106,6 +107,7 @@ void LoginFragment::onLoginPressed() {
          msgBox.setWindowTitle("Ошибка авторизации");
          msgBox.exec();
     } else {
+        Client->Autorise(loginEdit->text().toStdString(), passwordEdit->text().toStdString());
         navigateTo(MAIN_TAG);
     }
 }
@@ -115,18 +117,16 @@ void LoginFragment::onRegistrationPressed() {
 }
 
 void LoginFragment::onExitPressed() {
-    // disconnect from server
-    exit(0);
+    QApplication::quit();
 }
 
 int LoginFragment::CheckData() {
-//    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
-//        return 0;
-//    } else {
-//        return 1;
-//    }
+    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
+        return 0;
+    } else {
+        return 1;
+    }
     boost::hash<std::string> PasswordHasher;
     PasswordHasher(passwordEdit->text().toStdString());
     return 0;
 }
-

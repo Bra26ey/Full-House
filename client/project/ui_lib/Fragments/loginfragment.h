@@ -2,6 +2,7 @@
 #define LOGINFRAGMENT_H
 
 #include "basefragment.h"
+#include "client_impl.h"
 
 #include <QLineEdit>
 #include <QPushButton>

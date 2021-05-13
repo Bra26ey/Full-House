@@ -33,6 +33,9 @@ bool Client::Connect() {
 }
 
 bool Client::Disconnect() {
+    auto msg = MsgClient::Disconnect();
+    msg_queue_.Push(msg);
+    usleep(500000);  // костыль на пинги и дисконнект
     socket_.close();
     return true;
 }
@@ -54,7 +57,7 @@ int Client::Read(boost::asio::streambuf &buffer) {
 }
 
 void Client::Run() {
-    while (true) {
+    while (IsConnected()) {
         if (msg_queue_.IsEmpty()) {
             auto delta = boost::posix_time::microsec_clock::local_time() - last_ping;
             if (delta.total_milliseconds() < PING_TIME) {
@@ -75,6 +78,7 @@ void Client::Run() {
         last_ping = boost::posix_time::microsec_clock::local_time();
     }
 }
+
 
 std::string Client::GetLastMsg() {
     while (answers_queue_.IsEmpty()) {

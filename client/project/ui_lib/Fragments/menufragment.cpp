@@ -1,4 +1,5 @@
 #include "menufragment.h"
+#include "client_impl.h"
 
 using namespace screens;
 
@@ -81,6 +82,7 @@ void MenuFragment::onSettingsPressed() {
 }
 
 void MenuFragment::onLoginPressed() {
+    Client->Logout(); // выход не залогинненого юзера все крашит
     navigateTo(LOGIN_TAG);
 }
 
