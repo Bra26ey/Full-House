@@ -27,8 +27,6 @@ jobs:
       - name: install spdlog
         run: |
           sudo apt-get install libspdlog-dev
-          cd /usr/src/spdlog
-          sudo cmake CMakeLists.txt
 
       - name: build
         working-directory: ${{runner.workspace}}/Full-House/logic
