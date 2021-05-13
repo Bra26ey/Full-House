@@ -6,15 +6,10 @@
 #include <boost/asio/coroutine.hpp>
 
 #include "definitions.h"
+#include "tablepositions.h"
 
 #include "ConfigurationHandler.h"
 #include "HandProcess.h"
-#include "FileHandler.h"
-#include "Card.h"
-
-#include "Deck.h"
-
-#define DECK_SIZE 52
 
 using boost::asio::ip::tcp;
 using boost::asio::io_context;
@@ -42,6 +37,8 @@ class GameTalker : public boost::asio::coroutine {
     void HandleUserRequest(std::shared_ptr<User> &user);
     void OnHandleUserRequest(std::shared_ptr<User> &user);
 
+    void JoinPlayerFailed(std::shared_ptr<User> &user);
+
     void HandleAdminRequest(std::shared_ptr<User> &user);
     void HandleGameRequest(std::shared_ptr<User> &user);
     void HandleLeaving(std::shared_ptr<User> &user);
@@ -62,6 +59,8 @@ class GameTalker : public boost::asio::coroutine {
 
     boost::atomic<bool> is_deleting_;
     boost::atomic<uint64_t> online_users_;
+
+    TablePositions positions_;
 
     static uint64_t counter_;
 };

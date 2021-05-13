@@ -71,20 +71,34 @@ void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
     boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
 }
 
+void GameTalker::JoinPlayerFailed(std::shared_ptr<User> &user) {
+    BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. room-id: " << id;
+    user->room_id = __UINT64_MAX__;
+    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    pt::read_json(user->in, user->last_msg);
+    user->out << MsgServer::JoinRoomFaild(id);
+    write(user->socket, user->write_buffer);
+    user->is_talking.store(false);
+}
+
 int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     if (is_gaming || is_remove) {
-        BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. room-id: " << id;
-        user->room_id = __UINT64_MAX__;
-        read_until(user->socket, user->read_buffer, "\n\r\n\r");
-        pt::read_json(user->in, user->last_msg);
-        user->out << MsgServer::JoinRoomFaild(id);
-        write(user->socket, user->write_buffer);
-        user->is_talking.store(false);
+        JoinPlayerFailed(user);
         return -1;
     }
 
     const pt::ptree &parametrs = user->last_msg.get_child("parametrs");
     auto password = parametrs.get<std::string>("password");
+
+    // ASK DATABASE FOR PASSWORD CHECK
+
+    auto position = positions_.Insert(user->name);
+    if (position == TPOS_ERROR) {
+        JoinPlayerFailed(user);
+        return -1;
+    }
+
+    // INSERT PLAYER TO DATABASE
 
     BOOST_LOG_TRIVIAL(info) << user->name << " accepted to game. room-id: " << id;
 
@@ -162,9 +176,9 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
         // boost::asio::streambuf buf;
         // std::istream is(&buf);
         // write(handprocess_.ss, buf);
-        // int pos_id
-        // string command
-        // int sum
+        // int pos_id = positions_.GetPosition(user->name);
+        // string command = action;
+        // int sum = sum
         handprocess_.command_queue.push(action);
 
         if (action == "raise") {
