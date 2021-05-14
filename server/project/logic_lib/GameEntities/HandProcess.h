@@ -7,6 +7,7 @@
 #include <list>
 #include <memory>
 #include <map>
+#include <mutex>
 #include <ConfigurationHandler.h>
 
 #include <boost/property_tree/ptree.hpp>
@@ -33,11 +34,11 @@ public:
     void Init();
     void DealCards();
 
-    bool Preflop();  // TODO: using GameStage
-    bool Flop();  // TODO: using GameStage
-    bool Turn();  // TODO: using GameStage
-    bool River();  // TODO: using GameStage
-    void PotDistribution();  // TODO: using HandValue from Player and sort for all players to determine winner
+    bool Preflop();
+    bool Flop();
+    bool Turn();
+    bool River();
+    void PotDistribution();
 
     boost::property_tree::ptree GetGameStatus();
 
@@ -45,7 +46,6 @@ public:
     HandConfiguration hand_config;
     std::shared_ptr<Logger> logger;
 
-    // std::stringstream ss;
     SafeQueue<std::string> command_queue;
 
 private:
@@ -57,8 +57,12 @@ private:
         {"raise", RAISE_SIGNAL},
         {"check", CHECK_SIGNAL}
     };
+    std::mutex mutex;
 
     bool need_next_stage;
+
+    static boost::property_tree::ptree GetCardStatus(const Card& card);
+    static boost::property_tree::ptree GetPlayerStatus(const std::shared_ptr<Player>& player);
 
     static std::list<std::shared_ptr<Player> >::iterator CircularNext(std::list<std::shared_ptr<Player> >& l, std::list<std::shared_ptr<Player> >::iterator it) {
         return std::next(it) == l.end() ? l.begin() : std::next(it);
