@@ -14,7 +14,7 @@ int min_base_card_coefficient = 166;
 int min_card_move_coefficient = 80;
 
 using namespace screens;
-GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5) {
+GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr) {
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
 
@@ -156,6 +156,7 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5) {
 
     DeletePlayer(1);
     DrawPlayer(1, "Cartman2", 5000);
+    DeletePlayer(2);
 }
 
 GameFragment::~GameFragment() {
@@ -315,6 +316,7 @@ void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t tot
 
 void GameFragment::DeletePlayer(size_t player_id) {
     delete mOtherPlayers[player_id - 1];
+    mOtherPlayers[player_id - 1] = nullptr;
 }
 
 void GameFragment::DrawMainPlayer() {
@@ -475,12 +477,14 @@ void GameFragment::RedrawPlayer(OtherPlayer* player) {
 void GameFragment::resizeEvent(QResizeEvent *event) {
     mPlayTable->Resize(this->size());
     foreach(auto player, mOtherPlayers) {
-        player->Resize(this->size());
-        if(player->HasCards) {
-            player->GetCard().first->Resize(this->size());
-            player->GetCard().second->Resize(this->size());
+        if (player != nullptr) {
+            player->Resize(this->size());
+            if(player->HasCards) {
+                player->GetCard().first->Resize(this->size());
+                player->GetCard().second->Resize(this->size());
+            }
+            RedrawPlayer(player);
         }
-        RedrawPlayer(player);
     }
     mPlayer->Resize(this->size());
     if (mPlayer->HasCards) {
