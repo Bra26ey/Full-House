@@ -126,9 +126,7 @@ void LoginFragment::onExitPressed() {
 }
 
 int LoginFragment::CheckData() {
-    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
-        return 0;
-    } else {
+    if (loginEdit->text().length() < 5 && passwordEdit->text().length() < 5) {
         return 1;
     }
     boost::hash<std::string> PasswordHasher;

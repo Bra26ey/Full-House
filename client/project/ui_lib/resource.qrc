@@ -74,4 +74,8 @@
         <file>Media/Cards/k2.png</file>
         <file>Media/Cards/k0.png</file>
     </qresource>
+    <qresource prefix="/text">
+        <file alias="rules1">Media/rules</file>
+        <file alias="rules2">Media/rules_pt2</file>
+    </qresource>
 </RCC>

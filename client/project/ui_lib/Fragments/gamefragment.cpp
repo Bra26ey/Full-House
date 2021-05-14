@@ -14,7 +14,7 @@ int min_base_card_coefficient = 166;
 int min_card_move_coefficient = 80;
 
 using namespace screens;
-GameFragment::GameFragment() : mMinbet(1), mMaxbet(10) {
+GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5) {
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
 
@@ -123,11 +123,11 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10) {
     SetMaxBet(1000);
 
 
-    DrawPlayer(1, "Cartman", 5000);
-    DrawPlayer(2, "Kenny", 2000);
+    DrawPlayer(5, "Cartman", 5000);
+    DrawPlayer(1, "Kenny", 2000);
     DrawPlayer(3, "Stan", 6000);
-    DrawPlayer(4, "Wendy", 1000);
-    DrawPlayer(5, "Dougie", 500);
+    DrawPlayer(2, "Wendy", 1000);
+    DrawPlayer(4, "Dougie", 500);
 
 
     GiveCards(0, 14,2, 14,3);
@@ -282,36 +282,32 @@ void GameFragment::SetMaxBet(int maxbet) {
 void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
     qDebug() << player_id;
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
-    mOtherPlayers.append(player);
+    mOtherPlayers[player_id - 1] = player;
+    mOtherPlayers[player_id - 1]->setParent(mPlayTable);
     switch (player_id) {
         case 1: {
-            mOtherPlayers[0]->setParent(mPlayTable);
-            mOtherPlayers[0]->setGeometry(firstpos);
-            mOtherPlayers[0]->SetPosition(firstpos);
+            mOtherPlayers[player_id - 1]->setGeometry(firstpos);
+            mOtherPlayers[player_id - 1]->SetPosition(firstpos);
         break;
         }
         case 2: {
-            mOtherPlayers[1]->setParent(mPlayTable);
-            mOtherPlayers[1]->setGeometry(secondpos);
-            mOtherPlayers[1]->SetPosition(secondpos);
+            mOtherPlayers[player_id - 1]->setGeometry(secondpos);
+            mOtherPlayers[player_id - 1]->SetPosition(secondpos);
         break;
         }
         case 3: {
-            mOtherPlayers[2]->setParent(mPlayTable);
-            mOtherPlayers[2]->setGeometry(thirdpos);
-            mOtherPlayers[2]->SetPosition(thirdpos);
+            mOtherPlayers[player_id - 1]->setGeometry(thirdpos);
+            mOtherPlayers[player_id - 1]->SetPosition(thirdpos);
         break;
         }
         case 4: {
-            mOtherPlayers[3]->setParent(mPlayTable);
-            mOtherPlayers[3]->setGeometry(fouthpos);
-            mOtherPlayers[3]->SetPosition(fouthpos);
+            mOtherPlayers[player_id - 1]->setGeometry(fouthpos);
+            mOtherPlayers[player_id - 1]->SetPosition(fouthpos);
         break;
         }
         case 5: {
-            mOtherPlayers[4]->setParent(mPlayTable);
-            mOtherPlayers[4]->setGeometry(fifthpos);
-            mOtherPlayers[4]->SetPosition(fifthpos);
+            mOtherPlayers[player_id - 1]->setGeometry(fifthpos);
+            mOtherPlayers[player_id - 1]->SetPosition(fifthpos);
         break;
         }
     }
