@@ -1,3 +1,8 @@
+find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread)
+find_package(Threads)
+
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
 add_subdirectory(msgfabric_lib)
 include_directories(msgfabric_lib/include)
 
@@ -17,4 +22,7 @@ include_directories(server_lib/include)
 
 add_executable(server_target src/main.cpp)
 
-target_link_libraries(server_target server_lib)
+target_link_libraries(server_target
+                      server_lib
+                      ${CMAKE_THREAD_LIBS_INIT}
+                      ${Boost_LIBRARIES})

@@ -2,12 +2,13 @@
 // Created by aleksandr on 16.04.2021.
 //
 
-#ifndef FULL_HOUSE_LOGGER_H
-#define FULL_HOUSE_LOGGER_H
+#pragma once
 
 #include <string>
 #include <fstream>
 #include "spdlog/spdlog.h"
+
+namespace logic {
 
 class Logger {
 public:
@@ -26,4 +27,4 @@ private:
     static uint64_t count;
 };
 
-#endif //FULL_HOUSE_LOGGER_H
+}  // namespace logic

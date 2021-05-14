@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "Logger.h"
 
+namespace logic {
+
 enum class Combination {
     HIGHEST_CARD = 1,
     ONE_PAIR = 10,
@@ -257,3 +259,4 @@ int Player::RoyalFlush(std::vector<Card>& combination_detect) {
     return 0;
 }
 
+}  // namespace logic

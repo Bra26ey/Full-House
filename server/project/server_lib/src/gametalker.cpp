@@ -192,8 +192,8 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
         return;
     }
 
-    user->out << "{status: game-request is handled;}\n\r\n\r";
-    // user->out << MsgServer::GameStatus(handprocess_.GetGameStatus());
+    // user->out << "{status: game-request is handled;}\n\r\n\r";
+    user->out << MsgServer::GameStatus(GetGameStatus(handprocess_.hand_config));
 
     async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
 }

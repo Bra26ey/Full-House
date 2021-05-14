@@ -8,7 +8,7 @@ add_library(Logger SHARED
 add_library(ConfigurationHandler SHARED
         Utilities/LogicFileHandler.cpp Utilities/LogicFileHandler.h
         Utilities/ConfigurationHandler.cpp Utilities/ConfigurationHandler.h
-        Utilities/HandConfiguration.h
+        Utilities/HandConfiguration.h Utilities/HandConfiguration.cpp
         Player/Player.cpp Player/Player.h)
 
 add_library(GameEntities SHARED

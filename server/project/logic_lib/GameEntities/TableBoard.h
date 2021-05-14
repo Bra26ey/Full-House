@@ -2,12 +2,12 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_BOARD_H
-#define FULL_HOUSE_BOARD_H
+#pragma once
 
 #include <vector>
 #include "Card.h"
 
+namespace logic {
 
 struct Board {
     int pot;
@@ -19,4 +19,4 @@ struct Board {
     }
 };
 
-#endif //FULL_HOUSE_BOARD_H
+}  // namespace logic

@@ -8,6 +8,7 @@
 
 #include "LogicFileHandler.h"
 
+namespace logic {
 
 FileHandler::FileHandler(const std::string& input, const std::string& output): input_file(input), output_file(output) {
 
@@ -37,3 +38,5 @@ FileHandler::~FileHandler() {
         output_file.close();
     }
 }
+
+}  // namespace logic

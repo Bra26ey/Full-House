@@ -2,6 +2,9 @@
 
 namespace database {
 
+PoolConnections* PoolConnections::instance_(nullptr);
+std::mutex PoolConnections::my_mutex_;
+
 PoolConnections::PoolConnections() {
     for (std::size_t i = 0; i < POOL_SIZE; ++i) {
         Connection conn;

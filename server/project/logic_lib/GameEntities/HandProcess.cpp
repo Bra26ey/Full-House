@@ -5,13 +5,13 @@
 #include <list>
 #include <iostream>
 
-#include <boost/asio.hpp>
-
 #include "HandProcess.h"
 #include "ConfigurationHandler.h"
 #include "Card.h"
 #include "Logger.h"
 #include "Deck.h"
+
+namespace logic {
 
 bool HandProcess::one_player_in_pot(HandConfiguration& hand_config) {
     size_t count_of_players_in_pot = 0;
@@ -327,59 +327,4 @@ void HandProcess::GameLoop(bool& someone_raised, bool& first_round,
     }
 }
 
-
-
-
-// boost::property_tree::ptree GetCardStatus(Card &card) {
-//     boost::property_tree::ptree status;
-
-//     status.put("suit", card.Suit);
-//     status.put("value", card.Value);
-//     status.put("is-opend", card.show_everyone);
-
-//     return status;
-// }
-
-// boost::property_tree::ptree GetPlayerStatus(std::shared_ptr<Player> &player) {
-//     boost::property_tree::ptree status;
-
-//     boost::property_tree::ptree cards_status;
-//     for (auto &it : player->cards) {
-//         auto card = GetCardStatus(it);
-//         cards_status.put("", card);
-//     }
-
-//     status.add_child("cards", cards_status);
-
-//     status.put("in-pot", player->in_pot);
-//     status.put("current-stage-money-in-pot", player->current_stage_money_in_pot);
-//     status.put("position", player->position);
-
-//     return status;
-// }
-
-// boost::property_tree::ptree HandProcess::GetGameStatus() {
-//     boost::property_tree::ptree status;
-
-//     status.put("button-pos", hand_config.button_pos);
-//     status.put("small-blind-pos", hand_config.small_blind_pos);
-//     status.put("big-blind-pos", hand_config.big_blind_pos);
-
-//     status.put("small-blind-bet", hand_config.small_blind_bet);
-//     status.put("big-blind-bet", hand_config.big_blind_bet);
-
-//     status.put("max-size-of-players", hand_config.max_size_of_players);
-//     status.put("count-of-player-cards", hand_config.count_of_player_cards);
-
-//     boost::property_tree::ptree players_status;
-//     for (auto &it : hand_config.players) {
-//         auto player = GetPlayerStatus(it);
-//         players_status.put("", player);
-//     }
-
-//     status.add_child("players", players_status);
-
-//     return status;
-// }
-
-// 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+} // namespace logic

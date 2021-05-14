@@ -2,8 +2,7 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_HANDPROCESS_H
-#define FULL_HOUSE_HANDPROCESS_H
+#pragma once
 
 #include <list>
 #include <memory>
@@ -18,6 +17,8 @@
 #include "Logger.h"
 #include "Deck.h"
 #include "SafeQueue.h"
+
+namespace logic {
 
 constexpr uint8_t FOLD_SIGNAL = 0;
 constexpr uint8_t CALL_SIGNAL = 1;
@@ -85,6 +86,4 @@ private:
 
 };
 
-
-
-#endif //FULL_HOUSE_HANDPROCESS_H
+}  // namespace logic

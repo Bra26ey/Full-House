@@ -2,10 +2,11 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_PROFILE_H
-#define FULL_HOUSE_PROFILE_H
+#pragma once
 
 #include <string>
+
+namespace logic {
 
 struct Profile {
     int id;
@@ -14,4 +15,4 @@ struct Profile {
     int money;  // money is the entire player cash in client
 };
 
-#endif //FULL_HOUSE_PROFILE_H
+}  // namespace logic

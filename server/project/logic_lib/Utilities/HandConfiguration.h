@@ -2,12 +2,16 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_HANDCONFIGURATION_H
-#define FULL_HOUSE_HANDCONFIGURATION_H
+#pragma once
 
 #include <list>
 #include <memory>
+
+#include <boost/property_tree/ptree.hpp>
+
 #include "Player.h"
+
+namespace logic {
 
 struct HandConfiguration {
     unsigned int button_pos;
@@ -20,9 +24,9 @@ struct HandConfiguration {
     unsigned int max_size_of_players;
     unsigned int count_of_player_cards;
 
-
-
     std::list<std::shared_ptr<Player> > players;
 };
 
-#endif //FULL_HOUSE_HANDCONFIGURATION_H
+boost::property_tree::ptree GetGameStatus(HandConfiguration const &hand_config);
+
+}  // namespace logic

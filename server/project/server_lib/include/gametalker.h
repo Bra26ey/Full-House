@@ -21,7 +21,7 @@ class GameTalker : public boost::asio::coroutine {
     GameTalker(io_context &context) : is_remove(false),
                                       is_gaming(false),
                                       context_(context),
-                                      handprocess_(DECK_SIZE),
+                                      handprocess_(logic::DECK_SIZE),
                                       is_deleting_(false) {
        id = counter_++;
     };
@@ -52,7 +52,7 @@ class GameTalker : public boost::asio::coroutine {
  private:
     io_context &context_;
 
-    HandProcess handprocess_;
+    logic::HandProcess handprocess_;
 
     std::vector<std::shared_ptr<User>> users_;
     std::mutex users_mutex_;

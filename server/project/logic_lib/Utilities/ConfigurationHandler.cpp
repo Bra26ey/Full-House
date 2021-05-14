@@ -2,11 +2,13 @@
 // Created by aleksandr on 17.04.2021.
 //
 #include <algorithm>
+
 #include "LogicFileHandler.h"
 #include "HandConfiguration.h"
 #include "ConfigurationHandler.h"
 #include "Player.h"
 
+namespace logic {
 
 ConfigurationHandler::ConfigurationHandler(FileHandler& file_handler): file_handler(file_handler) {}
 
@@ -35,3 +37,4 @@ void ConfigurationHandler::Write() {
     file_handler.Write();
 }
 
+}  // namespace logic

@@ -55,7 +55,7 @@ class Server {
     tcp::acceptor acceptor_;
 
     database::User user_database_;
-   //  database::Board board_database_;
+    database::Board board_database_;
 
     boost::thread_group threads_;
 };
