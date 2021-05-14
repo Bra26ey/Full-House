@@ -6,6 +6,8 @@
 #include "gamesearchfragment.h"
 #include "gamefragment.h"
 #include "rulesfragment.h"
+#include "creditmenufragment.h"
+#include "equationsfragment.h"
 
 
 using namespace screens;
@@ -41,6 +43,12 @@ BaseFragment* ScreensFactory::create(QString tag) {
     }
     if (tag == RULE_TAG) {
         return new RulesFragment;
+    }
+    if (tag == CREDIT_TAG) {
+        return new CreditMenuFragment;
+    }
+    if (tag == EQUATION_TAG) {
+        return new EquationsFragment;
     }
     return nullptr;
 }

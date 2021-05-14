@@ -49,6 +49,8 @@ set(PROJECT_SOURCES
         Fragments/gamesearchfragment.cpp
         Fragments/gamefragment.cpp
         Fragments/rulesfragment.cpp
+        Fragments/creditmenufragment.cpp
+        Fragments/equationsfragment.cpp
 
         GameElements/otherplayer.cpp
         GameElements/player.cpp

@@ -17,10 +17,12 @@ public slots:
     void onSettingsPressed();
     void onSearchPressed();
     void onRulesPressed();
+    void onCreditsPressed();
 
 private:
     QPushButton *LoginButton;
     QPushButton *SettingsButton;
+    QPushButton *CreditsButton;
     QPushButton *RulesButton;
     QPushButton *SearchButton;
 };

@@ -6,8 +6,6 @@
 using namespace screens;
 
 MenuFragment::MenuFragment() {
-    qDebug("MenuFragment create");
-
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerConainer = new QFrame;
@@ -29,6 +27,10 @@ MenuFragment::MenuFragment() {
     RulesButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RulesButton, &QPushButton::clicked, this, &MenuFragment::onRulesPressed);
 
+    CreditsButton = new QPushButton("Earn credits");
+    CreditsButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(CreditsButton, &QPushButton::clicked, this, &MenuFragment::onCreditsPressed);
+
     SettingsButton = new QPushButton("Settings");
     SettingsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(SettingsButton, &QPushButton::clicked, this, &MenuFragment::onSettingsPressed);
@@ -39,11 +41,13 @@ MenuFragment::MenuFragment() {
 
     buttonContainer->addWidget(SearchButton);
     buttonContainer->addWidget(RulesButton);
+    buttonContainer->addWidget(CreditsButton);
     buttonContainer->addWidget(SettingsButton);
     buttonContainer->addWidget(LoginButton);
 
     loadingButtonContainer->addWidget(SearchButton);
     loadingButtonContainer->addWidget(RulesButton);
+    loadingButtonContainer->addWidget(CreditsButton);
     loadingButtonContainer->addWidget(SettingsButton);
     loadingButtonContainer->addWidget(LoginButton);
 
@@ -71,6 +75,7 @@ MenuFragment::MenuFragment() {
 MenuFragment::~MenuFragment() {
     delete LoginButton;
     delete SettingsButton;
+    delete CreditsButton;
     delete SearchButton;
     delete RulesButton;
 }
@@ -94,4 +99,9 @@ void MenuFragment::onLoginPressed() {
 void MenuFragment::onRulesPressed() {
     QSound::play(":/music/click");
     navigateTo(RULE_TAG);
+}
+
+void MenuFragment::onCreditsPressed() {
+    QSound::play(":/music/click");
+    navigateTo(CREDIT_TAG);
 }

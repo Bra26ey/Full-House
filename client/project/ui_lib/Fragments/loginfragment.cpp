@@ -5,8 +5,6 @@
 #include <iostream>
 #include <QLabel>
 #include <QPushButton>
-#include <QTreeWidgetItem>
-#include <QVBoxLayout>
 #include <QMessageBox>
 #include <QSettings>
 
@@ -67,7 +65,7 @@ LoginFragment::LoginFragment() {
     RegistrationButton = new QPushButton("Sign up");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
     connect(RegistrationButton, &QPushButton::clicked, this, &LoginFragment::onRegistrationPressed);
-this->close();
+
     quitButton = new QPushButton("Exit");
     quitButton->setStyleSheet("color:#242424;font-size:24px");
     connect(quitButton, &QPushButton::clicked, this, &LoginFragment::onExitPressed);

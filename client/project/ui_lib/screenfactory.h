@@ -11,6 +11,8 @@ namespace screens {
     static const QString SEARCH_TAG = "search";
     static const QString GAME_TAG = "game";
     static const QString RULE_TAG = "rule";
+    static const QString CREDIT_TAG = "credit";
+    static const QString EQUATION_TAG = "equation";
 }
 
 class ScreensFactory : public BaseScreensFactory {

@@ -77,5 +77,6 @@
     <qresource prefix="/text">
         <file alias="rules1">Media/rules</file>
         <file alias="rules2">Media/rules_pt2</file>
+        <file alias="equations">Media/equations.txt</file>
     </qresource>
 </RCC>

@@ -214,7 +214,17 @@ void GameFragment::onCheckPressed() {
 
 void GameFragment::onRaisePressed() {
     QSound::play(":/music/click");
+    auto bet = BetValue->text().toInt();
+    if (bet > mMaxbet) {
+        bet = mMaxbet;
+        BetValue->setText(QString::number(bet));
+    }
+    if (bet < mMinbet) {
+        bet = mMinbet;
+        BetValue->setText(QString::number(bet));
+    }
     SetRaise(0);
+    mChips->AddToBank(bet);
     Client->GameRaise(BetValue->text().toUInt());
     //BlockActions();
 }
