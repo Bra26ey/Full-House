@@ -12,6 +12,13 @@ namespace pt = boost::property_tree;
 
 namespace network {
 
+UserTalker::UserTalker(std::shared_ptr<User> &user, Userbase &userbase, database::User &user_database)
+           : is_remove(false),
+             context_(user->context),
+             user_(user),
+             userbase_(userbase),
+             user_database_(user_database) {}
+
 void UserTalker::Start() {
     user_->is_talking.store(true);
     BOOST_LOG_TRIVIAL(info) << "UserTalker start work with connection";
@@ -23,10 +30,17 @@ bool UserTalker::IsUserWorks() const {
 }
 
 void UserTalker::HandleAutorisation() {
+    const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
+    auto name = parametrs.get<std::string>("login");
+    auto password = parametrs.get<std::string>("password");
+
     user_->is_autorised = true;
+
+    // auto answer = user_database_.AuthUser(name, password);
+    // user_->is_autorised = answer.second == database::OK;
+
     if (user_->is_autorised) {
-        const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
-        user_->name = parametrs.get<std::string>("login");
+        user_->name = name;
         user_->out << MsgServer::AutorisationDone();
         BOOST_LOG_TRIVIAL(info) << "user is autorised. name: " << user_->name;
     } else {
@@ -54,9 +68,14 @@ void UserTalker::JoinPlayer() {
 }
 
 void UserTalker::HandleError() {
-    BOOST_LOG_TRIVIAL(info) << user_->name << "'s request is anknown";
+    BOOST_LOG_TRIVIAL(info) << user_->name << "'s request is unknown";
 
     user_->out << MsgServer::Error();
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+}
+
+void UserTalker::HandlePing() {
+    user_->out << MsgServer::Ping();
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
@@ -89,7 +108,7 @@ void UserTalker::HandleRequest() {
                 std::string command_type = user_->last_msg.get<std::string>("command-type");
 
                 if (command_type == "ping") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
+                    boost::asio::post(context_, boost::bind(&UserTalker::HandlePing, this));
                     return;
                 }
 

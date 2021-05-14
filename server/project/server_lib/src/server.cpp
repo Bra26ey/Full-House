@@ -1,6 +1,7 @@
 #include "server.h"
 
 #include <vector>
+#include <algorithm>
 
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -8,6 +9,10 @@
 #include "msgmaker.h"
 
 namespace network {
+
+Server::Server() : context_(),
+                   endpoint_(address::from_string("127.0.1.1"), PORT),
+                   acceptor_(context_) {}
 
 Server::~Server() {}
 
@@ -52,12 +57,17 @@ void Server::CleanUserTalkers() {
 
 void Server::CleanGameTalkers() {
     gametalkers_mutex_.lock();
-    for (size_t i = 0; i < gametalkers_.size(); ++i) {
-        if (gametalkers_[i]->is_remove) {
-            gametalkers_.erase(gametalkers_.begin() + i);
-            BOOST_LOG_TRIVIAL(info) << "deleted room is removed";
-        }
+
+    auto it = std::find_if(gametalkers_.begin(), gametalkers_.end(),
+                           [](const std::shared_ptr<GameTalker> &current) { return current->is_remove.load(); });
+
+    if (it != gametalkers_.end()) {
+        gametalkers_.erase(it);
     }
+
+    // std::erase_if(gametalkers_, [](const std::shared_ptr<GameTalker> &current) { return current->is_remove.load(); });
+    // uncomment later. It works, but vscode image an error
+
     gametalkers_mutex_.unlock();
     context_.post(boost::bind(&Server::CleanGameTalkers, this));
 }
@@ -76,7 +86,7 @@ void Server::HandleAcception(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << "waiting for acception";
     acceptor_.accept(user->socket);
     BOOST_LOG_TRIVIAL(info) << "user accepted";
-    auto usertalker = std::make_shared<UserTalker>(user, userbase_);
+    auto usertalker = std::make_shared<UserTalker>(user, userbase_, user_database_);
     usertalkers_mutex_.lock();
     usertalkers_.push_back(usertalker);
     usertalkers_mutex_.unlock();
@@ -111,18 +121,14 @@ void Server::JoinPlayers() {
         return;
     }
 
-    auto user = userbase_.accepting_game.Pop();
-    gametalkers_mutex_.lock();
-    bool flag = true;
-    for (auto &it : gametalkers_) {
-        if (it->id == user->room_id) {
-            it->JoinPlayer(user);
-            flag = false;
-            break;
-        }
-    }
+    const std::lock_guard<std::mutex> lock(gametalkers_mutex_);
 
-    if (flag) {
+    auto user = userbase_.accepting_game.Pop();
+
+    auto it = std::find_if(gametalkers_.begin(), gametalkers_.end(),
+                          [user](const std::shared_ptr<GameTalker> &current) { return current->id == user->room_id; });
+
+    if (it == gametalkers_.end()) {
         BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. can't find room-id: " << user->room_id;
         read_until(user->socket, user->read_buffer, "\n\r\n\r");
         boost::property_tree::read_json(user->in, user->last_msg);
@@ -130,10 +136,12 @@ void Server::JoinPlayers() {
         write(user->socket, user->write_buffer);
         user->room_id = __UINT64_MAX__;
         user->is_talking.store(false);
+        return;
     }
 
-    gametalkers_mutex_.unlock();
+    (*it)->JoinPlayer(user);
+
     context_.post(boost::bind(&Server::JoinPlayers, this));
 }
 
-}
+}  // namespace network

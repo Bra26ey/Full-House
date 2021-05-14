@@ -22,9 +22,7 @@ namespace network {
 
 class Server {
  public:
-    Server() : context_(),
-               endpoint_(address::from_string("127.0.1.1"), PORT),
-               acceptor_(context_) {};
+    Server();
     Server(Server &other) = delete;
     ~Server();
     void Start();
@@ -51,11 +49,11 @@ class Server {
 
     Userbase userbase_;
 
-    tcp::endpoint endpoint_;
-    tcp::acceptor acceptor_;
-
     database::User user_database_;
     database::Board board_database_;
+
+    tcp::endpoint endpoint_;
+    tcp::acceptor acceptor_;
 
     boost::thread_group threads_;
 };
