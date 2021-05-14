@@ -25,7 +25,9 @@ class GameFragment: public BaseFragment {
 public:
     GameFragment();
     ~GameFragment();
+
     void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
+    void DeletePlayer(size_t player_id);
 
     void SetMinBet(int minbet);
     void SetMaxBet(int maxbet);
@@ -70,7 +72,6 @@ private:
     void BlockActions();
     void UnBlockActions();
 
-    size_t num_players;
     int mMinbet;
     int mMaxbet;
 
