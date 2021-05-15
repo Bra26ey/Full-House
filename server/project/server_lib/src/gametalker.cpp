@@ -8,11 +8,65 @@
 using boost::asio::async_read;
 using boost::asio::async_write;
 
+constexpr uint8_t USERS_MAX = 6;
+
 namespace pt = boost::property_tree;
 
 namespace network {
 
-uint64_t GameTalker::counter_ = 0;
+GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_ptr<User> &user)
+           : is_remove(false),
+             is_gaming(false),
+             context_(context),
+             board_db_(board),
+             handprocess_(logic::DECK_SIZE),
+             is_deleting_(false) {
+    const pt::ptree &parametrs = user->last_msg.get_child("parametrs");
+    auto password = parametrs.get<std::string>("password");
+
+    auto answer = board_db_.CreateBoard(user->id, password);
+    BOOST_LOG_TRIVIAL(info) << "answer.second: " << answer.second;
+    if (answer.second != database::OK) {
+        is_remove.store(true);
+        return;
+    }
+
+    admin_id_.store(user->id);
+
+    auto position = positions_.Insert(user->name);
+    BOOST_LOG_TRIVIAL(info) << "position: " << position;
+    if (position == TPOS_ERROR) {
+        CreatingFailed(user);
+        is_remove.store(true);
+        return;
+    }
+
+    auto code = board_db_.UpdateUserPosition(id, user->id, position);
+    BOOST_LOG_TRIVIAL(info) << "code: " << code;
+    if (code != database::OK) {
+        CreatingFailed(user);
+        is_remove.store(true);
+        return;
+    }
+
+    users_.push_back(user);
+
+    user->is_gaming.store(true);
+    user->is_talking.store(false);
+    user->room_id = id;
+
+    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    pt::read_json(user->in, user->last_msg);
+
+    user->out << MsgServer::CreateRoomDone(id, password);
+    write(user->socket, user->write_buffer);
+
+    boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));
+}
+
+GameTalker::~GameTalker() {
+    board_db_.DeleteBoard(id);
+}
 
 void GameTalker::Start() {
     BOOST_LOG_TRIVIAL(info) << "GameRoom Start Game";
@@ -24,8 +78,10 @@ void GameTalker::HandleAdminRequest(std::shared_ptr<User> &user) {
 
     std::string command = user->last_msg.get<std::string>("command");
 
+    std::lock_guard<std::mutex> lock(users_mutex_);
+
     if (command == "start-game") {
-        if (online_users_.load() > 1) {
+        if (users_.size() > 1) {
             is_gaming.store(true);
             user->out << MsgServer::StartGameDone();
             boost::asio::post(context_, boost::bind(&GameTalker::Start, this));
@@ -52,18 +108,25 @@ void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
     pt::read_json(user->in, user->last_msg);
     std::string command_type = user->last_msg.get<std::string>("command-type");
 
-    if (command_type == "game" && is_gaming) {
-        boost::asio::post(context_, boost::bind(&GameTalker::HandleGameRequest, this, user));
+    if (is_gaming) {
+        if (command_type == "game") {
+            boost::asio::post(context_, boost::bind(&GameTalker::HandleGameRequest, this, user));
+        } else {
+            boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
+        }
         return;
     }
 
-    bool is_admin = (command_type == "room-admin" && user->name == users_.front()->name && !is_gaming);
-    if (is_admin) {
-        boost::asio::post(context_, boost::bind(&GameTalker::HandleAdminRequest, this, user));
+    if (command_type == "room-admin") {
+        if (user->id == admin_id_.load()) {
+            boost::asio::post(context_, boost::bind(&GameTalker::HandleAdminRequest, this, user));
+        } else {
+            boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
+        }
         return;
     }
 
-    if (command_type == "room-basic" && !is_gaming) {  // TODO(ANDY) add pos-ty to leave while gaming
+    if (command_type == "room-basic") {  // TODO(ANDY) add pos-ty to leave while gaming
         boost::asio::post(context_, boost::bind(&GameTalker::HandleLeaving, this, user));
         return;
     }
@@ -71,13 +134,23 @@ void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
     boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
 }
 
-void GameTalker::JoinPlayerFailed(std::shared_ptr<User> &user) {
-    BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. room-id: " << id;
+void GameTalker::CreatingFailed(std::shared_ptr<User> &user) {
+    BOOST_LOG_TRIVIAL(info) << "creating game failed";
     user->room_id = __UINT64_MAX__;
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
-    user->out << MsgServer::JoinRoomFaild(id);
+    user->out << MsgServer::CreateRoomFailed();
     write(user->socket, user->write_buffer);
+    user->is_talking.store(false);
+}
+
+void GameTalker::JoinPlayerFailed(std::shared_ptr<User> &user) {
+    BOOST_LOG_TRIVIAL(info) << "joining game failed. room-id: " << id;
+    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    pt::read_json(user->in, user->last_msg);
+    user->out << MsgServer::JoinRoomFaild(user->room_id);
+    write(user->socket, user->write_buffer);
+    user->room_id = __UINT64_MAX__;
     user->is_talking.store(false);
 }
 
@@ -87,41 +160,44 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
         return -1;
     }
 
-    const pt::ptree &parametrs = user->last_msg.get_child("parametrs");
-    auto password = parametrs.get<std::string>("password");
+    std::lock_guard<std::mutex> lock(users_mutex_);
 
-    // ASK DATABASE FOR PASSWORD CHECK
-
-    auto position = positions_.Insert(user->name);
-    if (position == TPOS_ERROR) {
+    if (users_.size() >= USERS_MAX) {
         JoinPlayerFailed(user);
         return -1;
     }
 
-    // INSERT PLAYER TO DATABASE
+    const pt::ptree &parametrs = user->last_msg.get_child("parametrs");
+    auto password = parametrs.get<std::string>("password");
+
+    // ASK DATABASE FOR PASSWORD CHECK
+    auto code = board_db_.AddUserToBoard(id, user->id, password);
+    if (code != database::OK) {
+        JoinPlayerFailed(user);
+        return -1;
+    }
+
+    auto position = positions_.Insert(user->name);
+    if (position == TPOS_ERROR) {
+        board_db_.RemoveUserFromBoard(id, user->id);
+        JoinPlayerFailed(user);
+        return -1;
+    }
+
+    code = board_db_.UpdateUserPosition(id, user->id, position);
 
     BOOST_LOG_TRIVIAL(info) << user->name << " accepted to game. room-id: " << id;
 
-    ++online_users_;
-    users_mutex_.lock();
     users_.push_back(user);
-    bool is_admin = (users_.size() == 1);
-    users_mutex_.unlock();
 
     user->is_gaming.store(true);
     user->is_talking.store(false);
     user->room_id = id;
-    // user->read_buffer
-    user->last_msg.clear();
 
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
 
-    if (is_admin) {
-        user->out << MsgServer::CreateRoomDone(id, password);
-    } else {
-        user->out << MsgServer::JoinRoomDone(id);
-    }
+    user->out << MsgServer::JoinRoomDone(id);
     write(user->socket, user->write_buffer);
 
     boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));
@@ -150,6 +226,8 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
     }
     users_mutex_.unlock();
 
+    board_db_.RemoveUserFromBoard(id, user->id);
+
     user->out << MsgServer::LeaveRoomDone();
 
     write(user->socket, user->write_buffer);  // ATTENTION!
@@ -157,9 +235,8 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
     user->is_gaming.store(false);
     user->room_id = __UINT64_MAX__;
 
-    --online_users_;
-
-    if (online_users_ == 0) {
+    std::lock_guard<std::mutex> lock(users_mutex_);
+    if (users_.size() == 0) {
         boost::asio::post(context_, boost::bind(&GameTalker::Delete, this));
     }
 }
@@ -169,13 +246,11 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
     auto command = user->last_msg.get<std::string>("command");
 
     // if (command == "action" && handprocess_.current_player_pos == user->table_pos) {
-    if (command == "action") {
+    bool flag = command == "action" && handprocess_.current_player_pos.load() == positions_.GetPosition(user->name);
+    if (flag) {
         auto parametrs = user->last_msg.get_child("parametrs");
         auto action = parametrs.get<std::string>("action-type");
 
-        // boost::asio::streambuf buf;
-        // std::istream is(&buf);
-        // write(handprocess_.ss, buf);
         // int pos_id = positions_.GetPosition(user->name);
         // string command = action;
         // int sum = sum

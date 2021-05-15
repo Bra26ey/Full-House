@@ -1,5 +1,4 @@
-#ifndef FULL_HOUSE_CONSTANTS_H
-#define FULL_HOUSE_CONSTANTS_H
+#pragma once
 
 namespace database {
 
@@ -15,7 +14,7 @@ constexpr int INSUFFICIENT_FUNDS = 27;
 constexpr int FILE_NOT_OPENED = 31;
 constexpr int EMPTY_FIELD = 32;
 
-#define FILE_DIR "/FileHandler/"
+#define FILE_DIR "/project/database_lib/FileHandler/"
 #define FILE_NOT_OPENED_MSG "File not opened"
 #define DEFAULT_PATH_TO_IMAGE "default_path_to_image"
 
@@ -26,5 +25,3 @@ constexpr int FREE_CONN = 0;
 constexpr int BUSY_CONN = 1;
 
 }  // namespace database
-
-#endif //FULL_HOUSE_CONSTANTS_H

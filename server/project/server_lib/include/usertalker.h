@@ -18,7 +18,7 @@ namespace network {
 
 class UserTalker : public boost::asio::coroutine {
  public:
-    UserTalker(std::shared_ptr<User> &user, Userbase &userbase, database::User &user_database);
+    UserTalker(std::shared_ptr<User> &user, Userbase &userbase, database::User &user_db);
     ~UserTalker() = default;
     void Start();
     bool IsUserWorks() const;
@@ -28,6 +28,7 @@ class UserTalker : public boost::asio::coroutine {
 
  private:
     void HandleAutorisation();
+    void HandleRegistration();
     void HandlePlayers();
     void JoinPlayer();
     void CreateGame();
@@ -42,7 +43,7 @@ class UserTalker : public boost::asio::coroutine {
     std::shared_ptr<User> user_;
     Userbase &userbase_;
 
-    database::User &user_database_;
+    database::User &user_db_;
 };
 
 }  // namespace network

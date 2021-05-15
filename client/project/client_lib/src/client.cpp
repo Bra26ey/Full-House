@@ -3,9 +3,15 @@
 #include <string_view>
 #include <iostream>
 
+#include <boost/thread/thread.hpp>
+
 #include "msgmaker.h"
 
 using boost::asio::ip::address;
+
+// namespace time = boost::posix_time;
+
+constexpr uint32_t PING_TIME = 500;
 
 // constexpr std::string_view SERVER_IP = "127.0.0.1";
 constexpr size_t SERVER_PORT = 2000;
@@ -21,12 +27,16 @@ bool Client::Connect() {
     std::cout << "try connect" << std::endl;
     tcp::endpoint endpoint(address::from_string("127.0.1.1"), SERVER_PORT);
     socket_.connect(endpoint);
+    is_closeing.store(false);
     std::cout << "connection done on ep = " << endpoint << std::endl;
+    last_ping = boost::posix_time::microsec_clock::local_time();
     return true;
 }
 
 bool Client::Disconnect() {
-    socket_.close();
+    auto msg = MsgClient::Disconnect();
+    msg_queue_.Push(msg);
+    is_closeing.store(true);
     return true;
 }
 
@@ -34,21 +44,13 @@ bool Client::IsConnected() {
     return socket_.is_open();
 }
 
-int Client::Send(boost::asio::streambuf &buffer) {
-    boost::asio::write(socket_, buffer);
-    std::cout << "send msg to server" << std::endl;
-    return 0;
-}
-
-int Client::Read(boost::asio::streambuf &buffer) {
-    boost::asio::read_until(socket_, buffer, "}");
-    std::cout << "msg from server: " << &buffer << std::endl;
-    return 0;
-}
-
 void Client::Run() {
-    while (true) {
+    while (!is_closeing.load()) {
         if (msg_queue_.IsEmpty()) {
+            auto delta = boost::posix_time::microsec_clock::local_time() - last_ping;
+            if (delta.total_milliseconds() < PING_TIME) {
+                continue;
+            }
             out_ << MsgClient::Ping();
         } else {
             out_ << msg_queue_.Pop();
@@ -57,11 +59,58 @@ void Client::Run() {
         boost::asio::write(socket_, write_buffer_);
 
         boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
+
+        std::string answer(std::istreambuf_iterator<char>(in_), {});
+        answers_queue_.Push(answer);
+
+        last_ping = boost::posix_time::microsec_clock::local_time();
     }
+
+    while (!msg_queue_.IsEmpty()) {
+        out_ << msg_queue_.Pop();
+
+        boost::asio::write(socket_, write_buffer_);
+
+        boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
+
+        std::string answer(std::istreambuf_iterator<char>(in_), {});
+        answers_queue_.Push(answer);
+
+        last_ping = boost::posix_time::microsec_clock::local_time();
+    }
+
+    socket_.close();
 }
+
+
+std::string Client::GetLastMsg() {
+    while (answers_queue_.IsEmpty()) {
+        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+    }
+
+    return answers_queue_.Pop();
+}
+
+    // void on_check_ping() {
+    //     boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+    //     if ( (now - last_ping).total_milliseconds() > 5000) {
+    //         std::cout << "stopping " << username_ << " - no ping in time" << std::endl;
+    //         stop();
+    //     }
+    //     last_ping = boost::posix_time::microsec_clock::local_time();
+    // }
+    // void post_check_ping() {
+    //     timer_.expires_from_now(boost::posix_time::millisec(5000));
+    //     timer_.async_wait( MEM_FN(on_check_ping));
+    // }
 
 void Client::Autorise(std::string const &login, std::string const &password) {
     auto msg = MsgClient::Autorisation(login, password);
+    msg_queue_.Push(msg);
+}
+
+void Client::Registrate(std::string const &login, std::string const &password) {
+    auto msg = MsgClient::Registration(login, password);
     msg_queue_.Push(msg);
 }
 
@@ -81,6 +130,11 @@ void Client::JoinRoom(uint64_t const &id, std::string const &password) {
     auto msg = MsgClient::JoinRoom(id, password);
     msg_queue_.Push(msg);
     msg = MsgClient::JoinRoomResault();
+    msg_queue_.Push(msg);
+}
+
+void Client::StartGame() {
+    auto msg = MsgClient::StartGame();
     msg_queue_.Push(msg);
 }
 

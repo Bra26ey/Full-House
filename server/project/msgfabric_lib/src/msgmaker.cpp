@@ -30,6 +30,20 @@ std::string MsgClient::Autorisation(std::string const &login, std::string const 
     return MsgFromPtree(request);
 }
 
+std::string MsgClient::Registration(std::string const &login, std::string const &password) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("login", login);
+    parametrs.put("password", password);
+
+    request.put("command-type", "basic");
+    request.put("command", "registration");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
 std::string MsgClient::Logout() {
     boost::property_tree::ptree request;
 
@@ -210,6 +224,32 @@ std::string MsgServer::AutorisationFaild() {
 
     request.put("command-type", "basic-answer");
     request.put("command", "autorisation");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::RegistrationDone() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "registration");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::RegistrationFailed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "registration");
     request.add_child("parametrs", parametrs);
 
     return MsgFromPtree(request);

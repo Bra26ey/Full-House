@@ -11,6 +11,8 @@
 #include "ConfigurationHandler.h"
 #include "HandProcess.h"
 
+#include "Board.h"
+
 using boost::asio::ip::tcp;
 using boost::asio::io_context;
 
@@ -18,14 +20,8 @@ namespace network {
 
 class GameTalker : public boost::asio::coroutine {
  public:
-    GameTalker(io_context &context) : is_remove(false),
-                                      is_gaming(false),
-                                      context_(context),
-                                      handprocess_(logic::DECK_SIZE),
-                                      is_deleting_(false) {
-       id = counter_++;
-    };
-    ~GameTalker() = default;
+    GameTalker(io_context &context, database::Board &board, std::shared_ptr<User> &user);
+    ~GameTalker();
     int JoinPlayer(std::shared_ptr<User> &user);
 
  public:
@@ -38,6 +34,7 @@ class GameTalker : public boost::asio::coroutine {
     void OnHandleUserRequest(std::shared_ptr<User> &user);
 
     void JoinPlayerFailed(std::shared_ptr<User> &user);
+    void CreatingFailed(std::shared_ptr<User> &user);
 
     void HandleAdminRequest(std::shared_ptr<User> &user);
     void HandleGameRequest(std::shared_ptr<User> &user);
@@ -52,17 +49,17 @@ class GameTalker : public boost::asio::coroutine {
  private:
     io_context &context_;
 
+    database::Board &board_db_;
+
     logic::HandProcess handprocess_;
 
     std::vector<std::shared_ptr<User>> users_;
     std::mutex users_mutex_;
 
     boost::atomic<bool> is_deleting_;
-    boost::atomic<uint64_t> online_users_;
+    boost::atomic<uint64_t> admin_id_;
 
     TablePositions positions_;
-
-    static uint64_t counter_;
 };
 
 }  // namespace network

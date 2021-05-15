@@ -4,7 +4,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include "boost/date_time/posix_time/posix_time.hpp" 
+#include <boost/atomic/atomic.hpp>
 
 #include "tsqueue.h"
 
@@ -15,9 +15,11 @@ namespace network {
 
 class Client {
  public:
-    Client() : socket_(context_), out_(&write_buffer_), in_(&read_buffer_) {};
+    Client() : socket_(context_), out_(&write_buffer_), in_(&read_buffer_), is_closeing(false) {};
     Client(Client &other) = delete;
     ~Client();
+
+    std::string GetLastMsg();
 
     void Run();
 
@@ -25,10 +27,8 @@ class Client {
     bool Disconnect();
     bool IsConnected();
 
-    int Send(boost::asio::streambuf &buffer);
-    int Read(boost::asio::streambuf &buffer);
-
     void Autorise(std::string const &login, std::string const &password);
+    void Registrate(std::string const &login, std::string const &password);
     void Logout();
 
     void CreateRoom(std::string const &password);
@@ -36,7 +36,7 @@ class Client {
     void LeaveRoom();
 
     void GetGameStatus();
-
+    void StartGame();
     void GameRaise(uint64_t const &sum);
     void GameCall();
     void GameFold();
@@ -53,8 +53,11 @@ class Client {
     std::istream in_;
 
     TSQueue<std::string> msg_queue_;
+    TSQueue<std::string> answers_queue_;
 
-    boost::posix_time::ptime since_last_ping;
+    boost::posix_time::ptime last_ping;
+
+    boost::atomic<bool> is_closeing;
 };
 
 }  // namespace network

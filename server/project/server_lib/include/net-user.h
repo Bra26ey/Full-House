@@ -20,7 +20,9 @@ class User {
                                             write_buffer(),
                                             in(&read_buffer),
                                             out(&write_buffer),
-                                            is_autorised(false) {};
+                                            is_autorised(false),
+                                            id(__UINT64_MAX__),
+                                            room_id(__UINT64_MAX__) {};
    //  User(User &other) = delete;
     ~User() = default;
 
@@ -42,6 +44,7 @@ class User {
     boost::atomic<bool> is_talking;
     boost::atomic<bool> is_gaming;
 
+    uint64_t id;
     uint64_t room_id;
 };
 

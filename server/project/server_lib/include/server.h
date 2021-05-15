@@ -49,8 +49,8 @@ class Server {
 
     Userbase userbase_;
 
-    database::User user_database_;
-    database::Board board_database_;
+    database::User user_db_;
+    database::Board board_db_;
 
     tcp::endpoint endpoint_;
     tcp::acceptor acceptor_;

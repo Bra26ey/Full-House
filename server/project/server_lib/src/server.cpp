@@ -86,7 +86,7 @@ void Server::HandleAcception(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << "waiting for acception";
     acceptor_.accept(user->socket);
     BOOST_LOG_TRIVIAL(info) << "user accepted";
-    auto usertalker = std::make_shared<UserTalker>(user, userbase_, user_database_);
+    auto usertalker = std::make_shared<UserTalker>(user, userbase_, user_db_);
     usertalkers_mutex_.lock();
     usertalkers_.push_back(usertalker);
     usertalkers_mutex_.unlock();
@@ -101,13 +101,7 @@ void Server::CreateRooms() {
     }
 
     auto user = userbase_.creating_game.Pop();
-    auto gametalker = std::make_shared<GameTalker>(context_);
-
-    int code = gametalker->JoinPlayer(user);
-    if (code != 0) {
-        context_.post(boost::bind(&Server::CreateRooms, this));
-        return;
-    }
+    auto gametalker = std::make_shared<GameTalker>(context_, board_db_, user);
 
     gametalkers_mutex_.lock();
     gametalkers_.push_back(gametalker);

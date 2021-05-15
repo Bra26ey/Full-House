@@ -1,126 +1,84 @@
 #include "client.h"
-#include "msgmaker.h"
-
-#include <boost/property_tree/json_parser.hpp>
 
 #include <iostream>
+#include <thread>
+
+network::Client client;
+
+void print_msg() {
+    while(client.IsConnected()) {
+        std::cout << client.GetLastMsg();
+    }
+}
 
 int main(int argc, const char *argv[]) {
-    MsgClient msgfabric;
-    // std::cout << msgfabric.Autorisation("Mike", "Password");
-    // std::cout << msgfabric.CreateRoom("Password");
-    // std::cout << msgfabric.Disconnect();
-
-    // std::cout << msgfabric.JoinRoom(0, "password");
-    // std::cout << msgfabric.JoinRoomResault();
-    // std::cout << msgfabric.CreateRoom("password");
-    // std::cout << msgfabric.CreateRoomResault();
-
-    boost::asio::streambuf buffer;
-    std::iostream is(&buffer);
-    is << msgfabric.CreateRoomResault();
-
-    boost::property_tree::ptree pt;
-    boost::property_tree::read_json(is, pt);
-
-    network::Client client;
-    boost::asio::streambuf write_buffer;
-    boost::asio::streambuf read_buffer;
-    std::ostream out(&write_buffer);
-    // std::string str;
-
     client.Connect();
 
-    // while (true) {
-    //     getline(std::cin, str);
-    //     out << "{" << str << "}" << "\n\r\n\r";
-    //     client.Send(write_buffer);
-    //     client.Read(read_buffer);
-    // }
+    std::thread t(&network::Client::Run, &client);
+    t.detach();
 
-    out << msgfabric.Autorisation("Mike", "Password");
-    client.Send(write_buffer);
-    client.Read(read_buffer);
-    sleep(1);
+    std::thread m(print_msg);
+    m.detach();
 
-    out << msgfabric.Logout();
-    client.Send(write_buffer);
-    client.Read(read_buffer);
-    sleep(1);
-
-    out << msgfabric.Autorisation("Nick", "Password");
-    client.Send(write_buffer);
-    client.Read(read_buffer);
-    sleep(1);
-
-    
-
-    while (true) {
+    while (client.IsConnected()) {
         int code;
         std::cin >> code;
+        std::string login;
+        std::string password;
         switch (code) {
         case 0:
-            out << msgfabric.GameFold();
+            client.GameFold();
             break;
         case 1:
-            out << msgfabric.GameCall();
+            client.GameCall();
             break;
         case 2:
             uint64_t sum;
             std::cin >> sum;
-            out << msgfabric.GameRaise(sum);
+            client.GameRaise(sum);
             break;
         case 3:
-            out << msgfabric.GameCheck();
+            client.GameCheck();
             break;
         case 4:
-            out << msgfabric.CreateRoom("password");
-            client.Send(write_buffer);
-            client.Read(read_buffer);
-            out << msgfabric.CreateRoomResault();
+            std::cin >> password;
+            client.CreateRoom(password);
             break;
         case 5:
             uint64_t id;
             std::cin >> id;
-            out << msgfabric.JoinRoom(id, "password");
-            client.Send(write_buffer);
-            client.Read(read_buffer);
-            out << msgfabric.JoinRoomResault();
+            std::cin >> password;
+            client.JoinRoom(id, password);
             break;
         case 6:
-            out << msgfabric.StartGame();
+            client.StartGame();
             break;
         case 7:
-            out << msgfabric.GetGameStatus();
+            client.GetGameStatus();
+            break;
+        case 8:
+            client.LeaveRoom();
+            break;
+        case 9:
+            client.Logout();
+            break;
+        case 10:
+            client.Disconnect();
+            break;
+        case 11:
+            std::cin >> login >> password;
+            client.Autorise(login, password);
+            break;
+        case 12:
+            std::cin >> login >> password;
+            client.Registrate(login, password);
             break;
         default:
             break;
         }
-        client.Send(write_buffer);
-        client.Read(read_buffer);
     }
 
-    // out << msgfabric.CreateRoom("Password");
-    // client.Send(write_buffer);
-    // client.Read(read_buffer);
-    // sleep(1);
-
-    // out << msgfabric.CreateRoomReault();
-    // client.Send(write_buffer);
-    // client.Read(read_buffer);
-    // sleep(1);
-
-    // out << msgfabric.LeaveRoom();
-    // client.Send(write_buffer);
-    // client.Read(read_buffer);
-    // sleep(1);
-
-    // out << msgfabric.Disconnect();
-    // client.Send(write_buffer);
-    // client.Read(read_buffer);
-    // sleep(1);
-
-    client.Disconnect();
 
     return 0;
 }
+
