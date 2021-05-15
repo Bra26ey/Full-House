@@ -30,7 +30,7 @@ namespace logic {
 
     void HandProcess::Init() {
         FileHandler file_handler(
-                "/home/andrey/mail-technopark/cpp-programming/Full-House/server/project/logic_lib/input.txt");
+                "/home/aleksandr/techn/Full-House/server/project/logic_lib/input.txt");
         ConfigurationHandler config_handler(file_handler);
         config_handler.Read();
         config_handler.HandConfigurationInit(hand_config);
@@ -363,7 +363,7 @@ namespace logic {
         boost::property_tree::ptree cards_status;
         for (auto &it : player->cards) {
             auto card = GetCardStatus(it);
-            cards_status.add_child("", card);
+            cards_status.add_child("card", card);
         }
 
         status.put("in-pot", player->in_pot);
@@ -393,7 +393,7 @@ namespace logic {
         boost::property_tree::ptree players_status;
         for (auto &it : hand_config.players) {
             auto player = GetPlayerStatus(it);
-            players_status.add_child("", player);
+            players_status.add_child("player", player);
         }
 
         status.add_child("players", players_status);
