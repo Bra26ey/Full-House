@@ -253,14 +253,11 @@ namespace logic {
         while (someone_raised | first_round) {
             someone_raised = false;
             auto it = first_player;
-            for (size_t players = 0;
-                 players < hand_config.players.size(); it = CircularNext(hand_config.players, it), ++players) {
+            for (size_t players = 0; players < hand_config.players.size(); it = CircularNext(hand_config.players, it), ++players) {
                 if (one_player_in_pot(hand_config)) {
                     need_next_stage = false;
                     break;
                 }
-
-                current_player_pos = it->get()->position;
 
                 if (!it->get()->in_pot || (it->get()->current_stage_money_in_pot == raised_money && !first_round) ||
                     it->get()->money == 0) {
@@ -273,7 +270,6 @@ namespace logic {
                           << std::endl;
 
                 uint8_t signal;
-                std::string action;
                 if (it->get()->current_stage_money_in_pot == raised_money) {
                     std::cout << "What to do: Check(3), Raise(2)" << std::endl;
                 } else {
@@ -283,9 +279,16 @@ namespace logic {
                 // boost::asio::streambuf buffer;
                 // std::istream os(&buffer);
                 // boost::asio::read_until(ss, buffer, '\n');
-                action = command_queue.pop();  // block-function
+
+                current_player_pos = it->get()->position;
+                PlayerInfo action;
+                do {
+                    action = command_queue.pop();  // block-function
+                } while (current_player_pos != action.pos);
                 // os >> action;
-                signal = command_[action];
+                signal = command_[action.command];
+
+
 
                 switch (signal) {
                     case (FOLD_SIGNAL):
@@ -314,12 +317,10 @@ namespace logic {
 
                     case (RAISE_SIGNAL):
                         buf = it->get()->current_stage_money_in_pot;
-                        std::cout << "Enter reraise for " << raised_money << " :\t";
-                        int reraise = std::stoi(command_queue.pop());
 
                         {
                             std::lock_guard<std::mutex> lock(mutex);
-                            raised_money = it->get()->Raise(raised_money, reraise);
+                            raised_money = it->get()->Raise(raised_money, action.sum);
                             board_.pot += raised_money - buf;
                         }
 

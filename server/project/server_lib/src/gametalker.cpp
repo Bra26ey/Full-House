@@ -179,11 +179,11 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
         // int pos_id = positions_.GetPosition(user->name);
         // string command = action;
         // int sum = sum
-        handprocess_.command_queue.push(action);
+        handprocess_.command_queue.push({positions_.GetPosition(user->name), action, 0});
 
         if (action == "raise") {
             auto sum = parametrs.get<std::string>("sum");
-            handprocess_.command_queue.push(sum);
+            handprocess_.command_queue.push({positions_.GetPosition(user->name), action, std::stoi(sum)});
         }
     }
 
@@ -193,7 +193,7 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
     }
 
     // user->out << "{status: game-request is handled;}\n\r\n\r";
-    user->out << MsgServer::GameStatus(GetGameStatus(handprocess_.hand_config));
+    user->out << MsgServer::GameStatus(handprocess_.GetGameStatus());
 
     async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
 }
