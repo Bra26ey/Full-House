@@ -28,12 +28,17 @@ namespace logic {
                                                         logger(std::make_shared<Logger>()), deck_(ammount_of_cards),
                                                         board_() {}
 
-    void HandProcess::Init() {
-        FileHandler file_handler(
-                "/home/aleksandr/techn/Full-House/server/project/logic_lib/input.txt");
-        ConfigurationHandler config_handler(file_handler);
-        config_handler.Read();
-        config_handler.HandConfigurationInit(hand_config);
+    void HandProcess::Init(HandConfiguration const &handconfiguration) {
+        hand_config = handconfiguration;
+
+        hand_config.players.sort([](const std::shared_ptr<Player>& a, const std::shared_ptr<Player>& b) -> bool {
+            return a.get()->position < b.get()->position;
+        });
+        // FileHandler file_handler(
+        //         "/home/aleksandr/techn/Full-House/server/project/logic_lib/input.txt");
+        // ConfigurationHandler config_handler(file_handler);
+        // config_handler.Read();
+        // config_handler.HandConfigurationInit(hand_config);
         need_next_stage = true;
         deck_.Init();
         deck_.Shuffle();
@@ -56,7 +61,10 @@ namespace logic {
 
         std::list<std::shared_ptr<Player> >::iterator position_of_big_blind;
 
+        std::cout << 1 << std::endl;
+
         for (auto it = hand_config.players.begin(); it != hand_config.players.end(); ++it) {
+            std::cout << "player here" << std::endl;
             it->get()->in_pot = true;
             if (it->get()->position == hand_config.small_blind_pos) {
                 it->get()->Call(hand_config.small_blind_bet);
@@ -66,27 +74,37 @@ namespace logic {
             }
         }
 
+        std::cout << 2 << std::endl;
+
         int raised_money = hand_config.big_blind_bet;
         std::list<std::shared_ptr<Player> >::iterator position_of_raiser = position_of_big_blind;
 
         board_.pot += hand_config.small_blind_bet;
         board_.pot += hand_config.big_blind_bet;
+        std::cout << 21 << std::endl;
 
         auto first_player = CircularNext(hand_config.players, position_of_big_blind);
 
+        std::cout << 22 << std::endl;
 
         bool first_round = true;
         bool someone_raised = false;
         int players_in_pot = hand_config.players.size();
         int buf = 0;  // buffer in cases variable
 
+        std::cout << 3 << std::endl;
+
         GameLoop(someone_raised, first_round,
                  first_player, position_of_raiser,
                  raised_money, players_in_pot, buf);
 
+                 std::cout << 4 << std::endl;
+
         for (auto it = hand_config.players.begin(); it != hand_config.players.end(); ++it) {
             it->get()->current_stage_money_in_pot = 0;
         }
+
+        std::cout << 5 << std::endl;
 
         if (one_player_in_pot(hand_config)) {
             need_next_stage = false;
@@ -275,10 +293,6 @@ namespace logic {
                 } else {
                     std::cout << "What to do: Fold(0), Call(1), Raise(2)" << std::endl;
                 }
-
-                // boost::asio::streambuf buffer;
-                // std::istream os(&buffer);
-                // boost::asio::read_until(ss, buffer, '\n');
 
                 current_player_pos = it->get()->position;
                 PlayerInfo action;

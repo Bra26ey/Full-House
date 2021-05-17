@@ -38,7 +38,7 @@ namespace logic {
     public:
         explicit HandProcess(size_t ammount_of_cards);
 
-        void Init();
+        void Init(HandConfiguration const &handconfiguration);
 
         void DealCards();
 

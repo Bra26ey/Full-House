@@ -7,7 +7,10 @@ network::Client client;
 
 void print_msg() {
     while(client.IsConnected()) {
-        std::cout << client.GetLastMsg();
+        auto msg = client.GetLastMsg();
+        if (msg != "{\n\t\"command-type\": \"ping\",\n\t\"command\": \"ping\"\n}") {
+            std::cout << msg;
+        }
     }
 }
 

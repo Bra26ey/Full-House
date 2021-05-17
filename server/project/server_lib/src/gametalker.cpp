@@ -3,6 +3,8 @@
 #include <boost/asio/yield.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#include "convert.h"
+
 #include "msgmaker.h"
 
 using boost::asio::async_read;
@@ -35,6 +37,24 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
 
     admin_id_.store(user->id);
 
+    database::hand_configuration_t hand_config;
+    hand_config.button_pos = 0;
+    hand_config.small_blind_pos = 0;
+    hand_config.big_blind_pos = 0;
+    hand_config.small_blind_bet = 1;
+    hand_config.big_blind_bet = 2;
+    hand_config.max_size_of_players = USERS_MAX;
+    hand_config.count_of_player_cards = 2;
+    board_db_.UpdateHandConfiguration(id, hand_config);
+
+    auto code = board_db_.AddUserToBoard(id, user->id, password);
+    BOOST_LOG_TRIVIAL(info) << "code: " << code;
+    if (code != database::OK) {
+        CreatingFailed(user);
+        is_remove.store(true);
+        return;
+    }
+
     auto position = positions_.Insert(user->name);
     BOOST_LOG_TRIVIAL(info) << "position: " << static_cast<int>(position);
     if (position == TPOS_ERROR) {
@@ -43,9 +63,9 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
         return;
     }
 
-    auto code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
-                                             static_cast<size_t>(user->id), 
-                                             static_cast<int>(position));
+    code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
+                                        static_cast<size_t>(user->id), 
+                                        static_cast<int>(position));
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
     // if (code != database::OK) {
     //     CreatingFailed(user);
@@ -260,21 +280,13 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << user->name << " send game-request";
     auto command = user->last_msg.get<std::string>("command");
 
-    // if (command == "action" && handprocess_.current_player_pos == user->table_pos) {
     bool flag = command == "action" && handprocess_.current_player_pos.load() == positions_.GetPosition(user->name);
     if (flag) {
         auto parametrs = user->last_msg.get_child("parametrs");
         auto action = parametrs.get<std::string>("action-type");
 
-        // int pos_id = positions_.GetPosition(user->name);
-        // string command = action;
-        // int sum = sum
-        handprocess_.command_queue.push({positions_.GetPosition(user->name), action, 0});
-
-        if (action == "raise") {
-            auto sum = parametrs.get<std::string>("sum");
-            handprocess_.command_queue.push({positions_.GetPosition(user->name), action, std::stoi(sum)});
-        }
+        auto sum = (action == "raise") ? parametrs.get<int>("sum") : 0;
+        handprocess_.command_queue.push({ positions_.GetPosition(user->name), action, sum });
     }
 
     if (command != "status-request" && command != "action") {
@@ -282,7 +294,6 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
         return;
     }
 
-    // user->out << "{status: game-request is handled;}\n\r\n\r";
     user->out << MsgServer::GameStatus(handprocess_.GetGameStatus());
 
     async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
@@ -292,7 +303,8 @@ void GameTalker::HandleGameProcess() {
     reenter(this) {
         while (true) {
             yield {
-                handprocess_.Init();
+                auto hand_config = convert(board_db_.GetActiveBoard(id));
+                handprocess_.Init(hand_config);
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
@@ -300,7 +312,9 @@ void GameTalker::HandleGameProcess() {
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
+                BOOST_LOG_TRIVIAL(info) << "preflop start. room-id: " << id;
                 handprocess_.Preflop();
+                BOOST_LOG_TRIVIAL(info) << "preflop end. room-id: " << id;
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {

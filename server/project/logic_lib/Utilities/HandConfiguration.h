@@ -6,14 +6,13 @@
 
 #include <list>
 #include <memory>
+#include <iostream>
 
 #include <boost/property_tree/ptree.hpp>
 
 #include "Player.h"
 
 namespace logic {
-
-
 
     struct HandConfiguration {
         unsigned int button_pos;
@@ -27,6 +26,29 @@ namespace logic {
         unsigned int count_of_player_cards;
 
         std::list<std::shared_ptr<Player> > players;
+
+        HandConfiguration& operator=(const HandConfiguration &other) {
+            if (this == &other) {
+                return *this;
+            }
+
+            button_pos = other.button_pos;
+            small_blind_pos = other.small_blind_pos;
+            big_blind_pos = other.big_blind_pos;
+
+            small_blind_bet = other.small_blind_bet;
+            big_blind_bet = other.big_blind_bet;
+
+            max_size_of_players = other.max_size_of_players;
+            count_of_player_cards = other.count_of_player_cards;
+
+            for (auto it : other.players) {
+                std::cout << "add player: " << it->name << std::endl;
+                players.push_back(it);
+            }
+
+            return *this;
+        }
     };
 
 }  // namespace logic
