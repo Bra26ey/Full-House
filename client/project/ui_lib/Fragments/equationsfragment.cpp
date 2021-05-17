@@ -28,6 +28,7 @@ EquationsFragment::EquationsFragment() : file(":/text/equations"), mFileslines(0
 
     TimerText = new QLabel;
     TimerText->setStyleSheet("color:#242424;font-size:24px");
+    TimerText->setAlignment(Qt::AlignCenter);
 
     mTimer = new QTimer;
     mTimer->start(1000); // 2 минуты

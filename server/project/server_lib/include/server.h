@@ -13,14 +13,14 @@ using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
 
-constexpr uint16_t PORT = 2000;
+constexpr uint16_t PORT = 5000;
 
 namespace network {
 
 class Server {
  public:
     Server() : context_(),
-               endpoint_(address::from_string("127.0.1.1"), PORT),
+               endpoint_(address::from_string("0.0.0.0"), PORT),
                acceptor_(context_) {};
     Server(Server &other) = delete;
     ~Server();
