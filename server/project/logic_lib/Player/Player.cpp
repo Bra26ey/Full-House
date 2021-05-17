@@ -49,9 +49,6 @@ void Player::Check() {
 }
 
 int Player::Raise(int raised_money, int reraise) {
-    if (reraise < raised_money * 2) {
-        throw ("Bad Reraise");
-    }
     if (reraise > money) {
         current_stage_money_in_pot += money;
         money = 0;
