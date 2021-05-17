@@ -2,17 +2,14 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_FILEHANDLER_H
-#define FULL_HOUSE_FILEHANDLER_H
+#pragma once
 
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <iostream>
 
-
-
-
+namespace logic {
 
 class FileHandler {
 public:
@@ -31,4 +28,4 @@ private:
     std::ofstream output_file;
 };
 
-#endif //FULL_HOUSE_FILEHANDLER_H
+}  // namespace logic

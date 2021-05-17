@@ -1,9 +1,13 @@
-add_subdirectory(msgfabric_lib)
+find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread)
 
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -lboost_thread -lboost_system -pthread")
+
+add_subdirectory(msgfabric_lib)
 include_directories(msgfabric_lib/include)
 
 add_subdirectory(client_lib)
-
 include_directories(client_lib/include)
 
 add_subdirectory(ui_lib)
@@ -21,4 +25,5 @@ target_link_libraries(client_target
                       ui_lib
                       msgfabric_lib 
                       client_lib
+                      ${Boost_LIBRARIES}
                      )

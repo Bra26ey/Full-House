@@ -2,8 +2,7 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_PLAYER_H
-#define FULL_HOUSE_PLAYER_H
+#pragma once
 
 #include <vector>
 
@@ -11,7 +10,9 @@
 #include "Card.h"
 #include "PlayerInterface.h"
 #include "Profile.h"
-#include "Board.h"
+#include "TableBoard.h"
+
+namespace logic {
 
 struct Player: public PlayerInterface, public Profile {
     Player();
@@ -49,4 +50,4 @@ private:
     void Sort();
 };
 
-#endif //FULL_HOUSE_PLAYER_H
+}  // namespace logic

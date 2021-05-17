@@ -2,7 +2,7 @@
 // Created by aleksandr on 16.04.2021.
 //
 
-#include<stdarg.h>
+#include <stdarg.h>
 
 #include <iostream>
 #include <string>
@@ -11,6 +11,8 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
+
+namespace logic {
 
 uint64_t Logger::count = 0;
 
@@ -30,5 +32,4 @@ Logger::Logger(const std::string& log) {
     }
 }
 
-
-
+}  // namespace logic

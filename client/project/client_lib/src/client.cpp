@@ -27,6 +27,7 @@ bool Client::Connect() {
     std::cout << "try connect" << std::endl;
     tcp::endpoint endpoint(address::from_string("89.19.190.83"), SERVER_PORT);
     socket_.connect(endpoint);
+    is_closeing.store(false);
     std::cout << "connection done on ep = " << endpoint << std::endl;
     last_ping = boost::posix_time::microsec_clock::local_time();
     return true;
@@ -35,8 +36,12 @@ bool Client::Connect() {
 bool Client::Disconnect() {
     auto msg = MsgClient::Disconnect();
     msg_queue_.Push(msg);
+<<<<<<< HEAD
     usleep(500000);  // костыль на пинги и дисконнект
     socket_.close();
+=======
+    is_closeing.store(true);
+>>>>>>> origin/merge_net_logic
     return true;
 }
 
@@ -44,21 +49,15 @@ bool Client::IsConnected() {
     return socket_.is_open();
 }
 
-int Client::Send(boost::asio::streambuf &buffer) {
-    boost::asio::write(socket_, buffer);
-    std::cout << "send msg to server" << std::endl;
-    return 0;
-}
-
-int Client::Read(boost::asio::streambuf &buffer) {
-    boost::asio::read_until(socket_, buffer, "}");
-    std::cout << "msg from server: " << &buffer << std::endl;
-    return 0;
-}
-
 void Client::Run() {
+<<<<<<< HEAD
     while (IsConnected()) {
         if (msg_queue_.IsEmpty()) {
+=======
+    while (!is_closeing.load()) {
+        if (msg_queue_.IsEmpty()) {
+            continue;
+>>>>>>> origin/merge_net_logic
             auto delta = boost::posix_time::microsec_clock::local_time() - last_ping;
             if (delta.total_milliseconds() < PING_TIME) {
                 continue;
@@ -77,6 +76,21 @@ void Client::Run() {
 
         last_ping = boost::posix_time::microsec_clock::local_time();
     }
+
+    while (!msg_queue_.IsEmpty()) {
+        out_ << msg_queue_.Pop();
+
+        boost::asio::write(socket_, write_buffer_);
+
+        boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
+
+        std::string answer(std::istreambuf_iterator<char>(in_), {});
+        answers_queue_.Push(answer);
+
+        last_ping = boost::posix_time::microsec_clock::local_time();
+    }
+
+    socket_.close();
 }
 
 
@@ -88,6 +102,18 @@ std::string Client::GetLastMsg() {
     return answers_queue_.Pop();
 }
 
+<<<<<<< HEAD
+
+std::string Client::GetLastMsg() {
+    while (answers_queue_.IsEmpty()) {
+        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+    }
+
+    return answers_queue_.Pop();
+}
+
+=======
+>>>>>>> origin/merge_net_logic
     // void on_check_ping() {
     //     boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
     //     if ( (now - last_ping).total_milliseconds() > 5000) {
@@ -103,6 +129,11 @@ std::string Client::GetLastMsg() {
 
 void Client::Autorise(std::string const &login, std::string const &password) {
     auto msg = MsgClient::Autorisation(login, password);
+    msg_queue_.Push(msg);
+}
+
+void Client::Registrate(std::string const &login, std::string const &password) {
+    auto msg = MsgClient::Registration(login, password);
     msg_queue_.Push(msg);
 }
 

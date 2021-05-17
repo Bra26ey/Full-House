@@ -2,10 +2,11 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_CARD_H
-#define FULL_HOUSE_CARD_H
+#pragma once
 
 #include <string>
+
+namespace logic {
 
 enum class Suit {
     DIAMONDS,
@@ -45,4 +46,4 @@ struct Card {
     static std::string ToString(const Suit& s, const Value& v);
 };
 
-#endif //FULL_HOUSE_CARD_H
+}  // namespace logic

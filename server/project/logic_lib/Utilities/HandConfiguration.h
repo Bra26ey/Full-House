@@ -2,27 +2,53 @@
 // Created by aleksandr on 15.04.2021.
 //
 
-#ifndef FULL_HOUSE_HANDCONFIGURATION_H
-#define FULL_HOUSE_HANDCONFIGURATION_H
+#pragma once
 
 #include <list>
 #include <memory>
+#include <iostream>
+
+#include <boost/property_tree/ptree.hpp>
+
 #include "Player.h"
 
-struct HandConfiguration {
-    unsigned int button_pos;
-    unsigned int small_blind_pos;
-    unsigned int big_blind_pos;
+namespace logic {
 
-    int small_blind_bet;
-    int big_blind_bet;
+    struct HandConfiguration {
+        unsigned int button_pos;
+        unsigned int small_blind_pos;
+        unsigned int big_blind_pos;
 
-    unsigned int max_size_of_players;
-    unsigned int count_of_player_cards;
+        int small_blind_bet;
+        int big_blind_bet;
 
+        unsigned int max_size_of_players;
+        unsigned int count_of_player_cards;
 
+        std::list<std::shared_ptr<Player> > players;
 
-    std::list<std::shared_ptr<Player> > players;
-};
+        HandConfiguration& operator=(const HandConfiguration &other) {
+            if (this == &other) {
+                return *this;
+            }
 
-#endif //FULL_HOUSE_HANDCONFIGURATION_H
+            button_pos = other.button_pos;
+            small_blind_pos = other.small_blind_pos;
+            big_blind_pos = other.big_blind_pos;
+
+            small_blind_bet = other.small_blind_bet;
+            big_blind_bet = other.big_blind_bet;
+
+            max_size_of_players = other.max_size_of_players;
+            count_of_player_cards = other.count_of_player_cards;
+
+            for (auto it : other.players) {
+                std::cout << "add player: " << it->name << std::endl;
+                players.push_back(it);
+            }
+
+            return *this;
+        }
+    };
+
+}  // namespace logic

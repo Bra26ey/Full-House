@@ -2,10 +2,13 @@
 // Created by aleksandr on 28.12.2020.
 //
 
+#pragma once
 
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+
+namespace logic {
 
 template <class T>
 class SafeQueue {
@@ -38,3 +41,5 @@ private:
     mutable std::mutex m;
     std::condition_variable c;
 };
+
+}  // namespace logic

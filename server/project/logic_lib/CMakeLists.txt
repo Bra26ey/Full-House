@@ -6,7 +6,7 @@ add_library(Logger SHARED
         Utilities/Logger.cpp Utilities/Logger.h)
 
 add_library(ConfigurationHandler SHARED
-        Utilities/FileHandler.cpp Utilities/FileHandler.h
+        Utilities/LogicFileHandler.cpp Utilities/LogicFileHandler.h
         Utilities/ConfigurationHandler.cpp Utilities/ConfigurationHandler.h
         Utilities/HandConfiguration.h
         Player/Player.cpp Player/Player.h)
@@ -14,7 +14,7 @@ add_library(ConfigurationHandler SHARED
 add_library(GameEntities SHARED
         GameEntities/HandProcess.cpp GameEntities/HandProcess.h
         GameEntities/Card.cpp GameEntities/Card.h
-        GameEntities/Board.h
+        GameEntities/TableBoard.h
         GameEntities/Deck.cpp GameEntities/Deck.h
         Utilities/SafeQueue.h)
 

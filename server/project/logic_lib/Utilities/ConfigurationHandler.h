@@ -2,11 +2,12 @@
 // Created by aleksandr on 17.04.2021.
 //
 
-#ifndef FULL_HOUSE_CONFIGURATIONHANDLER_H
-#define FULL_HOUSE_CONFIGURATIONHANDLER_H
+#pragma once
 
-#include "FileHandler.h"
+#include "LogicFileHandler.h"
 #include "HandConfiguration.h"
+
+namespace logic {
 
 class ConfigurationHandler {
 public:
@@ -19,4 +20,4 @@ private:
     FileHandler& file_handler;
 };
 
-#endif //FULL_HOUSE_CONFIGURATIONHANDLER_H
+}  // namespace logic

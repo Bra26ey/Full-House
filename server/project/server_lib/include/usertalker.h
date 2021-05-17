@@ -8,6 +8,8 @@
 #include "definitions.h"
 #include "userbase.h"
 
+#include "User.h"
+
 using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
@@ -16,10 +18,7 @@ namespace network {
 
 class UserTalker : public boost::asio::coroutine {
  public:
-    UserTalker(std::shared_ptr<User> user, Userbase &userbase) : is_remove(false),
-                                                                 context_(user->context),
-                                                                 user_(user),
-                                                                 userbase_(userbase) {};
+    UserTalker(std::shared_ptr<User> &user, Userbase &userbase, database::User &user_db);
     ~UserTalker() = default;
     void Start();
     bool IsUserWorks() const;
@@ -29,10 +28,12 @@ class UserTalker : public boost::asio::coroutine {
 
  private:
     void HandleAutorisation();
+    void HandleRegistration();
     void HandlePlayers();
     void JoinPlayer();
     void CreateGame();
     void HandleRequest();
+    void HandlePing();
     void HandleError();
     void Disconnect();
     void Logout();
@@ -41,6 +42,8 @@ class UserTalker : public boost::asio::coroutine {
     io_context &context_;
     std::shared_ptr<User> user_;
     Userbase &userbase_;
+
+    database::User &user_db_;
 };
 
 }  // namespace network

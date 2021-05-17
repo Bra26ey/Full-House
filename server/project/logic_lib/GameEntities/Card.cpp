@@ -5,6 +5,8 @@
 #include <string>
 #include "Card.h"
 
+namespace logic {
+
 Card::Card(Suit suit, Value value): suit(suit), value(value), show_everyone(false) {}
 
 void Card::Show() {
@@ -41,3 +43,5 @@ std::string Card::ToString(const Suit& s, const Value& v) {
 bool Card::operator==(const Card& card) const {
     return static_cast<int>(value) == static_cast<int>(card.value);
 }
+
+}  // namespace logic

@@ -9,6 +9,9 @@
 #include "usertalker.h"
 #include "gametalker.h"
 
+#include "User.h"
+#include "Board.h"
+
 using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
@@ -19,9 +22,7 @@ namespace network {
 
 class Server {
  public:
-    Server() : context_(),
-               endpoint_(address::from_string("0.0.0.0"), PORT),
-               acceptor_(context_) {};
+    Server();
     Server(Server &other) = delete;
     ~Server();
     void Start();
@@ -47,6 +48,9 @@ class Server {
     std::mutex gametalkers_mutex_;
 
     Userbase userbase_;
+
+    database::User user_db_;
+    database::Board board_db_;
 
     tcp::endpoint endpoint_;
     tcp::acceptor acceptor_;

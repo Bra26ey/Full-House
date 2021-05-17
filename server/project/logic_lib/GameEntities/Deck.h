@@ -2,11 +2,12 @@
 // Created by aleksandr on 17.04.2021.
 //
 
-#ifndef FULL_HOUSE_DECK_H
-#define FULL_HOUSE_DECK_H
+#pragma once
 
 #include <vector>
 #include "Card.h"
+
+namespace logic {
 
 class Deck {
 public:
@@ -22,4 +23,4 @@ private:
     size_t size = 52;
 };
 
-#endif //FULL_HOUSE_DECK_H
+}  // namespace logic

@@ -4,5 +4,8 @@
 /client/client_lib/Testind/
 /.vscode/
 /App/build/
-build/
-*.swp
+/database_api/cmake-build-debug
+/database_api/.idea
+/database_api/build
+/.idea
+*.out

@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
 //     client.Read(read_buffer);
 //     sleep(1);
 
-    
+    std::thread m(print_msg);
+    m.detach();
 
 //     while (true) {
 //         int code;

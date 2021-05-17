@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <list>
 #include <vector>
 
 #include <boost/property_tree/ptree.hpp>
@@ -16,6 +15,8 @@ class MsgFabric {
 class MsgClient : public MsgFabric {
  public:
     static std::string Autorisation(std::string const &login, std::string const &password);
+    static std::string Registration(std::string const &login, std::string const &password);
+
     static std::string Logout();
     static std::string Ping();
     static std::string Disconnect();
@@ -42,6 +43,9 @@ class MsgServer : public MsgFabric {
  public:
     static std::string AutorisationDone();
     static std::string AutorisationFaild();
+
+    static std::string RegistrationDone();
+    static std::string RegistrationFailed();
 
     static std::string Logout();
     static std::string Ping();

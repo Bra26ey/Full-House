@@ -4,7 +4,7 @@
 #include <boost/log/trivial.hpp>
 
 #include "tsqueue.h"
-#include "user.h"
+#include "net-user.h"
 
 namespace network {
 
