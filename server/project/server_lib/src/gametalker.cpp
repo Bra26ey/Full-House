@@ -31,23 +31,27 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
         return;
     }
 
+    id = answer.first;
+
     admin_id_.store(user->id);
 
     auto position = positions_.Insert(user->name);
-    BOOST_LOG_TRIVIAL(info) << "position: " << position;
+    BOOST_LOG_TRIVIAL(info) << "position: " << static_cast<int>(position);
     if (position == TPOS_ERROR) {
         CreatingFailed(user);
         is_remove.store(true);
         return;
     }
 
-    auto code = board_db_.UpdateUserPosition(id, user->id, position);
+    auto code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
+                                             static_cast<size_t>(user->id), 
+                                             static_cast<int>(position));
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
-    if (code != database::OK) {
-        CreatingFailed(user);
-        is_remove.store(true);
-        return;
-    }
+    // if (code != database::OK) {
+    //     CreatingFailed(user);
+    //     is_remove.store(true);
+    //     return;
+    // }
 
     users_.push_back(user);
 
@@ -172,19 +176,30 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
 
     // ASK DATABASE FOR PASSWORD CHECK
     auto code = board_db_.AddUserToBoard(id, user->id, password);
+    BOOST_LOG_TRIVIAL(info) << "code: " << code;
     if (code != database::OK) {
         JoinPlayerFailed(user);
         return -1;
     }
 
     auto position = positions_.Insert(user->name);
+    BOOST_LOG_TRIVIAL(info) << "position: " << position;
     if (position == TPOS_ERROR) {
         board_db_.RemoveUserFromBoard(id, user->id);
         JoinPlayerFailed(user);
         return -1;
     }
 
-    code = board_db_.UpdateUserPosition(id, user->id, position);
+    code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
+                                        static_cast<size_t>(user->id), 
+                                        static_cast<int>(position));
+    BOOST_LOG_TRIVIAL(info) << "code: " << code;
+
+    if (code != database::OK) {
+        board_db_.RemoveUserFromBoard(id, user->id);
+        JoinPlayerFailed(user);
+        return -1;
+    }
 
     BOOST_LOG_TRIVIAL(info) << user->name << " accepted to game. room-id: " << id;
 
