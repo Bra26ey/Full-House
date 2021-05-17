@@ -13,19 +13,12 @@ logic::HandConfiguration convert(database::active_board const &board) {
     hand_config.max_size_of_players = board.hand_config.max_size_of_players;
     hand_config.count_of_player_cards = board.hand_config.count_of_player_cards;
 
-    BOOST_LOG_TRIVIAL(info) << hand_config.button_pos;
-    BOOST_LOG_TRIVIAL(info) << board.hand_config.small_blind_pos;
-    BOOST_LOG_TRIVIAL(info) << board.hand_config.big_blind_pos;
-    BOOST_LOG_TRIVIAL(info) << board.hand_config.small_blind_bet;
-    BOOST_LOG_TRIVIAL(info) << board.hand_config.max_size_of_players;
-    BOOST_LOG_TRIVIAL(info) << board.hand_config.count_of_player_cards;
-
-
     for (auto &it : board.players) {
         auto player = std::make_shared<logic::Player>();
         player->id = it.id;
         player->name = it.username;
-        player->money = it.reserved_money;
+        // player->money = it.reserved_money;
+        player->money = 100;
         player->position = it.position;
         hand_config.players.push_back(player);
     }

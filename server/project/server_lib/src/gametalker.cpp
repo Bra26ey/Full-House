@@ -40,7 +40,7 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     database::hand_configuration_t hand_config;
     hand_config.button_pos = 0;
     hand_config.small_blind_pos = 0;
-    hand_config.big_blind_pos = 0;
+    hand_config.big_blind_pos = 1;
     hand_config.small_blind_bet = 1;
     hand_config.big_blind_bet = 2;
     hand_config.max_size_of_players = USERS_MAX;
@@ -312,9 +312,7 @@ void GameTalker::HandleGameProcess() {
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {
-                BOOST_LOG_TRIVIAL(info) << "preflop start. room-id: " << id;
                 handprocess_.Preflop();
-                BOOST_LOG_TRIVIAL(info) << "preflop end. room-id: " << id;
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
             }
             yield {

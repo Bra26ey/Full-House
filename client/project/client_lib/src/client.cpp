@@ -47,6 +47,7 @@ bool Client::IsConnected() {
 void Client::Run() {
     while (!is_closeing.load()) {
         if (msg_queue_.IsEmpty()) {
+            continue;
             auto delta = boost::posix_time::microsec_clock::local_time() - last_ping;
             if (delta.total_milliseconds() < PING_TIME) {
                 continue;
