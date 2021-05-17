@@ -21,7 +21,6 @@ private:
     QLineEdit *loginEdit;
     QLineEdit *passwordEdit;
     QLineEdit *passwordRepeatEdit;
-    QLineEdit *emailEdit;
 
     QPushButton *RegistrationButton;
     QPushButton *BackButton;

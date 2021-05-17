@@ -291,7 +291,6 @@ void GameFragment::SetMaxBet(int maxbet) {
 }
 
 void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
-    qDebug() << player_id;
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
     mOtherPlayers[player_id - 1] = player;
     mOtherPlayers[player_id - 1]->setParent(mPlayTable);
@@ -471,6 +470,12 @@ void GameFragment::AddCardToTable(size_t value, size_t suit, bool upsided) {
     auto card = new Card(value, suit, upsided);
     card->setParent(mPlayTable);
     CardOnTable.push_back(card);
+}
+
+void GameFragment::FlipTableCards() {
+    foreach(auto card, CardOnTable) {
+        card->Flip();
+    }
 }
 
 void GameFragment::DeleteAllCardsFromTable() {

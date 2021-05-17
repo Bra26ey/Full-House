@@ -36,6 +36,7 @@ public:
     void JoinNotAdmin();
 
     void AddCardToTable(size_t value, size_t suit, bool upsided);
+    void FlipTableCards();
     void DeleteAllCardsFromTable();
     void FlipAllCards();
 

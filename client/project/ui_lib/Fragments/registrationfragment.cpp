@@ -18,12 +18,11 @@ RegistrationFragment::RegistrationFragment() {
 
 
     QVBoxLayout *startVerticalContent = new QVBoxLayout;
-    QLabel *title = new QLabel("Регистрация");
-    QLabel *subtitle = new QLabel("Не сообщайте никому свои данные для регистрации.");
+    QLabel *title = new QLabel("Registration");
+    QLabel *subtitle = new QLabel("Don't tell anyone your personal info.");
     loginEdit = new QLineEdit;
     passwordEdit = new QLineEdit;
     passwordRepeatEdit = new QLineEdit;
-    emailEdit = new QLineEdit;
 
     QVBoxLayout *buttonContainer = new QVBoxLayout;
 
@@ -59,11 +58,6 @@ RegistrationFragment::RegistrationFragment() {
     passwordRepeatEdit->setPlaceholderText("Repeat password");
     passwordRepeatEdit->setEchoMode(QLineEdit::Password);
 
-    emailEdit->setMaximumWidth(400);
-    emailEdit->setStyleSheet("color:#242424;font-size:20px");
-    emailEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    emailEdit->setPlaceholderText("Email");
-
 
     RegistrationButton = new QPushButton("Sign up");
     RegistrationButton->setStyleSheet("color:#242424;font-size:24px");
@@ -74,7 +68,6 @@ RegistrationFragment::RegistrationFragment() {
     connect(BackButton, &QPushButton::clicked, this, &RegistrationFragment::back);
 
     buttonContainer->addWidget(loginEdit);
-    buttonContainer->addWidget(emailEdit);
     buttonContainer->addWidget(passwordEdit);
     buttonContainer->addWidget(passwordRepeatEdit);
     buttonContainer->addWidget(RegistrationButton);
@@ -99,10 +92,15 @@ RegistrationFragment::RegistrationFragment() {
 
 void RegistrationFragment::onRegistrationPressed() {
     QSound::play(":/music/click");
-    if (CheckData()) {
+    if (CheckData() == 2) {
         QMessageBox msgBox;
-        msgBox.setText("В пароле или логине недостаточно символов");
-        msgBox.setWindowTitle("Ошибка регистрации");
+        msgBox.setText("Password and/or login doesn't have enough characters");
+        msgBox.setWindowTitle("Registration error");
+        msgBox.exec();
+    } else if (CheckData() == 1) {
+        QMessageBox msgBox;
+        msgBox.setText("Passwords don't match");
+        msgBox.setWindowTitle("Registration error");
         msgBox.exec();
     } else {
         boost::hash<std::string> PasswordHasher;
@@ -113,6 +111,7 @@ void RegistrationFragment::onRegistrationPressed() {
         msgBox.setText("Registration succesfully done");
         msgBox.setWindowTitle("Success");
         msgBox.exec();
+        back();
     }
 }
 
@@ -129,6 +128,5 @@ RegistrationFragment::~RegistrationFragment() {
     delete loginEdit;
     delete passwordEdit;
     delete passwordRepeatEdit;
-    delete emailEdit;
     delete RegistrationButton;
 }
