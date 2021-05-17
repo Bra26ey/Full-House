@@ -119,44 +119,44 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
 
     DrawMainPlayer();
     // кайнда дебаг
-    SetMinBet(10);
-    SetMaxBet(1000);
+    // SetMinBet(10);
+    // SetMaxBet(1000);
 
 
-    DrawPlayer(5, "Cartman", 5000);
-    DrawPlayer(1, "Kenny", 2000);
-    DrawPlayer(3, "Stan", 6000);
-    DrawPlayer(2, "Wendy", 1000);
-    DrawPlayer(4, "Dougie", 500);
+    // DrawPlayer(5, "Cartman", 5000);
+    // DrawPlayer(1, "Kenny", 2000);
+    // DrawPlayer(3, "Stan", 6000);
+    // DrawPlayer(2, "Wendy", 1000);
+    // DrawPlayer(4, "Dougie", 500);
 
 
-    GiveCards(0, 14,2, 14,3);
-    FlipCards(0);
+    // GiveCards(0, 14,2, 14,3);
+    // FlipCards(0);
 
-    GiveCards(1, 4,3,2,1);
-    GiveCards(2, 14,3,2,0);
-    GiveCards(3, 12,3,2,3);
-    GiveCards(4, 13,3,2,2);
-    GiveCards(5, 11,3,2,1);
-    FlipCards(1);
+    // GiveCards(1, 4,3,2,1);
+    // GiveCards(2, 14,3,2,0);
+    // GiveCards(3, 12,3,2,3);
+    // GiveCards(4, 13,3,2,2);
+    // GiveCards(5, 11,3,2,1);
+    // FlipCards(1);
 
 
-    SetBet(4, 400);
-    SetFold(3);
+    // SetBet(4, 400);
+    // SetFold(3);
 
-    CurrentTurn(0);
-    MakeDealer(4);
-    DisplayWinner(0);
+    // CurrentTurn(0);
+    // MakeDealer(4);
+    // DisplayWinner(0);
 
-    AddCardToTable(4, 2, true);
-    AddCardToTable(5, 2, true);
-    AddCardToTable(7, 2, true);
-    AddCardToTable(14, 3, true);
-    AddCardToTable(2, 1, true);
+    // AddCardToTable(4, 2, true);
+    // AddCardToTable(5, 2, true);
+    // AddCardToTable(7, 2, true);
+    // AddCardToTable(14, 3, true);
+    // AddCardToTable(2, 1, true);
 
-    DeletePlayer(1);
-    DrawPlayer(1, "Cartman2", 5000);
-    DeletePlayer(2);
+    // DeletePlayer(1);
+    // DrawPlayer(1, "Cartman2", 5000);
+    // DeletePlayer(2);
 }
 
 GameFragment::~GameFragment() {

@@ -4,10 +4,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-<<<<<<< HEAD
-=======
 #include <boost/atomic/atomic.hpp>
->>>>>>> origin/merge_net_logic
 
 #include "tsqueue.h"
 
@@ -30,14 +27,6 @@ class Client {
     bool Disconnect();
     bool IsConnected();
 
-<<<<<<< HEAD
-    std::string GetLastMsg();
-
-    int Send(boost::asio::streambuf &buffer);
-    int Read(boost::asio::streambuf &buffer);
-
-=======
->>>>>>> origin/merge_net_logic
     void Autorise(std::string const &login, std::string const &password);
     void Registrate(std::string const &login, std::string const &password);
     void Logout();
@@ -65,15 +54,10 @@ class Client {
 
     TSQueue<std::string> msg_queue_;
     TSQueue<std::string> answers_queue_;
-<<<<<<< HEAD
-
-    boost::posix_time::ptime last_ping;
-=======
 
     boost::posix_time::ptime last_ping;
 
     boost::atomic<bool> is_closeing;
->>>>>>> origin/merge_net_logic
 };
 
 }  // namespace network

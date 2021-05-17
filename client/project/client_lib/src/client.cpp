@@ -36,12 +36,7 @@ bool Client::Connect() {
 bool Client::Disconnect() {
     auto msg = MsgClient::Disconnect();
     msg_queue_.Push(msg);
-<<<<<<< HEAD
-    usleep(500000);  // костыль на пинги и дисконнект
-    socket_.close();
-=======
     is_closeing.store(true);
->>>>>>> origin/merge_net_logic
     return true;
 }
 
@@ -50,14 +45,9 @@ bool Client::IsConnected() {
 }
 
 void Client::Run() {
-<<<<<<< HEAD
-    while (IsConnected()) {
-        if (msg_queue_.IsEmpty()) {
-=======
     while (!is_closeing.load()) {
         if (msg_queue_.IsEmpty()) {
-            continue;
->>>>>>> origin/merge_net_logic
+            // continue;
             auto delta = boost::posix_time::microsec_clock::local_time() - last_ping;
             if (delta.total_milliseconds() < PING_TIME) {
                 continue;
@@ -102,18 +92,6 @@ std::string Client::GetLastMsg() {
     return answers_queue_.Pop();
 }
 
-<<<<<<< HEAD
-
-std::string Client::GetLastMsg() {
-    while (answers_queue_.IsEmpty()) {
-        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-    }
-
-    return answers_queue_.Pop();
-}
-
-=======
->>>>>>> origin/merge_net_logic
     // void on_check_ping() {
     //     boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
     //     if ( (now - last_ping).total_milliseconds() > 5000) {

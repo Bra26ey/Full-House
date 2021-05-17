@@ -4,6 +4,7 @@
 #include <QSound>
 #include <QLabel>
 #include <QMessageBox>
+#include "client_impl.h"
 
 RegistrationFragment::RegistrationFragment() {
     qDebug("LoginFragment create");
@@ -100,24 +101,28 @@ void RegistrationFragment::onRegistrationPressed() {
     QSound::play(":/music/click");
     if (CheckData()) {
         QMessageBox msgBox;
-         msgBox.setText("В пароле или логине недостаточно символов");
-         msgBox.setWindowTitle("Ошибка регистрации");
-         msgBox.exec();
+        msgBox.setText("В пароле или логине недостаточно символов");
+        msgBox.setWindowTitle("Ошибка регистрации");
+        msgBox.exec();
     } else {
-        // send data to database
+        boost::hash<std::string> PasswordHasher;
+        PasswordHasher(passwordEdit->text().toStdString());
+        Client->Registrate(loginEdit->text().toStdString(), passwordEdit->text().toStdString());
+
+        QMessageBox msgBox;
+        msgBox.setText("Registration succesfully done");
+        msgBox.setWindowTitle("Success");
+        msgBox.exec();
     }
 }
 
 int RegistrationFragment::CheckData() {
-    if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
-        return 0;
-    } else if (passwordEdit->text() != passwordRepeatEdit->text()) {
+    if (passwordEdit->text() != passwordRepeatEdit->text()) {
         return 1;
-    } else {
-        return 2;
+    } else if (loginEdit->text().length() > 5 && passwordEdit->text().length() > 5) {
+        return 0;
     }
-    boost::hash<std::string> PasswordHasher;
-    PasswordHasher(passwordEdit->text().toStdString());
+    return 2;
 }
 
 RegistrationFragment::~RegistrationFragment() {
@@ -125,6 +130,5 @@ RegistrationFragment::~RegistrationFragment() {
     delete passwordEdit;
     delete passwordRepeatEdit;
     delete emailEdit;
-
     delete RegistrationButton;
 }

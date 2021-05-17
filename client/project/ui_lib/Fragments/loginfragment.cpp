@@ -109,7 +109,6 @@ void LoginFragment::onLoginPressed() {
          msgBox.exec();
     } else {
         Client->Autorise(loginEdit->text().toStdString(), passwordEdit->text().toStdString());
-        navigateTo(MAIN_TAG);
     }
 }
 

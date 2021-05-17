@@ -1,4 +1,4 @@
-find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread)
+find_package(Boost 1.71.0 REQUIRED COMPONENTS system log thread)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
@@ -16,8 +16,6 @@ include_directories(ui_lib)
 include_directories(ui_lib/Base)
 include_directories(ui_lib/Fragments)
 include_directories(ui_lib/Game_Elements)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 add_executable(client_target src/main.cpp)
 
