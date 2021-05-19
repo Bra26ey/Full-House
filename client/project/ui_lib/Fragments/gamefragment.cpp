@@ -74,11 +74,12 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
 
     QHBoxLayout *mainHLayout = new QHBoxLayout;
 
-    ActionButtons.append(BetButton);
+    ActionButtons.append(FoldButton);
     ActionButtons.append(CallButton);
     ActionButtons.append(RaiseButton);
-    ActionButtons.append(FoldButton);
     ActionButtons.append(CheckButton);
+    ActionButtons.append(BetButton);
+
     foreach (auto btn, ActionButtons) {
         mainHLayout->addWidget(btn);
         btn->hide();
@@ -266,6 +267,12 @@ void GameFragment::EndGame(bool admin) {
     BetValue->hide();
     if (admin)
     StartGameButton->show();
+}
+
+void GameFragment::AvaliableActions(std::vector<bool> buttons) {
+    for(size_t i = 0; i < buttons.size(); ++i) {
+        buttons[i] ? ActionButtons[i]->show() : ActionButtons[i]->hide();
+    }
 }
 
 void GameFragment::JoinNotAdmin() {

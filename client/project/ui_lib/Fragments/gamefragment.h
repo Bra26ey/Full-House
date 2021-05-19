@@ -51,6 +51,7 @@ public:
     void SetRaise(size_t player_id);
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
+    void AvaliableActions(std::vector<bool> buttons);
 public slots:
     void onBetPressed();
     void onRaisePressed();
