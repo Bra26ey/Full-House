@@ -1,0 +1,49 @@
+// класс для обработки сообщений с сервера и их передачи на фронтенд
+
+#include <boost/foreach.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+#include <QMessageBox>
+
+#include "screenfactory.h"
+#include "basefragment.h"
+
+namespace pt = boost::property_tree;
+
+namespace resolver {
+
+    struct Card {
+        uint8_t suit;
+        uint8_t value;
+        bool is_opened;
+    };
+
+
+    struct Player {
+        std::string name;
+        bool in_pot;
+        uint64_t money;
+        uint8_t position;
+        std::vector<Card> cards_in_hand;
+    };
+
+};
+
+
+class Resolver : public BaseFragment {
+public:
+    Resolver();
+    ~Resolver();
+
+    void Run();
+
+private:
+    void ParseAnswer(pt::ptree const &answer);
+    void BaseAnswer(pt::ptree const &answer);
+    void RoomBasicAnswer(pt::ptree const &answer);
+    void RoomAdminAnswer(pt::ptree const &answer);
+    void RoomGameAnswer(pt::ptree const &answer);
+    void CreateRoomAnswer(pt::ptree const &answer);
+    void JoinRoomAnswer(pt::ptree const &answer);
+    void GameAnswer(pt::ptree const &answer);
+};
