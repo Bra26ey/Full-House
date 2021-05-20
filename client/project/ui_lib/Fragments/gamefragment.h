@@ -40,6 +40,11 @@ public:
     void DeleteAllCardsFromTable();
     void FlipAllCards();
 
+    void ShowActions();
+    void BlockActions();
+    void UnBlockActions();
+    void HideStart();
+
     void MakeDealer(size_t player_id);
     void DisplayWinner(size_t player_id);
     void CurrentTurn(size_t player_id);
@@ -71,11 +76,11 @@ private:
     void DeleteWinnerDisplay();
     void RedrawPlayer(OtherPlayer* player);
     void resizeEvent(QResizeEvent *event);
-    void BlockActions();
-    void UnBlockActions();
 
     int mMinbet;
     int mMaxbet;
+
+    bool is_active;
 
     Player *mPlayer;
     QVector<OtherPlayer*> mOtherPlayers;

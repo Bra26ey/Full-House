@@ -1,8 +1,11 @@
-#include "client_impl.h"
 #include "resolver.h"
+#include "client_impl.h"
 
 
 using namespace screens;
+
+constexpr uint8_t WINNER_NOT_DEFINDED = 10;
+constexpr uint8_t MAX_PLAYERS = 6;
 
 void Resolver::ParseAnswer(pt::ptree const &answer) {
     auto command_type = answer.get<std::string>("command-type");
@@ -62,7 +65,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
     
     if (command == "disconnect") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            exit(0);
+            // exit(0);
         } else {
             // FUCK OH NO
         }
@@ -71,13 +74,11 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
 
     if (command == "create-room") {
         CreateRoomAnswer(answer);
-        navigateTo(GAME_TAG);
         return;
     }
     
     if (command == "join-room") {
         JoinRoomAnswer(answer);
-        navigateTo(GAME_TAG);
         return;
     }
     
@@ -88,6 +89,7 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
     
     if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            gamefragment_ = nullptr;
             back();
         } else {
             // FUCK OH NO
@@ -101,7 +103,10 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
     
     if (command == "start") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            // YEHOOOO WE FREE
+            gamefragment_->ShowActions();
+            gamefragment_->BlockActions();
+            gamefragment_->HideStart();
+            // DELETE START & LEAVE BUUTTOM
         } else {
             // FUCK OH NO
         }
@@ -112,9 +117,9 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
 void Resolver::RoomGameAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
     
-    if (command == "start") {
+    if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            // YEHOOOO WE FREE
+            back();
         } else {
             // FUCK OH NO
         }
@@ -132,7 +137,11 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     }
     
     if (status == "done") {
-        // OMG IT'S DONE!
+        navigateTo(GAME_TAG);
+        BaseFragment *tmp;
+        Front(tmp);
+        gamefragment_ = dynamic_cast<GameFragment*>(tmp);
+        return;
     }
 
     if (status == "fail") {
@@ -150,12 +159,30 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
     
     if (status == "done") {
-        // OMG IT'S DONE!
+        our_server_position_ = parametrs.get<uint8_t>("position");
+        navigateTo(GAME_TAG);
+        BaseFragment *tmp;
+        Front(tmp);
+        gamefragment_ = dynamic_cast<GameFragment*>(tmp);
+        gamefragment_->JoinNotAdmin();
+        return;
     }
 
     if (status == "fail") {
         // FUCK!
     }
+}
+
+uint8_t Resolver::GetTablePos(const uint8_t &pos) {
+    return (MAX_PLAYERS + pos - our_server_position_) % MAX_PLAYERS;
+}
+
+static std::vector<bool> GetAvailable(const std::string &str) {
+    if (str == "raise-check") {
+        return { false, false, true, true, false };
+    }
+
+    return { true, true, true, false, false };
 }
 
 void Resolver::GameAnswer(pt::ptree const &answer) {
@@ -170,6 +197,33 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     auto parametrs = answer.get_child("parametrs");
     auto players = parametrs.get_child("players");
 
+    auto current_turn = GetTablePos(parametrs.get<uint8_t>("current-turn"));
+
+    if (parametrs.get<bool>("is-started") == false) {
+        gamefragment_->BlockActions();
+        return;
+    }
+
+    auto min_bet = parametrs.get<int>("big-blind-bet");
+    gamefragment_->SetMinBet(min_bet);
+    gamefragment_->SetMaxBet(10 * min_bet);
+
+    gamefragment_->ShowActions();
+    if (current_turn == 0) {
+        auto avaiable = parametrs.get<std::string>("current-actions");
+        gamefragment_->AvaliableActions(GetAvailable(avaiable));
+        gamefragment_->UnBlockActions();
+    }
+
+    gamefragment_->CurrentTurn(current_turn);
+
+    auto winner_pos = parametrs.get<uint8_t>("winner-pos");
+    if (winner_pos != WINNER_NOT_DEFINDED) {
+        gamefragment_->DisplayWinner(winner_pos);
+    }
+
+
+
     // Min & Max Bet SetMinBet(value) SetMaxBet(value)
     // Dealer or not, MakeDealer(id)
     // Current Turn Player CurrentTurn(id)
@@ -178,30 +232,32 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     // Available actions
     // Won Label DisplayWinner(id) / DeleteWinnerLabel(void)
     // GameStarted? ShowActions нужно написать сочетания кнопок, потому что сейчас такой функции нет
-    
-    std::vector<resolver::Player> players_vector;
-    
-//    BOOST_FOREACH(const pt::ptree& player, players) {
-//        // Player name ???
 
-//        Player current_player;
-//        current.in_pot = player.get<bool>("in-pot");
-//        current.money = player.get<uint64_t>("current-stage-money-in-pot");
-//        current.position = player.get<uint8_t>("position");
-//        auto cards = player.get_child("cards");
-//        BOOST_FOREACH(const pt::ptree& card, cards) {
-//            Card current_card;
-//            current_card.suit = card.get<uint8_t>("suit");
-//            current_card.value = card.get<uint8_t>("value");
-//            current_card.is_opend = card.get<bool>("is-opend");
-//            current_player.cards.push_back(card)
-//        }
-//        players_vector.push_back(current_player);
-//    }
+    std::vector<resolver::Player> players_vector;
+
+    BOOST_FOREACH(const pt::ptree::value_type &vp, players) {
+       const pt::ptree player = vp.second;
+
+       resolver::Player current_player;
+       current_player.name = player.get<std::string>("name");
+       current_player.in_pot = player.get<bool>("in-pot");
+       current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
+       current_player.position = player.get<uint8_t>("position");
+       auto cards = player.get_child("cards");
+       BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
+           const pt::ptree card = vc.second;
+           resolver::Card current_card;
+           current_card.suit = card.get<uint8_t>("suit");
+           current_card.value = card.get<uint8_t>("value");
+           current_card.is_opened = card.get<bool>("is-opend");
+           current_player.cards_in_hand.push_back(current_card);
+       }
+       players_vector.push_back(current_player);
+    }
 }
 
 void Resolver::Run() {
-    while(Client->IsConnected()) {
+    while (Client->IsConnected()) {
         std::stringstream msg(Client->GetLastMsg());
         pt::ptree json_data;
         pt::read_json(msg, json_data);

@@ -26,6 +26,8 @@ namespace logic {
     constexpr uint8_t RAISE_SIGNAL = 2;
     constexpr uint8_t CHECK_SIGNAL = 3;
 
+    constexpr uint8_t WINNER_NOT_DEFINDED = 10;
+
     constexpr uint8_t DECK_SIZE = 52;
 
     struct PlayerInfo {
@@ -64,14 +66,18 @@ namespace logic {
         Deck deck_;
         Board board_;
         std::map<std::string, uint8_t> command_{
-                {"fold",  FOLD_SIGNAL},
-                {"call",  CALL_SIGNAL},
-                {"raise", RAISE_SIGNAL},
-                {"check", CHECK_SIGNAL}
+            {"fold",  FOLD_SIGNAL},
+            {"call",  CALL_SIGNAL},
+            {"raise", RAISE_SIGNAL},
+            {"check", CHECK_SIGNAL}
         };
         std::mutex mutex;
 
         bool need_next_stage;
+
+        bool is_started_;
+        uint8_t winer_pos_;
+        bool check_avaiable_;
 
         static boost::property_tree::ptree GetCardStatus(const Card &card);
 
@@ -97,7 +103,7 @@ namespace logic {
             return std::prev(it) == l.cbegin() ? l.cend() : std::prev(it);
         }
 
-        static bool one_player_in_pot(HandConfiguration &hand_config);
+        bool one_player_in_pot(HandConfiguration &hand_config);
 
         void GameStage();  // TODO: while loop pos_of_raiser == start_pos
         void GameLoop(bool &someone_raised, bool &first_round,

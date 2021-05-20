@@ -7,6 +7,7 @@
 
 #include "screenfactory.h"
 #include "basefragment.h"
+#include "gamefragment.h"
 
 namespace pt = boost::property_tree;
 
@@ -32,7 +33,7 @@ namespace resolver {
 
 class Resolver : public BaseFragment {
 public:
-    Resolver();
+    Resolver() : gamefragment_(nullptr), our_server_position_(0) {};
     ~Resolver();
 
     void Run();
@@ -46,4 +47,11 @@ private:
     void CreateRoomAnswer(pt::ptree const &answer);
     void JoinRoomAnswer(pt::ptree const &answer);
     void GameAnswer(pt::ptree const &answer);
+
+    uint8_t GetTablePos(const uint8_t &pos);
+
+private:
+    GameFragment *gamefragment_;
+
+    uint8_t our_server_position_;
 };

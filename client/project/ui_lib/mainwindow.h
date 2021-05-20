@@ -10,14 +10,20 @@
 #include <QStackedWidget>
 #include <QUrl>
 
+#include "resolver.h"
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 private:
-    std::unique_ptr<std::thread>  mClientThread;
+    std::unique_ptr<std::thread>  client_thread;
+    std::unique_ptr<std::thread>  resolver_thread;
+
     QStackedWidget *container;
     FragmentNavigator *navigator;
     BaseScreensFactory *factory;
+
+    Resolver resolver;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

@@ -38,8 +38,11 @@ MainWindow::MainWindow(QWidget *parent)
 
         Client = std::make_unique<network::Client>();
         Client->Connect();
-        mClientThread = std::make_unique<std::thread>([&] {Client->Run();});
-        mClientThread->detach();
+        client_thread = std::make_unique<std::thread>([&] { Client->Run(); });
+        client_thread->detach();
+
+        resolver_thread = std::make_unique<std::thread>([&] { resolver.Run(); });
+        resolver_thread->detach();
 
         this->resize(QApplication::screens().at(0)->availableGeometry().size() * 0.7);
         this->setCentralWidget(container);

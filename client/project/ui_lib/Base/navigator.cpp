@@ -73,11 +73,16 @@ BaseFragment* FragmentNavigator::getStartScreen() {
     return createAndConnect(this->screensFactory->createStart());
 }
 
+void FragmentNavigator::Front(BaseFragment *&current) {
+    current = stack.front();
+}
+
 void FragmentNavigator::connectFragment(BaseFragment *fragment) {
     qDebug("Navigator connect slots");
     connect(fragment, &BaseFragment::back, this, &FragmentNavigator::back);
     connect(fragment, &BaseFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     connect(fragment, &BaseFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
+    connect(fragment, &BaseFragment::Front, this, &FragmentNavigator::Front);
 }
 
 void FragmentNavigator::disconnectFragment(BaseFragment *fragment) {
@@ -85,6 +90,7 @@ void FragmentNavigator::disconnectFragment(BaseFragment *fragment) {
     disconnect(fragment, &BaseFragment::back, this, &FragmentNavigator::back);
     disconnect(fragment, &BaseFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     disconnect(fragment, &BaseFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
+    disconnect(fragment, &BaseFragment::Front, this, &FragmentNavigator::Front);
 }
 
 BaseFragment* FragmentNavigator::createAndConnect(QString tag) {

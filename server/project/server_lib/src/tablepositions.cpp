@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-uint8_t TablePositions::Insert(std::string const &name) {
+uint8_t TablePositions::Insert(uint64_t const &id) {
     const std::lock_guard<std::mutex> lock(mutex);
 
     auto it = std::find_if(positions.begin(), positions.end(),
@@ -12,16 +12,16 @@ uint8_t TablePositions::Insert(std::string const &name) {
         return TPOS_ERROR;
     }
     
-    it->name = name;
+    it->id = id;
     it->is_empty = false;
 
     return std::distance(positions.begin(), it);
 }
 
-void TablePositions::Delete(std::string const &name) {
+void TablePositions::Delete(uint64_t const &id) {
     mutex.lock();
     auto it = std::find_if(positions.begin(), positions.end(),
-                           [name](const Position &current) { return current.name == name; });
+                           [id](const Position &current) { return current.id == id; });
     if (it == positions.end()) {
         return;
     }
@@ -30,11 +30,11 @@ void TablePositions::Delete(std::string const &name) {
     mutex.unlock();
 }
 
-uint8_t TablePositions::GetPosition(std::string const &name) {
+uint8_t TablePositions::GetPosition(uint64_t const &id) {
     const std::lock_guard<std::mutex> lock(mutex);
 
     auto it = std::find_if(positions.begin(), positions.end(),
-                           [name](const Position &current) { return current.name == name; });
+                           [id](const Position &current) { return current.id == id; });
 
     if (it == positions.end()) {
         return TPOS_ERROR;

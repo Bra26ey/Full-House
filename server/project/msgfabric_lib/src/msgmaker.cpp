@@ -356,12 +356,13 @@ std::string MsgServer::JoinRoomOn(uint64_t const &id) {
 }
 
 
-std::string MsgServer::JoinRoomDone(uint64_t const &id) {
+std::string MsgServer::JoinRoomDone(uint64_t const &id, uint8_t const &position) {
     pt::ptree parametrs;
     pt::ptree request;
 
     parametrs.put("status", "done");
     parametrs.put("id", id);
+    parametrs.put("position", position);
 
     request.put("command-type", "basic-answer");
     request.put("command", "join-room");
@@ -436,10 +437,11 @@ std::string MsgServer::StartGameFailed() {
     return MsgFromPtree(request);
 }
 
-std::string MsgServer::GameStatus(pt::ptree const &game_status) {
+std::string MsgServer::GameStatus(pt::ptree const &game_status, uint8_t const &admin_pos) {
     pt::ptree parametrs;
     pt::ptree request;
 
+    parametrs.put("admin-pos", admin_pos);
     parametrs.add_child("game-status", game_status);
 
     request.put("command-type", "game-answer");
