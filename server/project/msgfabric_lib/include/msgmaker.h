@@ -67,5 +67,5 @@ class MsgServer : public MsgFabric {
     static std::string StartGameDone();
     static std::string StartGameFailed();
 
-    static std::string GameStatus(boost::property_tree::ptree const &game_status);
+    static std::string GameStatus(boost::property_tree::ptree const &game_status, uint8_t const &admin_pos);
 };

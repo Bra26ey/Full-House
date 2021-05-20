@@ -55,7 +55,7 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
         return;
     }
 
-    auto position = positions_.Insert(user->name);
+    auto position = positions_.Insert(user->id);
     BOOST_LOG_TRIVIAL(info) << "position: " << static_cast<int>(position);
     if (position == TPOS_ERROR) {
         CreatingFailed(user);
@@ -67,11 +67,11 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
                                         static_cast<size_t>(user->id), 
                                         static_cast<int>(position));
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
-    // if (code != database::OK) {
-    //     CreatingFailed(user);
-    //     is_remove.store(true);
-    //     return;
-    // }
+    if (code != database::OK || code != database::OBJECT_NOT_UPDATED) {
+        CreatingFailed(user);
+        is_remove.store(true);
+        return;
+    }
 
     users_.push_back(user);
 
@@ -194,7 +194,6 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     const pt::ptree &parametrs = user->last_msg.get_child("parametrs");
     auto password = parametrs.get<std::string>("password");
 
-    // ASK DATABASE FOR PASSWORD CHECK
     auto code = board_db_.AddUserToBoard(id, user->id, password);
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
     if (code != database::OK) {
@@ -202,7 +201,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
         return -1;
     }
 
-    auto position = positions_.Insert(user->name);
+    auto position = positions_.Insert(user->id);
     BOOST_LOG_TRIVIAL(info) << "position: " << position;
     if (position == TPOS_ERROR) {
         board_db_.RemoveUserFromBoard(id, user->id);
@@ -215,7 +214,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
                                         static_cast<int>(position));
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
 
-    if (code != database::OK) {
+    if (code != database::OK || code != database::OBJECT_NOT_UPDATED) {
         board_db_.RemoveUserFromBoard(id, user->id);
         JoinPlayerFailed(user);
         return -1;
@@ -228,6 +227,9 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     user->is_gaming.store(true);
     user->is_talking.store(false);
     user->room_id = id;
+
+    auto hand_config = convert(board_db_.GetActiveBoard(id));
+    handprocess_.Init(hand_config);
 
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
@@ -259,6 +261,11 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
             break;
         }
     }
+    
+    if (user->id == admin_id_.load() && users_.size() > 0) {
+        admin_id_.store(users_[0]->id);
+        board_db_.UpdateBoardAdmin(id, admin_id_.load());  // TODO return control
+    }
     users_mutex_.unlock();
 
     board_db_.RemoveUserFromBoard(id, user->id);
@@ -280,13 +287,13 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << user->name << " send game-request";
     auto command = user->last_msg.get<std::string>("command");
 
-    bool flag = command == "action" && handprocess_.current_player_pos.load() == positions_.GetPosition(user->name);
+    bool flag = command == "action" && handprocess_.current_player_pos.load() == positions_.GetPosition(user->id);
     if (flag) {
         auto parametrs = user->last_msg.get_child("parametrs");
         auto action = parametrs.get<std::string>("action-type");
 
         auto sum = (action == "raise") ? parametrs.get<int>("sum") : 0;
-        handprocess_.command_queue.push({ positions_.GetPosition(user->name), action, sum });
+        handprocess_.command_queue.push({ positions_.GetPosition(user->id), action, sum });
     }
 
     if (command != "status-request" && command != "action") {
@@ -294,7 +301,8 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
         return;
     }
 
-    user->out << MsgServer::GameStatus(handprocess_.GetGameStatus());
+    auto admin_pos = positions_.GetPosition(admin_id_.load());
+    user->out << MsgServer::GameStatus(handprocess_.GetGameStatus(), admin_pos);
 
     async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
 }

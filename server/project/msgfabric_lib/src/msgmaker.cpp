@@ -436,10 +436,11 @@ std::string MsgServer::StartGameFailed() {
     return MsgFromPtree(request);
 }
 
-std::string MsgServer::GameStatus(pt::ptree const &game_status) {
+std::string MsgServer::GameStatus(pt::ptree const &game_status, uint8_t const &admin_pos) {
     pt::ptree parametrs;
     pt::ptree request;
 
+    parametrs.put("admin-pos", admin_pos);
     parametrs.add_child("game-status", game_status);
 
     request.put("command-type", "game-answer");

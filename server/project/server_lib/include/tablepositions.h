@@ -10,7 +10,7 @@ constexpr uint8_t TPOS_ERROR = __UINT8_MAX__;
 
 struct Position {
     bool is_empty = true;
-    std::string name;
+    uint64_t id;
 };
 
 
@@ -19,9 +19,9 @@ class TablePositions {
     TablePositions() = default;
     ~TablePositions() = default;
 
-    uint8_t Insert(std::string const &name);
-    void Delete(std::string const &name);
-    uint8_t GetPosition(std::string const &name);
+    uint8_t Insert(uint64_t const &id);
+    void Delete(uint64_t const &id);
+    uint8_t GetPosition(uint64_t const &id);
 
  private:
     std::array<Position, TABLE_SIZE> positions;
