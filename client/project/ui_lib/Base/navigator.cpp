@@ -39,8 +39,8 @@ void FragmentNavigator::navigateTo(QString tag) {
     currentContainer->setCurrentWidget(newFragment);
 }
 
-void FragmentNavigator::Front(BaseFragment *&current) {
-    current = stack.front();
+BaseFragment* FragmentNavigator::Front() {
+    return stack.front();
 }
 
 void FragmentNavigator::back() {

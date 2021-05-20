@@ -156,9 +156,7 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     
     if (status == "done") {
         navigateTo(GAME_TAG);
-        BaseFragment *tmp;
-        Front(tmp);
-        gamefragment_ = dynamic_cast<GameFragment*>(tmp);
+        gamefragment_ = dynamic_cast<GameFragment*>(Front());
         return;
     }
 
@@ -179,9 +177,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     if (status == "done") {
         our_server_position_ = parametrs.get<uint8_t>("position");
         navigateTo(GAME_TAG);
-        BaseFragment *tmp;
-        Front(tmp);
-        gamefragment_ = dynamic_cast<GameFragment*>(tmp);
+        gamefragment_ = dynamic_cast<GameFragment*>(Front());
         gamefragment_->JoinNotAdmin();
         return;
     }

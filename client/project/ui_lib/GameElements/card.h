@@ -10,7 +10,7 @@
 class Card : public QLabel {
 public:
     Card() = delete;
-    explicit Card(size_t value, size_t suit, bool upsided = false);
+    explicit Card(size_t const& value, size_t const& suit, bool const& upsided = false);
     ~Card();
     void Flip();
     size_t GetValue();

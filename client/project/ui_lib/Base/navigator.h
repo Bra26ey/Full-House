@@ -17,7 +17,6 @@ public:
     ~FragmentNavigator();
     BaseFragment* getStartScreen();
 
-    void front();
 
 public slots:
     void navigateTo(QString tag);
@@ -26,7 +25,7 @@ public slots:
 
     void newRootScreen(QString tag);
 
-    void Front(BaseFragment *&current);
+    BaseFragment* Front();
 
 private:
     QStackedWidget *currentContainer;
