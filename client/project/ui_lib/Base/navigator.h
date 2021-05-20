@@ -16,6 +16,8 @@ public:
     ~FragmentNavigator();
     BaseFragment* getStartScreen();
 
+    void front();
+
 public slots:
     void navigateTo(QString tag);
 

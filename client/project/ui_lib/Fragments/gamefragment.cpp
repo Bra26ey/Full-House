@@ -459,6 +459,7 @@ void GameFragment::DisplayWinner(size_t player_id) {
 }
 
 void GameFragment::CurrentTurn(size_t player_id) {
+    UnBlockActions();
     if (player_id > 0) {
         mTurnIndicator->setParent(mOtherPlayers[player_id - 1]);
         mTurnIndicator->setGeometry(90, -80, 300, 300);

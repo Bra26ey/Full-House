@@ -36,6 +36,10 @@ void FragmentNavigator::navigateTo(QString tag) {
     currentContainer->setCurrentWidget(newFragment);
 }
 
+void FragmentNavigator::front() {
+    return stack.front();
+}
+
 void FragmentNavigator::back() {
     qDebug("Navigator back");
     currentContainer->removeWidget(stack.back());
