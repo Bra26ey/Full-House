@@ -67,7 +67,7 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
                                         static_cast<size_t>(user->id), 
                                         static_cast<int>(position));
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
-    if (code != database::OK || code != database::OBJECT_NOT_UPDATED) {
+    if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
         CreatingFailed(user);
         is_remove.store(true);
         return;
@@ -214,7 +214,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
                                         static_cast<int>(position));
     BOOST_LOG_TRIVIAL(info) << "code: " << code;
 
-    if (code != database::OK || code != database::OBJECT_NOT_UPDATED) {
+    if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
         board_db_.RemoveUserFromBoard(id, user->id);
         JoinPlayerFailed(user);
         return -1;
@@ -234,7 +234,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
 
-    user->out << MsgServer::JoinRoomDone(id, positions_.GetPosition(user->id));
+    user->out << MsgServer::CreateRoomDone(id, password);
     write(user->socket, user->write_buffer);
 
     boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));
