@@ -234,7 +234,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
 
-    user->out << MsgServer::JoinRoomDone(id);
+    user->out << MsgServer::JoinRoomDone(id, positions_.GetPosition(user->id));
     write(user->socket, user->write_buffer);
 
     boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));

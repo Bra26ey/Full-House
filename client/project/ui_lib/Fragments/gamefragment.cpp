@@ -117,6 +117,8 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     mainVLayout->addLayout(extraHLayout);
     this->setLayout(mainVLayout);
 
+    is_active = false;
+
 
     DrawMainPlayer();
     // кайнда дебаг
@@ -196,21 +198,21 @@ void GameFragment::onBetPressed() {
     mPlayer->setBet(bet);
     mChips->AddToBank(bet);
     Client->GameRaise(BetValue->text().toUInt());
-    //BlockActions();
+    BlockActions();
 }
 
 void GameFragment::onCallPressed() {
     QSound::play(":/music/click");
     SetCall(0);
     Client->GameCall();
-    //BlockActions();
+    BlockActions();
 }
 
 void GameFragment::onCheckPressed() {
     QSound::play(":/music/click");
     SetCheck(0);
     Client->GameCheck();
-    //BlockActions();
+    BlockActions();
 }
 
 void GameFragment::onRaisePressed() {
@@ -227,14 +229,14 @@ void GameFragment::onRaisePressed() {
     SetRaise(0);
     mChips->AddToBank(bet);
     Client->GameRaise(BetValue->text().toUInt());
-    //BlockActions();
+    BlockActions();
 }
 
 void GameFragment::onFoldPressed() {
     QSound::play(":/music/click");
     SetFold(0);
     Client->GameFold();
-    //BlockActions();
+    BlockActions();
 }
 
 void GameFragment::onLeavePressed() {
@@ -250,13 +252,11 @@ void GameFragment::onSettingsPressed() {
 
 void GameFragment::onStartPressed() {
     QSound::play(":/music/click");
-    foreach (auto btn, ActionButtons) {
-        btn->show();
-    }
-    BetSlider->show();
-    BetValue->show();
-    StartGameButton->hide();
     Client->StartGame();
+}
+
+void GameFragment::HideStart() {
+    StartGameButton->hide();
 }
 
 void GameFragment::EndGame(bool admin) {
@@ -336,7 +336,7 @@ void GameFragment::DeletePlayer(size_t player_id) {
 }
 
 void GameFragment::DrawMainPlayer() {
-    mPlayer = new Player("Sample Text", 9999);
+    mPlayer = new Player("ME :)", 9999);
 //    mPlayer = new Player(LoggedUserName, LoggedUserMoney);
     mPlayer->setParent(mPlayTable);
     mPlayer->setGeometry(mainplayerpos);
@@ -521,5 +521,18 @@ void GameFragment::resizeEvent(QResizeEvent *event) {
     }
     mChips->Resize(this->size());
     mWinLabel->Resize(this->size());
+}
+
+void GameFragment::ShowActions() {
+    if (is_active) {
+        return;
+    }
+
+    foreach (auto btn, ActionButtons) {
+        btn->show();
+    }
+    BetSlider->show();
+    BetValue->show();
+    StartGameButton->hide();
 }
 

@@ -356,12 +356,13 @@ std::string MsgServer::JoinRoomOn(uint64_t const &id) {
 }
 
 
-std::string MsgServer::JoinRoomDone(uint64_t const &id) {
+std::string MsgServer::JoinRoomDone(uint64_t const &id, uint8_t const &position) {
     pt::ptree parametrs;
     pt::ptree request;
 
     parametrs.put("status", "done");
     parametrs.put("id", id);
+    parametrs.put("position", position);
 
     request.put("command-type", "basic-answer");
     request.put("command", "join-room");

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <list>
 #include <vector>
 
 #include <boost/property_tree/ptree.hpp>
@@ -58,7 +57,7 @@ class MsgServer : public MsgFabric {
     static std::string CreateRoomFailed();
 
     static std::string JoinRoomOn(uint64_t const &id);
-    static std::string JoinRoomDone(uint64_t const &id);
+    static std::string JoinRoomDone(uint64_t const &id, uint8_t const &position);
     static std::string JoinRoomFaild(uint64_t const &id);
 
     static std::string LeaveRoomDone();

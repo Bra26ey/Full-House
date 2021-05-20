@@ -383,9 +383,10 @@ boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<P
     boost::property_tree::ptree cards_status;
     for (auto &it : player->cards) {
         auto card = GetCardStatus(it);
-        cards_status.add_child("card", card);
+        cards_status.add_child("", card);
     }
 
+    status.put("name", player->name);
     status.put("in-pot", player->in_pot);
     status.put("current-stage-money-in-pot", player->current_stage_money_in_pot);
     status.put("position", player->position);
@@ -399,8 +400,6 @@ boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<P
 boost::property_tree::ptree HandProcess::GetGameStatus() {
     std::lock_guard<std::mutex> lock(mutex);
     boost::property_tree::ptree status;
-
-    // Dealer or not, MakeDealer(id)
 
     status.put("is-started", is_started_);
     status.put("winner-position", winer_pos_);
@@ -423,14 +422,14 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     boost::property_tree::ptree board_cards;
     for (auto &it : board_.cards) {
         auto card = GetCardStatus(it);
-        board_cards.add_child("card", card);
+        board_cards.add_child("", card);
     }
-    status.add_child("board-cards", board_cards);
+    status.add_child("board-сards", board_cards);
 
     boost::property_tree::ptree players_status;
     for (auto &it : hand_config.players) {
         auto player = GetPlayerStatus(it);
-        players_status.add_child("player", player);
+        players_status.add_child("", player);
     }
 
     status.add_child("players", players_status);

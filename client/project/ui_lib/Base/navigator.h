@@ -23,6 +23,8 @@ public slots:
 
     void newRootScreen(QString tag);
 
+    void Front(BaseFragment *&current);
+
 private:
     QStackedWidget *currentContainer;
 
