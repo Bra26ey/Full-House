@@ -93,7 +93,6 @@ void MenuFragment::onSettingsPressed() {
 void MenuFragment::onLoginPressed() {
     QSound::play(":/music/click");
     Client->Logout(); // выход не залогинненого юзера все крашит
-    navigateTo(LOGIN_TAG);
 }
 
 void MenuFragment::onRulesPressed() {

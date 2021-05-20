@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
         container->setObjectName("ui");
 
         this->factory = new ScreensFactory;
-        this->navigator = new FragmentNavigator(this->container, this->factory);
+        this->navigator = new FragmentNavigator(this->container, this->factory, &resolver);
 
         QString mainStyle = "QWidget#window {"
                             "background-color:rgb(47, 140, 140);"
@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
         Client->Connect();
         client_thread = std::make_unique<std::thread>([&] { Client->Run(); });
         client_thread->detach();
+
+
 
         resolver_thread = std::make_unique<std::thread>([&] { resolver.Run(); });
         resolver_thread->detach();

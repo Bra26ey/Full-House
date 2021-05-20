@@ -3,6 +3,7 @@
 
 #include "basefragment.h"
 #include "basescreensfactory.h"
+#include "resolver.h"
 
 #include <QStackedWidget>
 #include <list>
@@ -12,7 +13,7 @@ class FragmentNavigator: public QObject {
 
 public:
     FragmentNavigator() = delete;
-    FragmentNavigator(QStackedWidget *container, BaseScreensFactory *screensFactory);
+    FragmentNavigator(QStackedWidget *container, BaseScreensFactory *screensFactory, Resolver* resolver);
     ~FragmentNavigator();
     BaseFragment* getStartScreen();
 

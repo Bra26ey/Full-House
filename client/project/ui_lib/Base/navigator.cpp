@@ -2,11 +2,13 @@
 #include "screenfactory.h"
 
 
+
 using namespace screens;
 
 FragmentNavigator::FragmentNavigator(
         QStackedWidget *container,
-        BaseScreensFactory *screensFactory) {
+        BaseScreensFactory *screensFactory,
+        Resolver* resolver) {
 
     qDebug("create navigator");
     this->screensFactory = screensFactory;
@@ -14,6 +16,7 @@ FragmentNavigator::FragmentNavigator(
     qDebug("create start fragment");
     BaseFragment* startFragment = getStartScreen();
     qDebug("append start fragment");
+    connectFragment(resolver);
     this->stack.push_back(startFragment);
 
     qDebug("add widget");
@@ -36,8 +39,8 @@ void FragmentNavigator::navigateTo(QString tag) {
     currentContainer->setCurrentWidget(newFragment);
 }
 
-void FragmentNavigator::front() {
-    return stack.front();
+void FragmentNavigator::Front(BaseFragment *&current) {
+    current = stack.front();
 }
 
 void FragmentNavigator::back() {
@@ -73,9 +76,6 @@ BaseFragment* FragmentNavigator::getStartScreen() {
     return createAndConnect(this->screensFactory->createStart());
 }
 
-void FragmentNavigator::Front(BaseFragment *&current) {
-    current = stack.front();
-}
 
 void FragmentNavigator::connectFragment(BaseFragment *fragment) {
     qDebug("Navigator connect slots");

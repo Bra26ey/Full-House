@@ -42,8 +42,26 @@ void Resolver::ParseAnswer(pt::ptree const &answer) {
 void Resolver::BaseAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
 
+
+    if (command == "registration") {
+        if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            QMessageBox msgBox;
+            msgBox.setText("Registration succesfully done");
+            msgBox.setWindowTitle("Success");
+            msgBox.exec();
+            back();
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("Ты инвалид");
+            msgBox.setWindowTitle("Ошибка регистрация");
+            msgBox.exec();
+        }
+        return;
+    }
+
     if (command == "autorisation") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            qDebug("Yo");
             navigateTo(MAIN_TAG);
         } else {
             QMessageBox msgBox;
