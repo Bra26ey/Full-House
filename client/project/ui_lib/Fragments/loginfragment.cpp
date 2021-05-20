@@ -104,11 +104,14 @@ void LoginFragment::onLoginPressed() {
     QSound::play(":/music/click");
     if (CheckData()) {
         QMessageBox msgBox;
-         msgBox.setText("В пароле или логине недостаточно символов");
-         msgBox.setWindowTitle("Ошибка авторизации");
+         msgBox.setText("Password and/or login doesn't have enough characters");
+         msgBox.setWindowTitle("Autorisation error");
          msgBox.exec();
     } else {
+        boost::hash<std::string> PasswordHasher;
+        PasswordHasher(passwordEdit->text().toStdString()); 
         Client->Autorise(loginEdit->text().toStdString(), passwordEdit->text().toStdString());
+        navigateTo(MAIN_TAG);
     }
 }
 
@@ -126,7 +129,5 @@ int LoginFragment::CheckData() {
     if (loginEdit->text().length() < 5 && passwordEdit->text().length() < 5) {
         return 1;
     }
-    boost::hash<std::string> PasswordHasher;
-    PasswordHasher(passwordEdit->text().toStdString());
     return 0;
 }

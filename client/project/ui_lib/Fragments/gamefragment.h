@@ -36,6 +36,7 @@ public:
     void JoinNotAdmin();
 
     void AddCardToTable(size_t value, size_t suit, bool upsided);
+    void FlipTableCards();
     void DeleteAllCardsFromTable();
     void FlipAllCards();
 
@@ -50,6 +51,7 @@ public:
     void SetRaise(size_t player_id);
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
+    void AvaliableActions(std::vector<bool> buttons);
 public slots:
     void onBetPressed();
     void onRaisePressed();

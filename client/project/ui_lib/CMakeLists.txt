@@ -87,7 +87,7 @@ set(PROJECT_SOURCES
 
         screenfactory.cpp
         mainwindow.cpp
-        Parser.cpp
+        resolver.cpp
         resource.qrc
 )
 

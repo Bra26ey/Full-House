@@ -74,11 +74,12 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
 
     QHBoxLayout *mainHLayout = new QHBoxLayout;
 
-    ActionButtons.append(BetButton);
+    ActionButtons.append(FoldButton);
     ActionButtons.append(CallButton);
     ActionButtons.append(RaiseButton);
-    ActionButtons.append(FoldButton);
     ActionButtons.append(CheckButton);
+    ActionButtons.append(BetButton);
+
     foreach (auto btn, ActionButtons) {
         mainHLayout->addWidget(btn);
         btn->hide();
@@ -268,6 +269,12 @@ void GameFragment::EndGame(bool admin) {
     StartGameButton->show();
 }
 
+void GameFragment::AvaliableActions(std::vector<bool> buttons) {
+    for(size_t i = 0; i < buttons.size(); ++i) {
+        buttons[i] ? ActionButtons[i]->show() : ActionButtons[i]->hide();
+    }
+}
+
 void GameFragment::JoinNotAdmin() {
     StartGameButton->hide();
 }
@@ -291,7 +298,6 @@ void GameFragment::SetMaxBet(int maxbet) {
 }
 
 void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
-    qDebug() << player_id;
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
     mOtherPlayers[player_id - 1] = player;
     mOtherPlayers[player_id - 1]->setParent(mPlayTable);
@@ -471,6 +477,12 @@ void GameFragment::AddCardToTable(size_t value, size_t suit, bool upsided) {
     auto card = new Card(value, suit, upsided);
     card->setParent(mPlayTable);
     CardOnTable.push_back(card);
+}
+
+void GameFragment::FlipTableCards() {
+    foreach(auto card, CardOnTable) {
+        card->Flip();
+    }
 }
 
 void GameFragment::DeleteAllCardsFromTable() {
