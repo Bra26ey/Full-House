@@ -176,7 +176,7 @@ void Client::AddMoney(uint64_t const &sum) {
 }
 
 void Client::GetMoneyInfo() {
-    auto msg = MsgClient::MoneyInfo;
+    auto msg = MsgClient::MoneyInfo();
     msg_queue_.Push(msg);
 }
 

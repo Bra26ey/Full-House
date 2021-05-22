@@ -143,10 +143,9 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     // GiveCards(5, 11,3,2,1);
     // FlipCards(1);
 
-
     // SetBet(4, 400);
-    // SetFold(3);
 
+    // SetFold(3);
     // CurrentTurn(0);
     // MakeDealer(4);
     // DisplayWinner(0);
@@ -336,7 +335,7 @@ void GameFragment::DeletePlayer(size_t player_id) {
 }
 
 void GameFragment::DrawMainPlayer() {
-    mPlayer = new Player("ME :)", 9999);
+    mPlayer = new Player(globalInfo::Nickname, globalInfo::Balance);
 //    mPlayer = new Player(LoggedUserName, LoggedUserMoney);
     mPlayer->setParent(mPlayTable);
     mPlayer->setGeometry(mainplayerpos);

@@ -1,4 +1,5 @@
 #include "equationsfragment.h"
+#include "client_impl.h"
 
 
 #include <random>
@@ -103,6 +104,8 @@ void EquationsFragment::onSubmitPressed() {
     qDebug() << Answer->text();
     if (Answer->text() == mAnswer) {
         Answer->setStyleSheet("color:#242424;font-size:24px;background-color:green");
+        Client->AddMoney(time);
+        Client->GetMoneyInfo();
         qDebug("Good");
     } else {
         Answer->setStyleSheet("color:#242424;font-size:24px;background-color:red");

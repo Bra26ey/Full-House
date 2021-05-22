@@ -111,6 +111,8 @@ void LoginFragment::onLoginPressed() {
         boost::hash<std::string> PasswordHasher;
         PasswordHasher(passwordEdit->text().toStdString()); 
         Client->Autorise(loginEdit->text().toStdString(), passwordEdit->text().toStdString());
+        globalInfo::Nickname = loginEdit->text().toStdString();
+        Client->GetMoneyInfo();
     }
 }
 

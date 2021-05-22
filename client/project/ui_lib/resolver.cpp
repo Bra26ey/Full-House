@@ -27,12 +27,12 @@ void Resolver::ParseAnswer(pt::ptree const &answer) {
         RoomBasicAnswer(answer);
         return;
     }
-    
+
     if (command_type == "room-admin-answer") {
         RoomAdminAnswer(answer);
         return;
     }
-    
+
     if (command_type == "game-answer") {
         GameAnswer(answer);
         return;
@@ -71,7 +71,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         }
         return;
     }
-    
+
     if (command == "logout") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             back();
@@ -80,7 +80,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         }
         return;
     }
-    
+
     if (command == "disconnect") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             // exit(0);
@@ -94,7 +94,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         CreateRoomAnswer(answer);
         return;
     }
-    
+
     if (command == "join-room") {
         JoinRoomAnswer(answer);
         return;
@@ -108,12 +108,11 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
     if (command == "add-money") {
         return;
     }
-    
 }
 
 void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
-    
+
     if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             gamefragment_ = nullptr;
@@ -127,7 +126,7 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
 
 void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
-    
+
     if (command == "start") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             gamefragment_->ShowActions();
@@ -143,7 +142,7 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
 
 void Resolver::RoomGameAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
-    
+
     if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             back();
@@ -157,12 +156,12 @@ void Resolver::RoomGameAnswer(pt::ptree const &answer) {
 void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     auto parametrs = answer.get_child("parametrs");
     auto status = parametrs.get<std::string>("status");
-    
+
     if (status == "on") {
         // OMG IT'S TRYING!
         return;
     }
-    
+
     if (status == "done") {
         navigateTo(GAME_TAG);
         gamefragment_ = dynamic_cast<GameFragment*>(Front());
@@ -177,12 +176,12 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
 void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     auto parametrs = answer.get_child("parametrs");
     auto status = parametrs.get<std::string>("status");
-    
+
     if (status == "on") {
         // OMG IT'S TRYING!
         return;
     }
-    
+
     if (status == "done") {
         our_server_position_ = parametrs.get<uint8_t>("position");
         navigateTo(GAME_TAG);
@@ -198,7 +197,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
 
 void Resolver::MoneyInfoAnswer(pt::ptree const &answer) {
     auto parametrs = answer.get_child("parametrs");
-    globalInfo.balance = parametrs.get<uint64_t>("money");
+    globalInfo::Balance = parametrs.get<uint64_t>("money");
 }
 
 uint8_t Resolver::GetTablePos(const uint8_t &pos) {
@@ -258,9 +257,6 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     // status.add_child("board-сards", board_cards);
 
     auto board_cards = parametrs.get_child("board-сards");
-    
-
-
 
     // Min & Max Bet SetMinBet(value) SetMaxBet(value)
     // Dealer or not, MakeDealer(id)
@@ -281,7 +277,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
        current_player.in_pot = player.get<bool>("in-pot");
        current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
        current_player.position = player.get<uint8_t>("position");
-       gamefragment_->DrawPlayer(GetTablePos(current_player.position), current_player.name, current_player.money)
+       gamefragment_->DrawPlayer(GetTablePos(current_player.position), current_player.name, current_player.money);
        auto cards = player.get_child("cards");
        BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
            const pt::ptree card = vc.second;

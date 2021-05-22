@@ -1,5 +1,6 @@
 #include "settingsfragment.h"
 #include "mediaplayer.h"
+#include "client_impl.h"
 
 #include <QSound>
 #include <QLabel>
@@ -37,9 +38,20 @@ SettingsFragment::SettingsFragment() : EasterEgg(0) {
     title->setAlignment(Qt::AlignHCenter);
     title->setStyleSheet("margin-top:50px");
 
+    Nickname = new QLabel("Nickname: " + QString::fromUtf8(globalInfo::Nickname.c_str()));
+    Nickname->setAlignment(Qt::AlignHCenter);
+    Nickname->setStyleSheet("margin-top:25px");
+
+
+    Money = new QLabel("Money:" + QString::number(globalInfo::Balance));
+    Money->setAlignment(Qt::AlignHCenter);
+    Money->setStyleSheet("margin-top:25px;margin-bottom:20px");
+
     buttonContainer->addWidget(MuteButton);
     buttonContainer->addWidget(title);
     buttonContainer->addWidget(VolumeSlider);
+    buttonContainer->addWidget(Nickname);
+    buttonContainer->addWidget(Money);
     buttonContainer->addWidget(MenuButton);
 
 
