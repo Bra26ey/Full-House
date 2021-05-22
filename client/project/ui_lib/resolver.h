@@ -35,7 +35,7 @@ struct Player {
 class Resolver : public BaseFragment {
     Q_OBJECT
 public:
-    Resolver(): our_server_position_(0), first_msg(true) {};
+    Resolver(): our_server_position_(0), cards_on_board(0), first_msg(true), is_admin(false) {};
     ~Resolver() = default;
 
     void Run();
@@ -95,6 +95,7 @@ private:
 
     void CheckPlayers(const std::vector<resolver::Player> &new_players);
     void HandleBoardCards(pt::ptree const &board_cards);
+    void HandlePlayerCards();
 
     uint8_t GetTablePos(const uint8_t &pos);
     void GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &players_vec);
@@ -102,7 +103,9 @@ private:
 
 private:
     uint8_t our_server_position_;
+    short cards_on_board;
     bool first_msg;
+    bool is_admin;
     bool is_started;
     std::vector<resolver::Player> players_;
 };

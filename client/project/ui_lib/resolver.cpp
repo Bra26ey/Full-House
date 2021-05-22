@@ -226,6 +226,11 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         emit ShowStart();
     }
 
+    if (!is_admin && admin_pos == our_server_position_) {
+            is_admin = true;
+            emit ShowStart();
+    }
+
     auto gamestatus = parametrs.get_child("game-status");
     auto players = gamestatus.get_child("players");
 
@@ -244,11 +249,17 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
     if (first_msg) {
         first_msg = false;
-        auto board_cards = parametrs.get_child("board-сards");
-        HandleBoardCards(board_cards);
         HandlePlayerCards();
         return;
     }
+
+    auto current_cards_on_board = gamestatus.get<short>("num-cards-on-table");
+    if (cards_on_board != current_cards_on_board) {
+        cards_on_board = current_cards_on_board;
+        auto board_cards = parametrs.get_child("board-сards");
+        HandleBoardCards(board_cards);
+    }
+
     auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
     auto min_bet = gamestatus.get<int>("big-blind-bet");
     emit SetMinBet(min_bet);
@@ -263,7 +274,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
     emit CurrentTurn(current_turn);
 
-    auto winner_pos = gamestatus.get<uint8_t>("winner-pos");
+    auto winner_pos = gamestatus.get<uint8_t>("winner-position");
     if (winner_pos != WINNER_NOT_DEFINDED) {
         emit DisplayWinner(winner_pos);
         emit FlipAllCards();
@@ -272,8 +283,9 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
 void Resolver::HandlePlayerCards() {
     for (auto &it : players_) {
-        auto card_one = players_.cards_in_hand[0];
-        auto card_two = players_.cards_in_hand[1];
+        auto card_one = it.cards_in_hand[0];
+        auto card_two = it.cards_in_hand[1];
+        qDebug() << card_one.value << card_two.value;
         emit GiveCards(it.position, card_one.value, card_one.suit, 
                                     card_two.value, card_two.suit);
     }
@@ -312,9 +324,9 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
     for (size_t i = 0; i < players_.size(); ++i) {
         auto cit = players_.cbegin() + i;
         auto res = std::find_if(new_players.begin(), new_players.end(),
-                      [it](const resolver::Player &current) { return current.name == cit.name; });
+                      [cit](const resolver::Player &current) { return current.name == cit->name; });
         if (res == new_players.end()) {
-            emit DeletePlayer(cit.position);
+            emit DeletePlayer(cit->position);
             players_.erase(cit);
             continue;
         }
@@ -332,6 +344,7 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
 
 
 void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
+    emit DeleteAllCardsFromTable();
     BOOST_FOREACH(const pt::ptree::value_type &vb, board_cards) {
         const pt::ptree card = vb.second;
         auto suit = card.get<uint8_t>("suit");
