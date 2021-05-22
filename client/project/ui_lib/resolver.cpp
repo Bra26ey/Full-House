@@ -222,6 +222,9 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     }
 
     auto parametrs = answer.get_child("parametrs");
+    auto admin_pos = parametrs.get<uint8_t>("admin-pos");
+
+    auto gamestatus = parametrs.get_child("game-status")
     auto players = parametrs.get_child("players");
 
     auto current_turn = GetTablePos(parametrs.get<uint8_t>("current-turn"));
