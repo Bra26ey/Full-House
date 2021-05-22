@@ -96,12 +96,13 @@ private:
     void CheckPlayers(const std::vector<resolver::Player> &new_players);
     void HandleBoardCards(pt::ptree const &board_cards);
 
-    unsigned short GetTablePos(const unsigned short &pos);
+    uint8_t GetTablePos(const uint8_t &pos);
     void GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &players_vec);
     void CheckPlayers(pt::ptree const &players);
 
 private:
-    unsigned short our_server_position_;
+    uint8_t our_server_position_;
     bool first_msg;
+    bool is_started;
     std::vector<resolver::Player> players_;
 };

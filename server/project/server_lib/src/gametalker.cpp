@@ -283,6 +283,8 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
     }
     users_mutex_.unlock();
 
+    positions_.Delete(user->id);
+
     board_db_.RemoveUserFromBoard(id, user->id);
 
     auto hand_config = convert(board_db_.GetActiveBoard(id));

@@ -406,18 +406,11 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
 
     status.put("is-started", is_started_);
     status.put("button-pos", hand_config.button_pos);
-
     status.put("small-blind-pos", hand_config.small_blind_pos);
-
     status.put("big-blind-pos", hand_config.big_blind_pos);
-
-
     status.put("small-blind-bet", hand_config.small_blind_bet);
-
     status.put("big-blind-bet", hand_config.big_blind_bet);
-
     status.put("max-size-of-players", hand_config.max_size_of_players);
-
     status.put("count-of-player-cards", hand_config.count_of_player_cards);
 
     boost::property_tree::ptree players_status;
