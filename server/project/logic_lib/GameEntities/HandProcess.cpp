@@ -380,16 +380,19 @@ boost::property_tree::ptree HandProcess::GetCardStatus(Card const &card) {
 boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<Player>& player) {
     boost::property_tree::ptree status;
 
-    boost::property_tree::ptree cards_status;
-    for (auto &it : player->cards) {
-        auto card = GetCardStatus(it);
-        cards_status.add_child("", card);
+    if (is_started_) {
+        boost::property_tree::ptree cards_status;
+        for (auto &it : player->cards) {
+            auto card = GetCardStatus(it);
+            cards_status.add_child("", card);
+        }
     }
 
     status.put("name", player->name);
+    status.put("position", player->position);
+
     status.put("in-pot", player->in_pot);
     status.put("current-stage-money-in-pot", player->current_stage_money_in_pot);
-    status.put("position", player->position);
 
     status.add_child("cards", cards_status);
 
@@ -402,7 +405,6 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     boost::property_tree::ptree status;
 
     status.put("is-started", is_started_);
-    status.put("winner-position", winer_pos_);
 
     status.put("button-pos", hand_config.button_pos);
     status.put("small-blind-pos", hand_config.small_blind_pos);
@@ -414,10 +416,17 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     status.put("max-size-of-players", hand_config.max_size_of_players);
     status.put("count-of-player-cards", hand_config.count_of_player_cards);
 
-    status.put("current-turn", current_player_pos.load());
-    status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
+    boost::property_tree::ptree players_status;
+    for (auto &it : hand_config.players) {
+        auto player = GetPlayerStatus(it);
+        players_status.add_child("", player);
+    }
 
-    status.put("bank", board_.pot);
+    status.add_child("players", players_status);
+
+    if (!is_started_) {
+        return status;
+    }
 
     boost::property_tree::ptree board_cards;
     for (auto &it : board_.cards) {
@@ -426,13 +435,11 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     }
     status.add_child("board-сards", board_cards);
 
-    boost::property_tree::ptree players_status;
-    for (auto &it : hand_config.players) {
-        auto player = GetPlayerStatus(it);
-        players_status.add_child("", player);
-    }
+    status.put("current-turn", current_player_pos.load());
+    status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
+    status.put("winner-position", winer_pos_);
 
-    status.add_child("players", players_status);
+    status.put("bank", board_.pot);
 
     return status;
 }

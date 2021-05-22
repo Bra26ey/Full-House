@@ -94,6 +94,7 @@ private:
     void MoneyInfoAnswer(pt::ptree const &answer);
     void GameAnswer(pt::ptree const &answer);
 
+    void CheckPlayers(pt::ptree const &players)
     void HandleBoardCards(pt::ptree const &board_cards);
 
     uint8_t GetTablePos(const uint8_t &pos);
