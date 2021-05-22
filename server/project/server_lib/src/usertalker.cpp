@@ -123,6 +123,15 @@ void UserTalker::HandleAddMoney() {
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
+void UserTalker::HandleMoneyInfo() {
+    BOOST_LOG_TRIVIAL(info) << user_->name << " asking for money";
+
+    auto user = user_db_.GetUser(user_->id);
+    user_->out << MsgServer::MoneyInfo(static_cast<uint64_t>(user.money));
+
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+}
+
 void UserTalker::Logout() {
     BOOST_LOG_TRIVIAL(info) << user_->name << "is loged out";
 
@@ -163,8 +172,6 @@ void UserTalker::HandleRequest() {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleAutorisation, this));
                     } else if (command == "registration") {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleRegistration, this));
-                    } else if (command == "add-money") {
-                        boost::asio::post(context_, boost::bind(&UserTalker::HandleAddMoney, this));
                     } else {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
                     }
@@ -173,6 +180,10 @@ void UserTalker::HandleRequest() {
 
                 if (command == "create-room") {
                     boost::asio::post(context_, boost::bind(&UserTalker::CreateGame, this));
+                } else if (command == "add-money") {
+                    boost::asio::post(context_, boost::bind(&UserTalker::HandleAddMoney, this));
+                } else if (command == "money-info") {
+                    boost::asio::post(context_, boost::bind(&UserTalker::HandleMoneyInfo, this));
                 } else if (command == "join-room") {
                     boost::asio::post(context_, boost::bind(&UserTalker::JoinPlayer, this));
                 } else if (command == "logout") {

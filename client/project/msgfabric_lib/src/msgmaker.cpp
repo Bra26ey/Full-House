@@ -213,6 +213,14 @@ std::string MsgClient::AddMoney(uint64_t const &money) {
     return MsgFromPtree(request);
 }
 
+std::string MsgClient::MoneyInfo() {
+    boost::property_tree::ptree request;
+
+    request.put("command-type", "basic");
+    request.put("command", "money-info");
+
+    return MsgFromPtree(request);
+}
 
 
 
@@ -485,6 +493,19 @@ std::string MsgServer::AddMoneyFailed() {
 
     request.put("command-type", "basic-answer");
     request.put("command", "add-money");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::MoneyInfo(uint64_t const &sum) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("money", sum);
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "money-info");
     request.add_child("parametrs", parametrs);
 
     return MsgFromPtree(request);

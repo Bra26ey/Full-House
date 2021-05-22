@@ -335,7 +335,7 @@ void GameFragment::DeletePlayer(size_t player_id) {
 }
 
 void GameFragment::DrawMainPlayer() {
-    mPlayer = new Player("ME :)", 9999);
+    mPlayer = new Player(globalInfo::Nickname, globalInfo::Balance);
 //    mPlayer = new Player(LoggedUserName, LoggedUserMoney);
     mPlayer->setParent(mPlayTable);
     mPlayer->setGeometry(mainplayerpos);

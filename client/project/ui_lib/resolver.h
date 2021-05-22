@@ -47,6 +47,7 @@ private:
     void RoomGameAnswer(pt::ptree const &answer);
     void CreateRoomAnswer(pt::ptree const &answer);
     void JoinRoomAnswer(pt::ptree const &answer);
+    void MoneyInfoAnswer(pt::ptree const &answer);
     void GameAnswer(pt::ptree const &answer);
 
     uint8_t GetTablePos(const uint8_t &pos);

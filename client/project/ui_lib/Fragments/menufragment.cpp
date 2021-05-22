@@ -92,7 +92,7 @@ void MenuFragment::onSettingsPressed() {
 
 void MenuFragment::onLoginPressed() {
     QSound::play(":/music/click");
-    Client->Logout(); // выход не залогинненого юзера все крашит
+    Client->Logout();
 }
 
 void MenuFragment::onRulesPressed() {

@@ -4,6 +4,7 @@
 #include "basefragment.h"
 
 #include <QSlider>
+#include <QLabel>
 #include <QPushButton>
 
 class SettingsFragment: public BaseFragment {
@@ -18,6 +19,8 @@ public slots:
     void onMenuPressed();
 
 private:
+    QLabel* Nickname;
+    QLabel* Money;
     QPushButton *MuteButton;
     QPushButton *MenuButton;
     QSlider *VolumeSlider;

@@ -43,6 +43,7 @@ class Client {
     void GameCheck();
 
     void AddMoney(uint64_t const &sum);
+    void GetMoneyInfo();
 
  private:
     io_context context_;
