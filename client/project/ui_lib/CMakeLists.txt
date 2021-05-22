@@ -24,7 +24,7 @@ include_directories(../client_lib/include)
 include_directories(../msgfabric_lib/include)
 
 
-file(GLOB PROJECT_SOURCES "Base/*.cpp" "Fragments/*.cpp" "GameElements/*.cpp" "UiElements/*.cpp" "*.cpp" "GameElements/Gameplay_Buttons/*.cpp")
+file(GLOB PROJECT_SOURCES "Base/*.cpp" "Fragments/*.cpp" "GameElements/*.cpp" "UiElements/*.cpp" "*.cpp" "GameElements/Gameplay_Buttons/*.cpp" "*.qrc")
 
 add_library(ui_lib SHARED ${PROJECT_SOURCES})
 target_link_libraries(ui_lib

@@ -143,10 +143,9 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     // GiveCards(5, 11,3,2,1);
     // FlipCards(1);
 
-
     // SetBet(4, 400);
-    // SetFold(3);
 
+    // SetFold(3);
     // CurrentTurn(0);
     // MakeDealer(4);
     // DisplayWinner(0);
