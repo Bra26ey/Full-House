@@ -1,4 +1,7 @@
 #include "resolver.h"
+
+#include <algorithm>
+
 #include "client_impl.h"
 
 using namespace screens;
@@ -114,7 +117,6 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
 
     if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            gamefragment_ = nullptr;
             back();
         } else {
             // FUCK OH NO
@@ -128,9 +130,9 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
 
     if (command == "start") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            gamefragment_->ShowActions();
-            gamefragment_->BlockActions();
-            gamefragment_->HideStart();
+            emit ShowActions();
+            emit BlockActions();
+            emit HideStart();
             // DELETE START & LEAVE BUUTTOM
         } else {
             // FUCK OH NO
@@ -163,7 +165,6 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
 
     if (status == "done") {
         navigateTo(GAME_TAG);
-        gamefragment_ = dynamic_cast<GameFragment*>(Front());
         return;
     }
 
@@ -228,6 +229,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
 
     if (gamestatus.get<bool>("is-started") == false) {
+        CheckPlayers(players);
         return;
     }
 
@@ -238,27 +240,24 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     }
 
     auto min_bet = gamestatus.get<int>("big-blind-bet");
-    gamefragment_->SetMinBet(min_bet);
-    gamefragment_->SetMaxBet(10 * min_bet);
+    emit SetMinBet(min_bet);
+    emit SetMaxBet(10 * min_bet);
 
-    gamefragment_->ShowActions();
+    emit ShowActions();
     if (current_turn == 0) {
         auto avaiable = gamestatus.get<std::string>("current-actions");
-        gamefragment_->AvaliableActions(GetAvailable(avaiable));
-        gamefragment_->UnBlockActions();
+        emit AvaliableActions(GetAvailable(avaiable));
+        emit UnBlockActions();
     }
 
-    gamefragment_->CurrentTurn(current_turn);
+    emit CurrentTurn(current_turn);
 
     auto winner_pos = gamestatus.get<uint8_t>("winner-pos");
     if (winner_pos != WINNER_NOT_DEFINDED) {
-        gamefragment_->DisplayWinner(winner_pos);
+        emit DisplayWinner(winner_pos);
     }
 
     // gamefragment_->DrawPlayer(GetTablePos(current_player.position), current_player.name, current_player.money);
-    std::vector<resolver::Player> new_players;
-    GetPlayers(players, new_players);
-
 }
 
 void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &new_players) {
@@ -278,13 +277,38 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
             current_card.is_opened = card.get<bool>("is-opend");
             current_player.cards_in_hand.push_back(current_card);
         }
-        players_vector.push_back(current_player);
+        players_.push_back(current_player);
+    }
+}
+
+void Resolver::CheckPlayers(pt::ptree const &players) {
+    std::vector<resolver::Player> new_players;
+    GetPlayers(players, new_players);
+
+    for (auto &it : players_) {
+        auto res = std::find_if(new_players.begin(), new_players.end(),
+                      [it](const resolver::Player &current) { return current.name == it.name; });
+        if (res == new_players.end()) {
+//            players_.erase(it);
+            emit DeletePlayer(it.position);
+        }
+
+        //
+    }
+
+    for (auto &it : new_players) {
+        auto res = std::find_if(players_.begin(), players_.end(),
+                      [it](const resolver::Player &current) { return current.name == it.name; });
+        if (res == players_.end()) {
+            players_.push_back(it);
+            emit DrawPlayer(it.position, it.name, it.money);
+        }
     }
 }
 
 void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
     BOOST_FOREACH(const pt::ptree::value_type &vb, board_cards) {
-        const pt::ptree card = vc.second;
+        const pt::ptree card = vb.second;
         auto suit = card.get<uint8_t>("suit");
         auto value = card.get<uint8_t>("value");
         auto is_opened = card.get<bool>("is-opend");
