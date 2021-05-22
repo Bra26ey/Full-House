@@ -41,9 +41,47 @@ public:
     void Run();
 
 signals:
-    void AddCardToTable(const int value, const int suit, const int upsided);
+    void DeletePlayer(size_t player_id);
+    void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
+
+    void SetMinBet(int minbet);
+    void SetMaxBet(int maxbet);
+
+    void EndGame(bool is_admin);
+    void JoinNotAdmin();
+
+    void FlipTableCards();
+    void DeleteAllCardsFromTable();
+    void AddCardToTable(size_t value,  size_t suit, bool upsided);
+    void FlipAllCards();
+
     void ShowActions();
-    void DrawPlayer(int player_id, std::string nickname, int total_money);
+    void BlockActions();
+    void UnBlockActions();
+    void HideStart();
+
+    void MakeDealer(size_t player_id);
+    void DisplayWinner(size_t player_id);
+    void CurrentTurn(size_t player_id);
+    void GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2);
+    void FlipCards(size_t player_id);
+    void SetBet(size_t player_id, size_t bet);
+    void SetFold(size_t player_id);
+    void SetCall(size_t player_id);
+    void SetRaise(size_t player_id);
+    void SetCheck(size_t player_id);
+    void ClearStatus(size_t player_id);
+    void AvaliableActions(std::vector<bool> buttons);
+
+    void onBetPressed();
+    void onRaisePressed();
+    void onFoldPressed();
+    void onCheckPressed();
+    void onCallPressed();
+
+    void onLeavePressed();
+    void onSettingsPressed();
+    void onStartPressed();
 
 private:
     void ParseAnswer(pt::ptree const &answer);

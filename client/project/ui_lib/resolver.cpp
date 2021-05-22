@@ -1,7 +1,6 @@
 #include "resolver.h"
 #include "client_impl.h"
 
-
 using namespace screens;
 
 constexpr uint8_t WINNER_NOT_DEFINDED = 10;
