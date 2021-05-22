@@ -35,7 +35,7 @@ struct Player {
 class Resolver : public BaseFragment {
     Q_OBJECT
 public:
-    Resolver() : gamefragment_(nullptr),  our_server_position_(0) {};
+    Resolver() : gamefragment_(nullptr),  our_server_position_(0), first_msg(true) {};
     ~Resolver() = default;
 
     void Run();
@@ -56,10 +56,13 @@ private:
     void MoneyInfoAnswer(pt::ptree const &answer);
     void GameAnswer(pt::ptree const &answer);
 
+    void HandleBoardCards(pt::ptree const &board_cards);
+
     uint8_t GetTablePos(const uint8_t &pos);
-    bool flag = true;
+    void GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &players_vec);
 
 private:
-    GameFragment* gamefragment_;
     uint8_t our_server_position_;
+    bool first_msg;
+    std::vector<resolver::Player> players_;
 };

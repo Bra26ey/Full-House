@@ -229,11 +229,12 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
 
     if (gamestatus.get<bool>("is-started") == false) {
-        if (flag) {
-            emit AddCardToTable(1,1,true);
-        }
-flag = false;
-//        emit DrawPlayer(2, "Kek", 999);
+        return;
+    }
+
+    if (first_msg) {
+        auto board_cards = parametrs.get_child("board-сards");
+        HandleBoardCards(board_cards);
         return;
     }
 
@@ -255,58 +256,40 @@ flag = false;
         gamefragment_->DisplayWinner(winner_pos);
     }
 
-<<<<<<< HEAD
-    auto board_cards = parametrs.get_child("board-сards");
+    // gamefragment_->DrawPlayer(GetTablePos(current_player.position), current_player.name, current_player.money);
+    std::vector<resolver::Player> new_players;
+    GetPlayers(players, new_players);
+
+}
+
+void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &new_players) {
+    BOOST_FOREACH(const pt::ptree::value_type &vp, players) {
+        const pt::ptree player = vp.second;
+        resolver::Player current_player;
+        current_player.name = player.get<std::string>("name");
+        current_player.in_pot = player.get<bool>("in-pot");
+        current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
+        current_player.position = player.get<uint8_t>("position");
+        auto cards = player.get_child("cards");
+        BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
+            const pt::ptree card = vc.second;
+            resolver::Card current_card;
+            current_card.suit = card.get<uint8_t>("suit");
+            current_card.value = card.get<uint8_t>("value");
+            current_card.is_opened = card.get<bool>("is-opend");
+            current_player.cards_in_hand.push_back(current_card);
+        }
+        players_vector.push_back(current_player);
+    }
+}
+
+void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
     BOOST_FOREACH(const pt::ptree::value_type &vb, board_cards) {
         const pt::ptree card = vc.second;
         auto suit = card.get<uint8_t>("suit");
         auto value = card.get<uint8_t>("value");
         auto is_opened = card.get<bool>("is-opend");
-        gamefragment_->AddCardToTable(suit, value, is_opened);
-    }
-=======
-    // boost::property_tree::ptree board_cards;
-    // for (auto &it : board_.cards) {
-    //     auto card = GetCardStatus(it);
-    //     board_cards.add_child("", card);
-    // }
-    // status.add_child("board-сards", board_cards);
-
-    auto board_cards = gamestatus.get_child("board-сards");
-
-    // Min & Max Bet SetMinBet(value) SetMaxBet(value)
-    // Dealer or not, MakeDealer(id)
-    // Current Turn Player CurrentTurn(id)
-    // Money in bank(pot) складывается из бетов вроде как автоматически
-    // Cards on the table AddCardToTable(size_t value, size_t suit, bool upsided) / FlipTableCards / DeleteTableCards
-    // Available actions
-    // Won Label DisplayWinner(id) / DeleteWinnerLabel(void)
-    // GameStarted? ShowActions нужно написать сочетания кнопок, потому что сейчас такой функции нет
->>>>>>> 757c2c924623f7596eb588f1f2c10efffa496513
-
-    std::vector<resolver::Player> players_vector;
-    std::vector<bool> current_positions(MAX_PLAYERS);
-
-    BOOST_FOREACH(const pt::ptree::value_type &vp, players) {
-       const pt::ptree player = vp.second;
-       resolver::Player current_player;
-       current_player.name = player.get<std::string>("name");
-       current_player.in_pot = player.get<bool>("in-pot");
-       current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
-       current_player.position = player.get<uint8_t>("position");
-       auto pos = GetTablePos(current_player.position);
-       current_positions[pos] = true;
-       gamefragment_->DrawPlayer(GetTablePos(current_player.position), current_player.name, current_player.money);
-       auto cards = player.get_child("cards");
-       BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
-           const pt::ptree card = vc.second;
-           resolver::Card current_card;
-           current_card.suit = card.get<uint8_t>("suit");
-           current_card.value = card.get<uint8_t>("value");
-           current_card.is_opened = card.get<bool>("is-opend");
-           current_player.cards_in_hand.push_back(current_card);
-       }
-       players_vector.push_back(current_player);
+        emit AddCardToTable(suit, value, is_opened);
     }
 }
 
