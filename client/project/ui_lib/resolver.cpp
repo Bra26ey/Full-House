@@ -1,6 +1,5 @@
 #include "resolver.h"
 
-#include <pair>
 #include <algorithm>
 
 #include "client_impl.h"
@@ -228,13 +227,16 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
     auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
 
+    std::vector<resolver::Player> new_players;
+    GetPlayers(players, new_players);
 
     if (gamestatus.get<bool>("is-started") == false) {
-        CheckPlayers(players);
+        CheckPlayers(players_, new_players);
         return;
     }
 
     if (first_msg) {
+        first_msg = false;
         auto board_cards = parametrs.get_child("board-сards");
         HandleBoardCards(board_cards);
         return;
@@ -266,19 +268,42 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         const pt::ptree player = vp.second;
         resolver::Player current_player;
         current_player.name = player.get<std::string>("name");
-        current_player.in_pot = player.get<bool>("in-pot");
         current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
-        current_player.position = player.get<uint8_t>("position");
-        auto cards = player.get_child("cards");
-        BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
-            const pt::ptree card = vc.second;
-            resolver::Card current_card;
-            current_card.suit = card.get<uint8_t>("suit");
-            current_card.value = card.get<uint8_t>("value");
-            current_card.is_opened = card.get<bool>("is-opend");
-            current_player.cards_in_hand.push_back(current_card);
+        current_player.position = GetTablePos(player.get<uint8_t>("position"));
+
+        // current_player.in_pot = player.get<bool>("in-pot");
+        // auto cards = player.get_child("cards");
+        // BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
+        //     const pt::ptree card = vc.second;
+        //     resolver::Card current_card;
+        //     current_card.suit = card.get<uint8_t>("suit");
+        //     current_card.value = card.get<uint8_t>("value");
+        //     current_card.is_opened = card.get<bool>("is-opend");
+        //     current_player.cards_in_hand.push_back(current_card);
+        // }
+        // players_.push_back(current_player);
+    }
+}
+
+void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
+    for (auto &it : players_) {
+        auto res = std::find_if(new_players.begin(), new_players.end(),
+                      [it](const resolver::Player &current) { return current.name == it.name; });
+        if (res == new_players.end()) {
+//            players_.erase(it);
+            emit DeletePlayer(it.position);
         }
-        players_vector.push_back(current_player);
+
+        //
+    }
+
+    for (auto &it : new_players) {
+        auto res = std::find_if(players_.begin(), players_.end(),
+                      [it](const resolver::Player &current) { return current.name == it.name; });
+        if (res == players_.end() && it.position != 0) {
+            players_.push_back(it);
+            emit DrawPlayer(it.position, it.name, it.money);
+        }
     }
 }
 
@@ -309,7 +334,7 @@ void Resolver::CheckPlayers(pt::ptree const &players) {
 
 void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
     BOOST_FOREACH(const pt::ptree::value_type &vb, board_cards) {
-        const pt::ptree card = vc.second;
+        const pt::ptree card = vb.second;
         auto suit = card.get<uint8_t>("suit");
         auto value = card.get<uint8_t>("value");
         auto is_opened = card.get<bool>("is-opend");

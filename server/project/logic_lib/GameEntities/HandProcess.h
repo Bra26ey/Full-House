@@ -81,7 +81,7 @@ namespace logic {
 
         static boost::property_tree::ptree GetCardStatus(const Card &card);
 
-        static boost::property_tree::ptree GetPlayerStatus(const std::shared_ptr<Player> &player);
+        boost::property_tree::ptree GetPlayerStatus(const std::shared_ptr<Player> &player);
 
         static std::list<std::shared_ptr<Player> >::iterator
         CircularNext(std::list<std::shared_ptr<Player> > &l, std::list<std::shared_ptr<Player> >::iterator it) {

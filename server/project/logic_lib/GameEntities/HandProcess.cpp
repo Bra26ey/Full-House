@@ -380,22 +380,22 @@ boost::property_tree::ptree HandProcess::GetCardStatus(Card const &card) {
 boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<Player>& player) {
     boost::property_tree::ptree status;
 
-    if (is_started_) {
-        boost::property_tree::ptree cards_status;
-        for (auto &it : player->cards) {
-            auto card = GetCardStatus(it);
-            cards_status.add_child("", card);
-        }
-    }
-
     status.put("name", player->name);
     status.put("position", player->position);
-
-    status.put("in-pot", player->in_pot);
     status.put("current-stage-money-in-pot", player->current_stage_money_in_pot);
 
-    status.add_child("cards", cards_status);
+    if (is_started_) {
+        return status;
+    }
 
+    status.put("in-pot", player->in_pot);
+
+    boost::property_tree::ptree cards_status;
+    for (auto &it : player->cards) {
+        auto card = GetCardStatus(it);
+        cards_status.add_child("", card);
+    }
+    status.add_child("cards", cards_status);
 
     return status;
 }
