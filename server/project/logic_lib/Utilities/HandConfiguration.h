@@ -6,7 +6,6 @@
 
 #include <list>
 #include <memory>
-#include <iostream>
 
 #include <boost/property_tree/ptree.hpp>
 

@@ -9,6 +9,7 @@ using namespace screens;
 
 constexpr uint8_t WINNER_NOT_DEFINDED = 10;
 constexpr uint8_t MAX_PLAYERS = 6;
+constexpr uint8_t MAX_CARDS = 2;
 
 void Resolver::ParseAnswer(pt::ptree const &answer) {
     auto command_type = answer.get<std::string>("command-type");
@@ -238,12 +239,14 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         return;
     }
 
-
+    players_.clear();
+    players_ = std::move(new_players);
 
     if (first_msg) {
         first_msg = false;
         auto board_cards = parametrs.get_child("board-сards");
         HandleBoardCards(board_cards);
+        HandlePlayerCards();
         return;
     }
     auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
@@ -263,6 +266,16 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     auto winner_pos = gamestatus.get<uint8_t>("winner-pos");
     if (winner_pos != WINNER_NOT_DEFINDED) {
         emit DisplayWinner(winner_pos);
+        emit FlipAllCards();
+    }
+}
+
+void Resolver::HandlePlayerCards() {
+    for (auto &it : players_) {
+        auto card_one = players_.cards_in_hand[0];
+        auto card_two = players_.cards_in_hand[1];
+        emit GiveCards(it.position, card_one.value, card_one.suit, 
+                                    card_two.value, card_two.suit);
     }
 }
 
@@ -280,7 +293,7 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         }
 
         current_player.in_pot = player.get<bool>("in-pot");
-        current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
+        current_player.money = player.get<uint64_t>("current-stage-money-in-pot");  // NOT MONEY
         auto cards = player.get_child("cards");
         BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
             const pt::ptree card = vc.second;
@@ -305,10 +318,6 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
             players_.erase(cit);
             continue;
         }
-
-        // if (is_started) {
-
-        // }
     }
 
     for (auto &it : new_players) {

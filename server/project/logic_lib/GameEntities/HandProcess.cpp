@@ -393,7 +393,7 @@ boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<P
     boost::property_tree::ptree cards_status;
     for (auto &it : player->cards) {
         auto card = GetCardStatus(it);
-        cards_status.add_child("", card);
+        cards_status.push_back(std::make_pair("", card));
     }
     status.add_child("cards", cards_status);
 
@@ -428,7 +428,7 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     boost::property_tree::ptree board_cards;
     for (auto &it : board_.cards) {
         auto card = GetCardStatus(it);
-        board_cards.add_child("", card);
+        board_cards.push_back(std::make_pair("", card));
     }
     status.add_child("board-сards", board_cards);
 
