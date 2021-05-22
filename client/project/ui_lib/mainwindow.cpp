@@ -4,6 +4,7 @@
 #include <QScreen>
 #include <QApplication>
 #include <QException>
+#include <QThread>
 #include <QDir>
 #include "mediaplayer.h"
 #include "client_impl.h"
@@ -12,6 +13,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     try {
+        qDebug() << QThread::currentThreadId();
         qDebug("create main window");
         container = new QStackedWidget;
         container->setObjectName("ui");

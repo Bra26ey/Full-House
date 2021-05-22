@@ -27,7 +27,7 @@ public:
     GameFragment();
     ~GameFragment();
 
-    void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
+
     void DeletePlayer(size_t player_id);
 
     void SetMinBet(int minbet);
@@ -36,12 +36,12 @@ public:
     void EndGame(bool is_admin);
     void JoinNotAdmin();
 
-    void AddCardToTable(size_t value, size_t suit, bool upsided);
+
     void FlipTableCards();
     void DeleteAllCardsFromTable();
     void FlipAllCards();
 
-    void ShowActions();
+
     void BlockActions();
     void UnBlockActions();
     void HideStart();
@@ -59,6 +59,9 @@ public:
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
 public slots:
+    void DrawPlayer(int player_id, std::string nickname, int total_money);
+    void ShowActions();
+    void AddCardToTable(const int value, const int suit, const int upsided);
     void onBetPressed();
     void onRaisePressed();
     void onFoldPressed();

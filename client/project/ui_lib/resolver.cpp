@@ -185,8 +185,6 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     if (status == "done") {
         our_server_position_ = parametrs.get<uint8_t>("position");
         navigateTo(GAME_TAG);
-        gamefragment_ = dynamic_cast<GameFragment*>(Front());
-        gamefragment_->JoinNotAdmin();
         return;
     }
 
@@ -222,32 +220,37 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     }
 
     auto parametrs = answer.get_child("parametrs");
-    auto admin_pos = parametrs.get<uint8_t>("admin-pos");
+//    auto admin_pos = parametrs.get<uint8_t>("admin-pos");
 
-    auto gamestatus = parametrs.get_child("game-status")
-    auto players = parametrs.get_child("players");
+    auto gamestatus = parametrs.get_child("game-status");
+    auto players = gamestatus.get_child("players");
 
-    auto current_turn = GetTablePos(parametrs.get<uint8_t>("current-turn"));
+    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
 
-    if (parametrs.get<bool>("is-started") == false) {
-        gamefragment_->BlockActions();
+
+    if (gamestatus.get<bool>("is-started") == false) {
+        if (flag) {
+            emit AddCardToTable(1,1,true);
+        }
+flag = false;
+//        emit DrawPlayer(2, "Kek", 999);
         return;
     }
 
-    auto min_bet = parametrs.get<int>("big-blind-bet");
+    auto min_bet = gamestatus.get<int>("big-blind-bet");
     gamefragment_->SetMinBet(min_bet);
     gamefragment_->SetMaxBet(10 * min_bet);
 
     gamefragment_->ShowActions();
     if (current_turn == 0) {
-        auto avaiable = parametrs.get<std::string>("current-actions");
+        auto avaiable = gamestatus.get<std::string>("current-actions");
         gamefragment_->AvaliableActions(GetAvailable(avaiable));
         gamefragment_->UnBlockActions();
     }
 
     gamefragment_->CurrentTurn(current_turn);
 
-    auto winner_pos = parametrs.get<uint8_t>("winner-pos");
+    auto winner_pos = gamestatus.get<uint8_t>("winner-pos");
     if (winner_pos != WINNER_NOT_DEFINDED) {
         gamefragment_->DisplayWinner(winner_pos);
     }
@@ -259,7 +262,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     // }
     // status.add_child("board-сards", board_cards);
 
-    auto board_cards = parametrs.get_child("board-сards");
+    auto board_cards = gamestatus.get_child("board-сards");
 
     // Min & Max Bet SetMinBet(value) SetMaxBet(value)
     // Dealer or not, MakeDealer(id)

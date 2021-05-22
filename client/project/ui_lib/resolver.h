@@ -33,11 +33,17 @@ namespace resolver {
 
 
 class Resolver : public BaseFragment {
+    Q_OBJECT
 public:
     Resolver() : gamefragment_(nullptr),  our_server_position_(0) {};
     ~Resolver() = default;
 
     void Run();
+
+signals:
+    void AddCardToTable(const int value, const int suit, const int upsided);
+    void ShowActions();
+    void DrawPlayer(int player_id, std::string nickname, int total_money);
 
 private:
     void ParseAnswer(pt::ptree const &answer);
@@ -51,6 +57,7 @@ private:
     void GameAnswer(pt::ptree const &answer);
 
     uint8_t GetTablePos(const uint8_t &pos);
+    bool flag = true;
 
 private:
     GameFragment* gamefragment_;
