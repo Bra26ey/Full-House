@@ -35,6 +35,7 @@ class UserTalker : public boost::asio::coroutine {
     void HandleRequest();
     void HandlePing();
     void HandleError();
+    void HandleAddMoney();
     void Disconnect();
     void Logout();
 

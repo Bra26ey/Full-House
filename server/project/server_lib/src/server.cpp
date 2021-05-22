@@ -11,7 +11,7 @@
 namespace network {
 
 Server::Server() : context_(),
-                   endpoint_(address::from_string("0.0.0.0"), PORT),
+                   endpoint_(address::from_string("127.0.1.0"), PORT),
                    acceptor_(context_) {}
 
 Server::~Server() {}
@@ -101,6 +101,7 @@ void Server::CreateRooms() {
     }
 
     auto user = userbase_.creating_game.Pop();
+    BOOST_LOG_TRIVIAL(info) << user->name << " trying to create game";
     auto gametalker = std::make_shared<GameTalker>(context_, board_db_, user);
 
     gametalkers_mutex_.lock();
@@ -119,6 +120,8 @@ void Server::JoinPlayers() {
 
     auto user = userbase_.accepting_game.Pop();
 
+    BOOST_LOG_TRIVIAL(info) << user->name << " trying accepted to game with room-id: " << user->room_id;
+
     auto it = std::find_if(gametalkers_.begin(), gametalkers_.end(),
                           [user](const std::shared_ptr<GameTalker> &current) { return current->id == user->room_id; });
 
@@ -126,10 +129,11 @@ void Server::JoinPlayers() {
         BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. can't find room-id: " << user->room_id;
         read_until(user->socket, user->read_buffer, "\n\r\n\r");
         boost::property_tree::read_json(user->in, user->last_msg);
-        user->out << MsgServer::JoinRoomFaild(user->room_id);
+        user->out << MsgServer::JoinRoomFailed(user->room_id);
         write(user->socket, user->write_buffer);
         user->room_id = __UINT64_MAX__;
         user->is_talking.store(false);
+        context_.post(boost::bind(&Server::JoinPlayers, this));
         return;
     }
 

@@ -40,6 +40,7 @@ class GameTalker : public boost::asio::coroutine {
     void HandleGameRequest(std::shared_ptr<User> &user);
     void HandleLeaving(std::shared_ptr<User> &user);
     void HandleError(std::shared_ptr<User> &user);
+    void HandleGameStatus(std::shared_ptr<User> &user);
 
     void Delete();
 

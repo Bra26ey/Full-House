@@ -14,6 +14,7 @@ using boost::asio::ip::address;
 constexpr uint32_t PING_TIME = 500;
 
 // constexpr std::string_view SERVER_IP = "127.0.0.1";
+// constexpr std::string_view SERVER_IP = "89.19.190.83";
 constexpr size_t SERVER_PORT = 5000;
 
 namespace network {
@@ -25,7 +26,7 @@ Client::~Client() {
 bool Client::Connect() {
     // tcp::endpoint endpoint(address::from_string(SERVER_IP), SERVER_PORT);
     std::cout << "try connect" << std::endl;
-    tcp::endpoint endpoint(address::from_string("89.19.190.83"), SERVER_PORT);
+    tcp::endpoint endpoint(address::from_string("127.0.1.0"), SERVER_PORT);
     socket_.connect(endpoint);
     is_closeing.store(false);
     std::cout << "connection done on ep = " << endpoint << std::endl;
@@ -166,6 +167,11 @@ void Client::GameFold() {
 
 void Client::GameCheck() {
     auto msg = MsgClient::GameCheck();
+    msg_queue_.Push(msg);
+}
+
+void Client::AddMoney(uint64_t const &sum) {
+    auto msg = MsgClient::AddMoney(sum);
     msg_queue_.Push(msg);
 }
 

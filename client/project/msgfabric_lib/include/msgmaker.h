@@ -37,12 +37,14 @@ class MsgClient : public MsgFabric {
     static std::string GameCall();
     static std::string GameFold();
     static std::string GameCheck();
+
+    static std::string AddMoney(uint64_t const &money);
 };
 
 class MsgServer : public MsgFabric {
  public:
     static std::string AutorisationDone();
-    static std::string AutorisationFaild();
+    static std::string AutorisationFailed();
 
     static std::string RegistrationDone();
     static std::string RegistrationFailed();
@@ -58,7 +60,7 @@ class MsgServer : public MsgFabric {
 
     static std::string JoinRoomOn(uint64_t const &id);
     static std::string JoinRoomDone(uint64_t const &id, uint8_t const &position);
-    static std::string JoinRoomFaild(uint64_t const &id);
+    static std::string JoinRoomFailed(uint64_t const &id);
 
     static std::string LeaveRoomDone();
     static std::string LeaveRoomFailed();
@@ -67,4 +69,7 @@ class MsgServer : public MsgFabric {
     static std::string StartGameFailed();
 
     static std::string GameStatus(boost::property_tree::ptree const &game_status, uint8_t const &admin_pos);
+
+    static std::string AddMoneyDone();
+    static std::string AddMoneyFailed();
 };
