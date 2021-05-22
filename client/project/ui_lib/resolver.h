@@ -48,7 +48,6 @@ signals:
     void SetMaxBet(int maxbet);
 
     void EndGame(bool is_admin);
-    void JoinNotAdmin();
 
     void FlipTableCards();
     void DeleteAllCardsFromTable();
@@ -58,7 +57,7 @@ signals:
     void ShowActions();
     void BlockActions();
     void UnBlockActions();
-    void HideStart();
+    void ShowStart();
 
     void MakeDealer(size_t player_id);
     void DisplayWinner(size_t player_id);
@@ -97,12 +96,12 @@ private:
     void CheckPlayers(const std::vector<resolver::Player> &new_players);
     void HandleBoardCards(pt::ptree const &board_cards);
 
-    uint8_t GetTablePos(const uint8_t &pos);
+    unsigned short GetTablePos(const unsigned short &pos);
     void GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &players_vec);
     void CheckPlayers(pt::ptree const &players);
 
 private:
-    uint8_t our_server_position_;
+    unsigned short our_server_position_;
     bool first_msg;
     std::vector<resolver::Player> players_;
 };

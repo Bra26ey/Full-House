@@ -35,7 +35,6 @@ public slots: // все ради многопоточки
     void SetMaxBet(int maxbet);
 
     void EndGame(bool is_admin);
-    void JoinNotAdmin();
 
     void FlipTableCards();
     void DeleteAllCardsFromTable();
@@ -45,7 +44,7 @@ public slots: // все ради многопоточки
     void ShowActions();
     void BlockActions();
     void UnBlockActions();
-    void HideStart();
+    void ShowStart();
 
     void MakeDealer(size_t player_id);
     void DisplayWinner(size_t player_id);

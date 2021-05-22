@@ -83,7 +83,6 @@ void UserTalker::JoinPlayer() {
 
     user_->out << MsgServer::JoinRoomOn(user_->room_id);
     async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.accepting_game, user_));
-    BOOST_LOG_TRIVIAL(info) << "end of function";
 }
 
 void UserTalker::HandleError() {

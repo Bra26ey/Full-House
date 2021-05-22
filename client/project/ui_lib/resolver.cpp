@@ -1,6 +1,7 @@
 #include "resolver.h"
 
 #include <algorithm>
+#include <QDebug>
 
 #include "client_impl.h"
 
@@ -132,7 +133,6 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             emit ShowActions();
             emit BlockActions();
-            emit HideStart();
             // DELETE START & LEAVE BUUTTOM
         } else {
             // FUCK OH NO
@@ -159,12 +159,13 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     auto status = parametrs.get<std::string>("status");
 
     if (status == "on") {
-        // OMG IT'S TRYING!
         return;
     }
 
     if (status == "done") {
-        navigateTo(GAME_TAG);
+        emit navigateTo(GAME_TAG);
+        sleep(1);
+        emit ShowStart();
         return;
     }
 
@@ -178,12 +179,11 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     auto status = parametrs.get<std::string>("status");
 
     if (status == "on") {
-        // OMG IT'S TRYING!
         return;
     }
 
     if (status == "done") {
-        our_server_position_ = parametrs.get<uint8_t>("position");
+        our_server_position_ = parametrs.get<unsigned short>("position");
         navigateTo(GAME_TAG);
         return;
     }
@@ -198,7 +198,7 @@ void Resolver::MoneyInfoAnswer(pt::ptree const &answer) {
     globalInfo::Balance = parametrs.get<uint64_t>("money");
 }
 
-uint8_t Resolver::GetTablePos(const uint8_t &pos) {
+unsigned short Resolver::GetTablePos(const unsigned short &pos) {
     return (MAX_PLAYERS + pos - our_server_position_) % MAX_PLAYERS;
 }
 
@@ -225,13 +225,14 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     auto gamestatus = parametrs.get_child("game-status");
     auto players = gamestatus.get_child("players");
 
-    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
+
 
     std::vector<resolver::Player> new_players;
     GetPlayers(players, new_players);
 
     if (gamestatus.get<bool>("is-started") == false) {
-        CheckPlayers(players_, new_players);
+        CheckPlayers(new_players);
+        qDebug() << our_server_position_;
         return;
     }
 
@@ -241,7 +242,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         HandleBoardCards(board_cards);
         return;
     }
-
+    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
     auto min_bet = gamestatus.get<int>("big-blind-bet");
     emit SetMinBet(min_bet);
     emit SetMaxBet(10 * min_bet);
@@ -269,7 +270,10 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         resolver::Player current_player;
         current_player.name = player.get<std::string>("name");
         current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
-        current_player.position = GetTablePos(player.get<uint8_t>("position"));
+        current_player.position = GetTablePos(player.get<uint16_t>("position"));
+
+
+//        std::cout << current_player.name << "   " << current_player.position << std::endl;
 
         // current_player.in_pot = player.get<bool>("in-pot");
         // auto cards = player.get_child("cards");
@@ -282,6 +286,7 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         //     current_player.cards_in_hand.push_back(current_card);
         // }
         // players_.push_back(current_player);
+        new_players.push_back(current_player);
     }
 }
 
@@ -307,30 +312,6 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
     }
 }
 
-void Resolver::CheckPlayers(pt::ptree const &players) {
-    std::vector<resolver::Player> new_players;
-    GetPlayers(players, new_players);
-
-    for (auto &it : players_) {
-        auto res = std::find_if(new_players.begin(), new_players.end(),
-                      [it](const resolver::Player &current) { return current.name == it->name; });
-        if (res == players_.end()) {
-            players_.erase(it);
-            emit DeletePlayer(it->position);
-        }
-
-        // 
-    }
-
-    for (auto &it : new_players) {
-        auto res = std::find_if(players_.begin(), players_.end(),
-                      [it](const resolver::Player &current) { return current.name == it->name; });
-        if (res == players_.end()) {
-            players_.push_back(it);
-            emit DrawPlayer(it.position, it.name, it.money);
-        }
-    }
-}
 
 void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
     BOOST_FOREACH(const pt::ptree::value_type &vb, board_cards) {
@@ -344,7 +325,8 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 
 void Resolver::Run() {
     while (Client->IsConnected()) {
-        std::stringstream msg(Client->GetLastMsg());
+        auto m = Client->GetLastMsg();
+        std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);
         ParseAnswer(json_data);

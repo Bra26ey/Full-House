@@ -79,6 +79,9 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     user->is_talking.store(false);
     user->room_id = id;
 
+    auto hand = convert(board_db_.GetActiveBoard(id));
+    handprocess_.Init(hand);
+
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
 
@@ -214,7 +217,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     }
 
     auto position = positions_.Insert(user->id);
-    BOOST_LOG_TRIVIAL(info) << "position: " << position;
+    BOOST_LOG_TRIVIAL(info) << "position: " << static_cast<int>(position);
     if (position == TPOS_ERROR) {
         board_db_.RemoveUserFromBoard(id, user->id);
         JoinPlayerFailed(user);
@@ -246,7 +249,7 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
 
-    user->out << MsgServer::CreateRoomDone(id, password);
+    user->out << MsgServer::JoinRoomDone(id, position);
     write(user->socket, user->write_buffer);
 
     boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));

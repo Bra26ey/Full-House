@@ -106,6 +106,7 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     StartGameButton = new QPushButton("StartGame");
     StartGameButton->setStyleSheet("color:#242424;font-size:24px");
     connect(StartGameButton, &QPushButton::clicked, this, &GameFragment::onStartPressed);
+    StartGameButton->hide();
 
     LeaveButton = new QPushButton("Exit");
     LeaveButton->setStyleSheet("color:#242424;font-size:24px");
@@ -255,8 +256,11 @@ void GameFragment::onStartPressed() {
     Client->StartGame();
 }
 
-void GameFragment::HideStart() {
-    StartGameButton->hide();
+void GameFragment::ShowStart() {
+    StartGameButton->show();
+    qDebug("SHOW ME");
+    this->update();
+    this->show();
 }
 
 void GameFragment::EndGame(bool admin) {
@@ -275,9 +279,6 @@ void GameFragment::AvaliableActions(std::vector<bool> buttons) {
     }
 }
 
-void GameFragment::JoinNotAdmin() {
-    StartGameButton->hide();
-}
 
 void GameFragment::SetMinBet(int minbet) {
     if (minbet > 0) {

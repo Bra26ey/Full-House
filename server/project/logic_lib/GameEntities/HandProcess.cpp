@@ -384,7 +384,7 @@ boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<P
     status.put("position", player->position);
     status.put("current-stage-money-in-pot", player->current_stage_money_in_pot);
 
-    if (is_started_) {
+    if (!is_started_) {
         return status;
     }
 
@@ -405,21 +405,25 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     boost::property_tree::ptree status;
 
     status.put("is-started", is_started_);
-
     status.put("button-pos", hand_config.button_pos);
+
     status.put("small-blind-pos", hand_config.small_blind_pos);
+
     status.put("big-blind-pos", hand_config.big_blind_pos);
 
+
     status.put("small-blind-bet", hand_config.small_blind_bet);
+
     status.put("big-blind-bet", hand_config.big_blind_bet);
 
     status.put("max-size-of-players", hand_config.max_size_of_players);
+
     status.put("count-of-player-cards", hand_config.count_of_player_cards);
 
     boost::property_tree::ptree players_status;
     for (auto &it : hand_config.players) {
         auto player = GetPlayerStatus(it);
-        players_status.add_child("", player);
+        players_status.push_back(std::make_pair("", player));
     }
 
     status.add_child("players", players_status);

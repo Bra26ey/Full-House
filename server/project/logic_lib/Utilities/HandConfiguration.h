@@ -41,9 +41,8 @@ struct HandConfiguration {
 
         max_size_of_players = other.max_size_of_players;
         count_of_player_cards = other.count_of_player_cards;
-
+        players.clear();
         for (auto it : other.players) {
-            std::cout << "add player: " << it->name << std::endl;
             players.push_back(it);
         }
 
