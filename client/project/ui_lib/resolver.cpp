@@ -229,8 +229,9 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
 
     if (gamestatus.get<bool>("is-started") == false) {
-        if (flag) {
-            emit AddCardToTable(1,1,true);
+        if (!flag) {
+            emit ShowActions();
+            emit BlockActions();
         }
 flag = false;
 //        emit DrawPlayer(2, "Kek", 999);

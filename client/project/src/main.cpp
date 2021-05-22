@@ -10,6 +10,8 @@
 #include <QApplication>
 
 int main(int argc, char *argv[]) {
+    qRegisterMetaType<size_t>("size_t");
+    qRegisterMetaType<std::string>("std::string");
     QApplication a(argc, argv);
     MainWindow w;
     w.setWindowIcon(QIcon(":/other_textures/icon"));

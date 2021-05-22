@@ -27,8 +27,9 @@ public:
     GameFragment();
     ~GameFragment();
 
-
+public slots: // все ради многопоточки
     void DeletePlayer(size_t player_id);
+    void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
 
     void SetMinBet(int minbet);
     void SetMaxBet(int maxbet);
@@ -36,12 +37,12 @@ public:
     void EndGame(bool is_admin);
     void JoinNotAdmin();
 
-
     void FlipTableCards();
     void DeleteAllCardsFromTable();
+    void AddCardToTable(size_t value,  size_t suit, bool upsided);
     void FlipAllCards();
 
-
+    void ShowActions();
     void BlockActions();
     void UnBlockActions();
     void HideStart();
@@ -58,10 +59,7 @@ public:
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
-public slots:
-    void DrawPlayer(int player_id, std::string nickname, int total_money);
-    void ShowActions();
-    void AddCardToTable(const int value, const int suit, const int upsided);
+
     void onBetPressed();
     void onRaisePressed();
     void onFoldPressed();

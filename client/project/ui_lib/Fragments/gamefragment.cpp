@@ -152,7 +152,7 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     // MakeDealer(4);
     // DisplayWinner(0);
 
-     AddCardToTable(4, 2, true);
+//     AddCardToTable(4, 2, true);
     // AddCardToTable(5, 2, true);
     // AddCardToTable(7, 2, true);
     // AddCardToTable(14, 3, true);
@@ -243,7 +243,6 @@ void GameFragment::onFoldPressed() {
 void GameFragment::onLeavePressed() {
     QSound::play(":/music/click");
     Client->LeaveRoom();
-    back();
 }
 
 void GameFragment::onSettingsPressed() {
@@ -298,7 +297,7 @@ void GameFragment::SetMaxBet(int maxbet) {
     }
 }
 
-void GameFragment::DrawPlayer(int player_id, std::string nickname, int total_money) {
+void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
     mOtherPlayers[player_id - 1] = player;
     mOtherPlayers[player_id - 1]->setParent(mPlayTable);
@@ -329,6 +328,8 @@ void GameFragment::DrawPlayer(int player_id, std::string nickname, int total_mon
         break;
         }
     }
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id - 1]->show();
 }
 
 void GameFragment::DeletePlayer(size_t player_id) {
@@ -346,16 +347,24 @@ void GameFragment::DrawMainPlayer() {
 void GameFragment::GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->GiveCards(value1, suit1, value2, suit2);
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->GiveCards(value1, suit1, value2, suit2);
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
 void GameFragment::SetCall(size_t player_id) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->setCall();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->setCall();
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
@@ -363,49 +372,73 @@ void GameFragment::SetFold(size_t player_id) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->setFold();
         mOtherPlayers[player_id - 1]->DiscardCards();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->setFold();
         mPlayer->DiscardCards();
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
 void GameFragment::SetCheck(size_t player_id) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->setCheck();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->setCheck();
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
 void GameFragment::SetRaise(size_t player_id) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->setRaise();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->setRaise();
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
 void GameFragment::SetBet(size_t player_id, size_t bet) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->setBet(bet);
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->setBet(bet);
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
 void GameFragment::ClearStatus(size_t player_id) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->ClearStatus();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->ClearStatus();
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
 void GameFragment::FlipCards(size_t player_id) {
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->FlipCards();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mPlayer->FlipCards();
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
@@ -414,9 +447,13 @@ void GameFragment::MakeDealer(size_t player_id) {
     if (player_id > 0) {
         mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
         mDealerLogo->setGeometry(10, 20, 200, 200);
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id - 1]->show();
     } else {
         mDealerLogo->setParent(mPlayer);
         mDealerLogo->setGeometry(-20, -10, 200, 200);
+        this->resizeEvent(nullptr);
+        mPlayer->show();
     }
 }
 
@@ -425,6 +462,8 @@ void GameFragment::FlipAllCards() {
         if (!player->GetCardSide())
         player->FlipCards();
     }
+    this->resizeEvent(nullptr);
+    mPlayTable->show();
 }
 
 void GameFragment::BlockActions() {
@@ -459,7 +498,6 @@ void GameFragment::DisplayWinner(size_t player_id) {
 }
 
 void GameFragment::CurrentTurn(size_t player_id) {
-    UnBlockActions();
     if (player_id > 0) {
         mTurnIndicator->setParent(mOtherPlayers[player_id - 1]);
         mTurnIndicator->setGeometry(90, -80, 300, 300);
@@ -467,6 +505,7 @@ void GameFragment::CurrentTurn(size_t player_id) {
         mTurnIndicator->setParent(mPlayer);
         mTurnIndicator->setGeometry(85, -25, 300, 300);
     }
+    this->resizeEvent(nullptr);
     mTurnIndicator->show();
 }
 
@@ -474,7 +513,7 @@ void GameFragment::DeleteWinnerDisplay() {
     mWinLabel->hide();
 }
 
-void GameFragment::AddCardToTable(const int value, const int suit, const int upsided) {
+void GameFragment::AddCardToTable(size_t value,  size_t suit,  bool upsided) {
     auto card = new Card(value, suit, upsided);
     card->setParent(mPlayTable);
     CardOnTable.push_back(card);
@@ -486,10 +525,14 @@ void GameFragment::FlipTableCards() {
     foreach(auto card, CardOnTable) {
         card->Flip();
     }
+    this->resizeEvent(nullptr);
+    mPlayTable->show();
 }
 
 void GameFragment::DeleteAllCardsFromTable() {
     CardOnTable.clear();
+    this->resizeEvent(nullptr);
+    mPlayTable->show();
 }
 
 void GameFragment::RedrawPlayer(OtherPlayer* player) {
@@ -530,7 +573,6 @@ void GameFragment::ShowActions() {
     if (is_active) {
         return;
     }
-
     foreach (auto btn, ActionButtons) {
         btn->show();
     }

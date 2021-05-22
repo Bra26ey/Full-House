@@ -37,9 +37,39 @@ void FragmentNavigator::navigateTo(QString tag) {
     stack.push_back(newFragment);
     if (tag == GAME_TAG) {
         GameFragment* game = static_cast<GameFragment*>(newFragment);
-        connect(mResolver, &Resolver::AddCardToTable, game, &GameFragment::AddCardToTable);
-        connect(mResolver, &Resolver::ShowActions, game, &GameFragment::ShowActions);
+        connect(mResolver, &Resolver::DeletePlayer, game, &GameFragment::DeletePlayer);
         connect(mResolver, &Resolver::DrawPlayer, game, &GameFragment::DrawPlayer);
+        connect(mResolver, &Resolver::SetMinBet, game, &GameFragment::SetMinBet);
+        connect(mResolver, &Resolver::SetMaxBet, game, &GameFragment::SetMaxBet);
+
+        connect(mResolver, &Resolver::EndGame, game, &GameFragment::EndGame);
+        connect(mResolver, &Resolver::JoinNotAdmin, game, &GameFragment::JoinNotAdmin);
+        connect(mResolver, &Resolver::FlipTableCards, game, &GameFragment::FlipTableCards);
+        connect(mResolver, &Resolver::DeleteAllCardsFromTable, game, &GameFragment::DeleteAllCardsFromTable);
+
+        connect(mResolver, &Resolver::AddCardToTable, game, &GameFragment::AddCardToTable);
+        connect(mResolver, &Resolver::FlipAllCards, game, &GameFragment::FlipAllCards);
+
+
+        connect(mResolver, &Resolver::ShowActions, game, &GameFragment::ShowActions);
+        connect(mResolver, &Resolver::BlockActions, game, &GameFragment::BlockActions);
+        connect(mResolver, &Resolver::UnBlockActions, game, &GameFragment::UnBlockActions);
+        connect(mResolver, &Resolver::HideStart, game, &GameFragment::HideStart);
+
+        connect(mResolver, &Resolver::MakeDealer, game, &GameFragment::MakeDealer);
+        connect(mResolver, &Resolver::DisplayWinner, game, &GameFragment::DisplayWinner);
+        connect(mResolver, &Resolver::CurrentTurn, game, &GameFragment::CurrentTurn);
+        connect(mResolver, &Resolver::GiveCards, game, &GameFragment::GiveCards);
+
+        connect(mResolver, &Resolver::FlipCards, game, &GameFragment::FlipCards);
+        connect(mResolver, &Resolver::SetBet, game, &GameFragment::SetBet);
+        connect(mResolver, &Resolver::SetFold, game, &GameFragment::SetFold);
+        connect(mResolver, &Resolver::SetCall, game, &GameFragment::SetCall);
+
+        connect(mResolver, &Resolver::SetRaise, game, &GameFragment::SetRaise);
+        connect(mResolver, &Resolver::SetCheck, game, &GameFragment::SetCheck);
+        connect(mResolver, &Resolver::ClearStatus, game, &GameFragment::ClearStatus);
+        connect(mResolver, &Resolver::AvaliableActions, game, &GameFragment::AvaliableActions);
     }
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);
