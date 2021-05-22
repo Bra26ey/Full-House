@@ -37,6 +37,7 @@ private:
 
     void connectFragment(BaseFragment *fragment);
     void disconnectFragment(BaseFragment *fragment);
+    Resolver* mResolver;
 };
 
 #endif // NAVIGATOR_H

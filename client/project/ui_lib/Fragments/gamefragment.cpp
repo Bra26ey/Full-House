@@ -5,6 +5,7 @@
 #include <QSound>
 #include <QVector>
 #include <QIntValidator>
+#include <QThread>
 
 
 int base_card_coefficient = 280;
@@ -15,6 +16,7 @@ int min_card_move_coefficient = 80;
 
 using namespace screens;
 GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr) {
+    qDebug() << QThread::currentThreadId();
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
 
@@ -150,7 +152,7 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     // MakeDealer(4);
     // DisplayWinner(0);
 
-    // AddCardToTable(4, 2, true);
+     AddCardToTable(4, 2, true);
     // AddCardToTable(5, 2, true);
     // AddCardToTable(7, 2, true);
     // AddCardToTable(14, 3, true);
@@ -296,7 +298,7 @@ void GameFragment::SetMaxBet(int maxbet) {
     }
 }
 
-void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
+void GameFragment::DrawPlayer(int player_id, std::string nickname, int total_money) {
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
     mOtherPlayers[player_id - 1] = player;
     mOtherPlayers[player_id - 1]->setParent(mPlayTable);
@@ -336,7 +338,6 @@ void GameFragment::DeletePlayer(size_t player_id) {
 
 void GameFragment::DrawMainPlayer() {
     mPlayer = new Player(globalInfo::Nickname, globalInfo::Balance);
-//    mPlayer = new Player(LoggedUserName, LoggedUserMoney);
     mPlayer->setParent(mPlayTable);
     mPlayer->setGeometry(mainplayerpos);
     mPlayer->SetPosition(mainplayerpos);
@@ -473,10 +474,12 @@ void GameFragment::DeleteWinnerDisplay() {
     mWinLabel->hide();
 }
 
-void GameFragment::AddCardToTable(size_t value, size_t suit, bool upsided) {
+void GameFragment::AddCardToTable(const int value, const int suit, const int upsided) {
     auto card = new Card(value, suit, upsided);
     card->setParent(mPlayTable);
     CardOnTable.push_back(card);
+    this->resizeEvent(nullptr);
+    card->show();
 }
 
 void GameFragment::FlipTableCards() {

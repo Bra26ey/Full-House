@@ -1,4 +1,3 @@
-// класс для обработки сообщений с сервера и их передачи на фронтенд
 #pragma once
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -14,30 +13,37 @@ namespace pt = boost::property_tree;
 
 namespace resolver {
 
-    struct Card {
-        uint8_t suit;
-        uint8_t value;
-        bool is_opened;
-    };
+struct Card {
+    uint8_t suit;
+    uint8_t value;
+    bool is_opened;
+};
 
 
-    struct Player {
-        std::string name;
-        bool in_pot;
-        uint64_t money;
-        uint8_t position;
-        std::vector<Card> cards_in_hand;
-    };
+struct Player {
+    std::string name;
+    bool in_pot;
+    uint64_t money;
+    uint8_t position;
+    std::vector<Card> cards_in_hand;
+};
 
-}
+}  // namespace resolver
+
 
 
 class Resolver : public BaseFragment {
+    Q_OBJECT
 public:
     Resolver() : gamefragment_(nullptr),  our_server_position_(0) {};
     ~Resolver() = default;
 
     void Run();
+
+signals:
+    void AddCardToTable(const int value, const int suit, const int upsided);
+    void ShowActions();
+    void DrawPlayer(int player_id, std::string nickname, int total_money);
 
 private:
     void ParseAnswer(pt::ptree const &answer);
@@ -51,10 +57,9 @@ private:
     void GameAnswer(pt::ptree const &answer);
 
     uint8_t GetTablePos(const uint8_t &pos);
+    bool flag = true;
 
 private:
     GameFragment* gamefragment_;
     uint8_t our_server_position_;
-
-    std::vector<bool> players_;
 };

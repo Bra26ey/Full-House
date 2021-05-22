@@ -8,7 +8,7 @@ using namespace screens;
 FragmentNavigator::FragmentNavigator(
         QStackedWidget *container,
         BaseScreensFactory *screensFactory,
-        Resolver* resolver) {
+        Resolver* resolver) : mResolver(resolver) {
 
     qDebug("create navigator");
     this->screensFactory = screensFactory;
@@ -35,8 +35,15 @@ void FragmentNavigator::navigateTo(QString tag) {
     disconnectFragment(stack.back());
     connectFragment(newFragment);
     stack.push_back(newFragment);
+    if (tag == GAME_TAG) {
+        GameFragment* game = static_cast<GameFragment*>(newFragment);
+        connect(mResolver, &Resolver::AddCardToTable, game, &GameFragment::AddCardToTable);
+        connect(mResolver, &Resolver::ShowActions, game, &GameFragment::ShowActions);
+        connect(mResolver, &Resolver::DrawPlayer, game, &GameFragment::DrawPlayer);
+    }
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);
+
 }
 
 BaseFragment* FragmentNavigator::Front() {
