@@ -26,7 +26,7 @@ include_directories(../msgfabric_lib/include)
 
 file(GLOB PROJECT_SOURCES "Base/*.cpp" "Fragments/*.cpp" "GameElements/*.cpp" "UiElements/*.cpp" "*.cpp" "GameElements/Gameplay_Buttons/*.cpp" "*.qrc")
 
-add_library(ui_lib SHARED ${PROJECT_SOURCES})
+add_library(ui_lib SHARED ${PROJECT_SOURCES} )
 target_link_libraries(ui_lib
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::Multimedia

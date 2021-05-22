@@ -61,7 +61,7 @@ void UserTalker::HandleAutorisation() {
         user_->out << MsgServer::AutorisationDone();
         BOOST_LOG_TRIVIAL(info) << "user is autorised. name: " << user_->name;
     } else {
-        user_->out << MsgServer::AutorisationFaild();
+        user_->out << MsgServer::AutorisationFailed();
         BOOST_LOG_TRIVIAL(info) << "autorisation: invalid data";
     }
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
@@ -79,9 +79,11 @@ void UserTalker::JoinPlayer() {
 
     const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
     user_->room_id = parametrs.get<uint64_t>("id");
+    BOOST_LOG_TRIVIAL(info) << user_->room_id;
 
     user_->out << MsgServer::JoinRoomOn(user_->room_id);
     async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.accepting_game, user_));
+    BOOST_LOG_TRIVIAL(info) << "end of function";
 }
 
 void UserTalker::HandleError() {
@@ -102,6 +104,23 @@ void UserTalker::Disconnect() {
     user_->out << MsgServer::Disconnect();
     write(user_->socket, user_->write_buffer);
     is_remove.store(true);
+}
+
+void UserTalker::HandleAddMoney() {
+    BOOST_LOG_TRIVIAL(info) << user_->name << "is hungry for money";
+
+    const pt::ptree &parametrs = user_->last_msg.get_child("parametrs");
+    auto sum = parametrs.get<uint64_t>("money");
+
+    auto code = user_db_.UpdateMoneyByDelta(user_->id, sum);
+
+    if (code == database::OK) {
+        user_->out << MsgServer::AddMoneyDone();
+    } else {
+        user_->out << MsgServer::AddMoneyFailed();
+    }
+
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
 void UserTalker::Logout() {
@@ -134,11 +153,18 @@ void UserTalker::HandleRequest() {
 
                 std::string command = user_->last_msg.get<std::string>("command");
 
+                if (command == "disconnect") {
+                    boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
+                    return;
+                }
+
                 if (!user_->is_autorised) {
                     if (command == "autorisation") {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleAutorisation, this));
                     } else if (command == "registration") {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleRegistration, this));
+                    } else if (command == "add-money") {
+                        boost::asio::post(context_, boost::bind(&UserTalker::HandleAddMoney, this));
                     } else {
                         boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
                     }
@@ -151,8 +177,6 @@ void UserTalker::HandleRequest() {
                     boost::asio::post(context_, boost::bind(&UserTalker::JoinPlayer, this));
                 } else if (command == "logout") {
                     boost::asio::post(context_, boost::bind(&UserTalker::Logout, this));
-                } else if (command == "disconnect") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
                 } else {
                     boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
                 }

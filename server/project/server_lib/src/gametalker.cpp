@@ -123,6 +123,13 @@ void GameTalker::HandleUserRequest(std::shared_ptr<User> &user) {
     async_read_until(user->socket, user->read_buffer, "\n\r\n\r", boost::bind(&GameTalker::OnHandleUserRequest, this, user));
 }
 
+void GameTalker::HandleGameStatus(std::shared_ptr<User> &user) {
+    auto admin_pos = positions_.GetPosition(admin_id_.load());
+    user->out << MsgServer::GameStatus(handprocess_.GetGameStatus(), admin_pos);
+    async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+    return;
+}
+
 void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
     if (is_remove) {
         boost::asio::post(context_, boost::bind(&GameTalker::HandleLeaving, this, user));
@@ -131,6 +138,11 @@ void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
 
     pt::read_json(user->in, user->last_msg);
     std::string command_type = user->last_msg.get<std::string>("command-type");
+
+    if (command_type == "ping") {
+         boost::asio::post(context_, boost::bind(&GameTalker::HandleGameStatus, this, user));
+         return;
+    }
 
     if (is_gaming) {
         if (command_type == "game") {
@@ -172,7 +184,7 @@ void GameTalker::JoinPlayerFailed(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << "joining game failed. room-id: " << id;
     read_until(user->socket, user->read_buffer, "\n\r\n\r");
     pt::read_json(user->in, user->last_msg);
-    user->out << MsgServer::JoinRoomFaild(user->room_id);
+    user->out << MsgServer::JoinRoomFailed(user->room_id);
     write(user->socket, user->write_buffer);
     user->room_id = __UINT64_MAX__;
     user->is_talking.store(false);
@@ -269,6 +281,9 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
     users_mutex_.unlock();
 
     board_db_.RemoveUserFromBoard(id, user->id);
+
+    auto hand_config = convert(board_db_.GetActiveBoard(id));
+    handprocess_.Init(hand_config);
 
     user->out << MsgServer::LeaveRoomDone();
 

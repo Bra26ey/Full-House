@@ -42,6 +42,8 @@ class Client {
     void GameFold();
     void GameCheck();
 
+    void AddMoney(uint64_t const &sum);
+
  private:
     io_context context_;
     tcp::socket socket_;

@@ -107,7 +107,7 @@ std::string MsgClient::JoinRoom(uint64_t const &id, std::string const &password)
     return MsgFromPtree(request);
 }
 
-std::string MsgClient::JoinRoomResault() {
+std::string MsgClient::JoinRoomResult() {
     boost::property_tree::ptree request;
 
     request.put("command-type", "basic");
@@ -200,6 +200,19 @@ std::string MsgClient::LeaveRoom() {
     return MsgFromPtree(request);
 }
 
+std::string MsgClient::AddMoney(uint64_t const &money) {
+    boost::property_tree::ptree parametrs;
+    boost::property_tree::ptree request;
+
+    parametrs.put("money", money);
+
+    request.put("command-type", "basic");
+    request.put("command", "add-money");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
 
 
 
@@ -216,7 +229,7 @@ std::string MsgServer::AutorisationDone() {
     return MsgFromPtree(request);
 }
 
-std::string MsgServer::AutorisationFaild() {
+std::string MsgServer::AutorisationFailed() {
     pt::ptree parametrs;
     pt::ptree request;
 
@@ -371,7 +384,7 @@ std::string MsgServer::JoinRoomDone(uint64_t const &id, uint8_t const &position)
     return MsgFromPtree(request);
 }
 
-std::string MsgServer::JoinRoomFaild(uint64_t const &id) {
+std::string MsgServer::JoinRoomFailed(uint64_t const &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
@@ -446,6 +459,32 @@ std::string MsgServer::GameStatus(pt::ptree const &game_status, uint8_t const &a
 
     request.put("command-type", "game-answer");
     request.put("command", "game-status");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::AddMoneyDone() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "add-money");
+    request.add_child("parametrs", parametrs);
+
+    return MsgFromPtree(request);
+}
+
+std::string MsgServer::AddMoneyFailed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "basic-answer");
+    request.put("command", "add-money");
     request.add_child("parametrs", parametrs);
 
     return MsgFromPtree(request);
