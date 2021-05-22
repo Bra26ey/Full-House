@@ -42,8 +42,26 @@ void Resolver::ParseAnswer(pt::ptree const &answer) {
 void Resolver::BaseAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
 
+
+    if (command == "registration") {
+        if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            QMessageBox msgBox;
+            msgBox.setText("Registration succesfully done");
+            msgBox.setWindowTitle("Success");
+            msgBox.exec();
+            back();
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("Ты инвалид");
+            msgBox.setWindowTitle("Ошибка регистрация");
+            msgBox.exec();
+        }
+        return;
+    }
+
     if (command == "autorisation") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            qDebug("Yo");
             navigateTo(MAIN_TAG);
         } else {
             QMessageBox msgBox;
@@ -138,9 +156,7 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     
     if (status == "done") {
         navigateTo(GAME_TAG);
-        BaseFragment *tmp;
-        Front(tmp);
-        gamefragment_ = dynamic_cast<GameFragment*>(tmp);
+        gamefragment_ = dynamic_cast<GameFragment*>(Front());
         return;
     }
 
@@ -161,9 +177,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     if (status == "done") {
         our_server_position_ = parametrs.get<uint8_t>("position");
         navigateTo(GAME_TAG);
-        BaseFragment *tmp;
-        Front(tmp);
-        gamefragment_ = dynamic_cast<GameFragment*>(tmp);
+        gamefragment_ = dynamic_cast<GameFragment*>(Front());
         gamefragment_->JoinNotAdmin();
         return;
     }

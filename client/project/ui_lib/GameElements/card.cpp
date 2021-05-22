@@ -4,7 +4,7 @@
 #include <QDebug>
 
 
-Card::Card(size_t value, size_t suit, bool upsided): mUpSided(upsided), mValue(value), mSuit(suit) {
+Card::Card(size_t const& value, size_t const&  suit, bool const& upsided): mUpSided(upsided), mValue(value), mSuit(suit) {
     mUpSideTextureId = (mSuit * 13) + value;
 
     normal.setWidth(70);

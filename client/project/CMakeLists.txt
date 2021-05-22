@@ -15,7 +15,7 @@ add_subdirectory(ui_lib)
 include_directories(ui_lib)
 include_directories(ui_lib/Base)
 include_directories(ui_lib/Fragments)
-include_directories(ui_lib/Game_Elements)
+include_directories(ui_lib/GameElements)
 
 add_executable(client_target src/main.cpp)
 

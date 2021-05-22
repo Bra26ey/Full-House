@@ -107,7 +107,7 @@ std::string MsgClient::JoinRoom(uint64_t const &id, std::string const &password)
     return MsgFromPtree(request);
 }
 
-std::string MsgClient::JoinRoomResault() {
+std::string MsgClient::JoinRoomResult() {
     boost::property_tree::ptree request;
 
     request.put("command-type", "basic");

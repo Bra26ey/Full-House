@@ -106,12 +106,6 @@ void RegistrationFragment::onRegistrationPressed() {
         boost::hash<std::string> PasswordHasher;
         PasswordHasher(passwordEdit->text().toStdString());
         Client->Registrate(loginEdit->text().toStdString(), passwordEdit->text().toStdString());
-
-        QMessageBox msgBox;
-        msgBox.setText("Registration succesfully done");
-        msgBox.setWindowTitle("Success");
-        msgBox.exec();
-        back();
     }
 }
 

@@ -16,7 +16,7 @@ signals:
     void newRootScreen(QString tag);
     void replace(QString tag);
 
-    void Front(BaseFragment *&current);
+    BaseFragment* Front();
 
 protected:
     void clearList(QLayout *list);

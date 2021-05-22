@@ -25,7 +25,7 @@ class MsgClient : public MsgFabric {
     static std::string CreateRoomResault();
 
     static std::string JoinRoom(uint64_t const &id, std::string const &password);
-    static std::string JoinRoomResault();
+    static std::string JoinRoomResult();
 
     static std::string LeaveRoom();
 

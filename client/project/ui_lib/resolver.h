@@ -1,13 +1,14 @@
 // класс для обработки сообщений с сервера и их передачи на фронтенд
-
+#pragma once
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 #include <QMessageBox>
 
 #include "screenfactory.h"
-#include "basefragment.h"
 #include "gamefragment.h"
+
+
 
 namespace pt = boost::property_tree;
 
@@ -28,13 +29,13 @@ namespace resolver {
         std::vector<Card> cards_in_hand;
     };
 
-};
+}
 
 
 class Resolver : public BaseFragment {
 public:
-    Resolver() : gamefragment_(nullptr), our_server_position_(0) {};
-    ~Resolver();
+    Resolver() : gamefragment_(nullptr),  our_server_position_(0) {};
+    ~Resolver() = default;
 
     void Run();
 
@@ -51,7 +52,6 @@ private:
     uint8_t GetTablePos(const uint8_t &pos);
 
 private:
-    GameFragment *gamefragment_;
-
+    GameFragment* gamefragment_;
     uint8_t our_server_position_;
 };

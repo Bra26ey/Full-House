@@ -2,7 +2,7 @@
 #define GAMEFRAGMENT_H
 
 #include "basefragment.h"
-#include "otherplayer.h"
+
 #include "playtable.h"
 #include "card.h"
 #include "dealerlogo.h"
@@ -10,6 +10,7 @@
 #include "turnspark.h"
 #include "winlabel.h"
 #include "client_impl.h"
+#include "otherplayer.h"
 
 #include <QVector>
 #include <QWidget>

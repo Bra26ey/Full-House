@@ -130,7 +130,7 @@ void Client::CreateRoom(std::string const &password) {
 void Client::JoinRoom(uint64_t const &id, std::string const &password) {
     auto msg = MsgClient::JoinRoom(id, password);
     msg_queue_.Push(msg);
-    msg = MsgClient::JoinRoomResault();
+    msg = MsgClient::JoinRoomResult();
     msg_queue_.Push(msg);
 }
 
