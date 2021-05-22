@@ -55,4 +55,6 @@ private:
 private:
     GameFragment* gamefragment_;
     uint8_t our_server_position_;
+
+    std::vector<bool> players_;
 };
