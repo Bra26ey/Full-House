@@ -123,6 +123,15 @@ void UserTalker::HandleAddMoney() {
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }
 
+void UserTalker::HandleMoneyInfo() {
+    BOOST_LOG_TRIVIAL(info) << user_->name << " asking for money";
+
+    auto user = user_db_.GetUser(user->id);
+    user_->out << MsgServer::MoneyInfo(static_cast<uint64_t>(user.money));
+
+    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+}
+
 void UserTalker::Logout() {
     BOOST_LOG_TRIVIAL(info) << user_->name << "is loged out";
 

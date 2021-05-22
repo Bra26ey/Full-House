@@ -99,6 +99,15 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         JoinRoomAnswer(answer);
         return;
     }
+
+    if (command == "money-info") {
+        MoneyInfoAnswer(answer);
+        return;
+    }
+
+    if (command == "add-money") {
+        return;
+    }
     
 }
 
@@ -187,6 +196,11 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 }
 
+void Resolver::MoneyInfoAnswer(pt::ptree const &answer) {
+    auto parametrs = answer.get_child("parametrs");
+    globalInfo.balance = parametrs.get<uint64_t>("money");
+}
+
 uint8_t Resolver::GetTablePos(const uint8_t &pos) {
     return (MAX_PLAYERS + pos - our_server_position_) % MAX_PLAYERS;
 }
@@ -236,6 +250,16 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         gamefragment_->DisplayWinner(winner_pos);
     }
 
+    // boost::property_tree::ptree board_cards;
+    // for (auto &it : board_.cards) {
+    //     auto card = GetCardStatus(it);
+    //     board_cards.add_child("", card);
+    // }
+    // status.add_child("board-сards", board_cards);
+
+    auto board_cards = parametrs.get_child("board-сards");
+    
+
 
 
     // Min & Max Bet SetMinBet(value) SetMaxBet(value)
@@ -257,6 +281,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
        current_player.in_pot = player.get<bool>("in-pot");
        current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
        current_player.position = player.get<uint8_t>("position");
+       gamefragment_->DrawPlayer(GetTablePos(current_player.position), current_player.name, current_player.money)
        auto cards = player.get_child("cards");
        BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
            const pt::ptree card = vc.second;

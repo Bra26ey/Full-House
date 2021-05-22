@@ -175,4 +175,9 @@ void Client::AddMoney(uint64_t const &sum) {
     msg_queue_.Push(msg);
 }
 
+void Client::GetMoneyInfo() {
+    auto msg = MsgClient::MoneyInfo;
+    msg_queue_.Push(msg);
+}
+
 }  // namespace network

@@ -39,6 +39,7 @@ class MsgClient : public MsgFabric {
     static std::string GameCheck();
 
     static std::string AddMoney(uint64_t const &money);
+    static std::string MoneyInfo();
 };
 
 class MsgServer : public MsgFabric {
@@ -72,4 +73,5 @@ class MsgServer : public MsgFabric {
 
     static std::string AddMoneyDone();
     static std::string AddMoneyFailed();
+    static std::string MoneyInfo(uint64_t const &sum);
 };
