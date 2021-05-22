@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QIntValidator>
 #include <QThread>
+#include <QMessageBox>
 
 
 int base_card_coefficient = 280;
@@ -112,9 +113,14 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     LeaveButton->setStyleSheet("color:#242424;font-size:24px");
     connect(LeaveButton, &QPushButton::clicked, this, &GameFragment::onLeavePressed);
 
+    ShowRoomInfo = new QPushButton("Show Info");
+    ShowRoomInfo->setStyleSheet("color:#242424;font-size:24px");
+    connect(ShowRoomInfo, &QPushButton::clicked, this, &GameFragment::onInfoPressed);
+
 
     extraHLayout->addWidget(SettingsButton);
     extraHLayout->addWidget(StartGameButton);
+    extraHLayout->addWidget(ShowRoomInfo);
     extraHLayout->addWidget(LeaveButton);
 
     mainVLayout->addLayout(extraHLayout);
@@ -124,44 +130,6 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
 
 
     DrawMainPlayer();
-    // кайнда дебаг
-    // SetMinBet(10);
-    // SetMaxBet(1000);
-
-
-    // DrawPlayer(5, "Cartman", 5000);
-    // DrawPlayer(1, "Kenny", 2000);
-    // DrawPlayer(3, "Stan", 6000);
-    // DrawPlayer(2, "Wendy", 1000);
-    // DrawPlayer(4, "Dougie", 500);
-
-
-    // GiveCards(0, 14,2, 14,3);
-    // FlipCards(0);
-
-    // GiveCards(1, 4,3,2,1);
-    // GiveCards(2, 14,3,2,0);
-    // GiveCards(3, 12,3,2,3);
-    // GiveCards(4, 13,3,2,2);
-    // GiveCards(5, 11,3,2,1);
-    // FlipCards(1);
-
-    // SetBet(4, 400);
-
-    // SetFold(3);
-    // CurrentTurn(0);
-    // MakeDealer(4);
-    // DisplayWinner(0);
-
-//     AddCardToTable(4, 2, true);
-    // AddCardToTable(5, 2, true);
-    // AddCardToTable(7, 2, true);
-    // AddCardToTable(14, 3, true);
-    // AddCardToTable(2, 1, true);
-
-    // DeletePlayer(1);
-    // DrawPlayer(1, "Cartman2", 5000);
-    // DeletePlayer(2);
 }
 
 GameFragment::~GameFragment() {
@@ -178,6 +146,7 @@ GameFragment::~GameFragment() {
     delete LeaveButton;
     delete SettingsButton;
     delete StartGameButton;
+    delete ShowRoomInfo;
 }
 
 void GameFragment::setval() {
@@ -246,6 +215,15 @@ void GameFragment::onLeavePressed() {
     Client->LeaveRoom();
 }
 
+
+void GameFragment::onInfoPressed() {
+    QSound::play(":/music/click");
+    QMessageBox msgBox;
+    msgBox.setText("RoomId is " + QString::number(globalInfo::RoomId)+"\nRoomPassword is " + globalInfo::Password.c_str());
+    msgBox.setWindowTitle("RoomInfo");
+    msgBox.exec();
+}
+
 void GameFragment::onSettingsPressed() {
     QSound::play(":/music/click");
     navigateTo(SETTINGS_TAG);
@@ -258,7 +236,6 @@ void GameFragment::onStartPressed() {
 
 void GameFragment::ShowStart() {
     StartGameButton->show();
-    qDebug("SHOW ME");
     this->update();
     this->show();
 }

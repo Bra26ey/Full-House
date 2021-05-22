@@ -68,6 +68,7 @@ public slots: // все ради многопоточки
     void onLeavePressed();
     void onSettingsPressed();
     void onStartPressed();
+    void onInfoPressed();
 
 private slots:
     void setval();
@@ -104,6 +105,7 @@ private:
     QPushButton *CheckButton;
 
     QPushButton *LeaveButton;
+    QPushButton *ShowRoomInfo;
     QPushButton *StartGameButton;
     QPushButton *SettingsButton;
 };

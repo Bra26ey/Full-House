@@ -114,6 +114,7 @@ void GameSearchFragment::onHostPressed() {
         msgBox.exec();
     } else {
          Client->CreateRoom(passwordEdit->text().toStdString());
+         globalInfo::Password = passwordEdit->text().toStdString();
     }
 }
 
@@ -126,6 +127,8 @@ void GameSearchFragment::onSearchPressed() {
         msgBox.exec();
     } else {
         Client->JoinRoom(roomIdEdit->text().toULongLong(), passwordEdit->text().toStdString());
+        globalInfo::RoomId = roomIdEdit->text().toULongLong();
+        globalInfo::Password = passwordEdit->text().toStdString();
     }
     // возможно сделать потом кейс свитч для разных ошибок
 }

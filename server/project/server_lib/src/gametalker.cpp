@@ -282,6 +282,7 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
         board_db_.UpdateBoardAdmin(id, admin_id_.load());  // TODO return control
     }
     users_mutex_.unlock();
+    positions_.Delete(user->id);
 
     positions_.Delete(user->id);
 
