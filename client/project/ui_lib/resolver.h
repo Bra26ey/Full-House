@@ -102,7 +102,9 @@ private:
 
 private:
     uint8_t our_server_position_;
-    bool first_msg;
-    bool is_started;
+    uint8_t admin_position_;
+    bool first_msg_;
+    bool is_admin_;
+    bool is_started_;
     std::vector<resolver::Player> players_;
 };

@@ -222,7 +222,8 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
     auto parametrs = answer.get_child("parametrs");
     auto admin_pos = parametrs.get<uint8_t>("admin-pos");
-    if (admin_pos == our_server_position_) {
+    if (!is_admin && admin_pos == our_server_position_) {
+        is_admin = true;
         emit ShowStart();
     }
 
@@ -247,15 +248,18 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         auto board_cards = parametrs.get_child("board-сards");
         HandleBoardCards(board_cards);
         HandlePlayerCards();
+        auto min_bet = gamestatus.get<int>("big-blind-bet");
+        emit ShowActions();
+        emit SetMinBet(min_bet);
+        emit SetMaxBet(10 * min_bet);
         return;
     }
-    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
-    auto min_bet = gamestatus.get<int>("big-blind-bet");
-    emit SetMinBet(min_bet);
-    emit SetMaxBet(10 * min_bet);
 
-    emit ShowActions();
-    if (current_turn == 0) {
+    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
+    if (current_turn_ != current_turn) {
+        //
+    }
+    if (current_turn_ == 0) {
         auto avaiable = gamestatus.get<std::string>("current-actions");
         emit AvaliableActions(GetAvailable(avaiable));
         emit UnBlockActions();
