@@ -118,6 +118,7 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
 
     if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            players_.clear();
             back();
         } else {
             // FUCK OH NO
@@ -163,9 +164,8 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
+        globalInfo::RoomId = parametrs.get<uint64_t>("id");
         emit navigateTo(GAME_TAG);
-        sleep(1);
-        emit ShowStart();
         return;
     }
 
@@ -220,7 +220,10 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     }
 
     auto parametrs = answer.get_child("parametrs");
-//    auto admin_pos = parametrs.get<uint8_t>("admin-pos");
+    auto admin_pos = parametrs.get<uint8_t>("admin-pos");
+    if (admin_pos == our_server_position_) {
+        emit ShowStart();
+    }
 
     auto gamestatus = parametrs.get_child("game-status");
     auto players = gamestatus.get_child("players");
@@ -232,7 +235,6 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
     if (gamestatus.get<bool>("is-started") == false) {
         CheckPlayers(new_players);
-        qDebug() << our_server_position_;
         return;
     }
 
@@ -271,9 +273,6 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         current_player.name = player.get<std::string>("name");
         current_player.money = player.get<uint64_t>("current-stage-money-in-pot");
         current_player.position = GetTablePos(player.get<uint16_t>("position"));
-
-
-//        std::cout << current_player.name << "   " << current_player.position << std::endl;
 
         // current_player.in_pot = player.get<bool>("in-pot");
         // auto cards = player.get_child("cards");
