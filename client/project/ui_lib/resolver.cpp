@@ -248,7 +248,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     }
 
     auto current_cards_on_board = gamestatus.get<short>("num-cards-on-table");
-    if (cards_on_board_ != current_cards_on_board) {
+    if (cards_on_board_ != current_cards_on_board && current_cards_on_board != 0) {
         cards_on_board_ = current_cards_on_board;
         auto board_cards = gamestatus.get_child("board-сards");
         HandleBoardCards(board_cards);
@@ -264,6 +264,8 @@ void Resolver::HandleAdminChange() {
 
 void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
     first_msg_ = false;
+    emit DeleteWinnerDisplay();
+    emit DeleteAllCardsFromTable();
     HandlePlayerCards();
     auto min_bet = gamestatus.get<int>("big-blind-bet");
     emit ShowActions();
@@ -277,22 +279,21 @@ void Resolver::HandleTurnChange(const uint8_t &current_turn, const pt::ptree &ga
     emit CurrentTurn(current_turn_);
     if (current_turn_ == 0) {
         auto avaiable = gamestatus.get<std::string>("current-actions");
+        auto bank = gamestatus.get<size_t>("bank");
+        emit SetMoneyInBank(bank);
         emit AvaliableActions(GetAvailable(avaiable));
         emit UnBlockActions();
     }
 }
 
 void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
-    qDebug("Finished");
     emit DisplayWinner(GetTablePos(winner_pos));
-    qDebug("AfterDisplay");
     emit FlipAllCards();
-    qDebug("AfterFlip");
     emit BlockActions();
     if (is_admin_) {
         emit ShowStart();
     }
-    qDebug("Afteasd");
+    first_msg_ = true;
 }
 
 void Resolver::HandlePlayerChange(const pt::ptree &gamestatus) {
@@ -384,7 +385,6 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
-        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

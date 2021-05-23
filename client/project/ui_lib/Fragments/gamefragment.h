@@ -57,7 +57,12 @@ public slots: // все ради многопоточки
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
+    void SetMoneyInBank(size_t money);
+    void DeleteWinnerDisplay();
 
+
+private slots:
+    void setval();
     void onBetPressed();
     void onRaisePressed();
     void onFoldPressed();
@@ -69,11 +74,7 @@ public slots: // все ради многопоточки
     void onStartPressed();
     void onInfoPressed();
 
-private slots:
-    void setval();
-
 private:
-    void DeleteWinnerDisplay();
     void RedrawPlayer(OtherPlayer* player);
     void resizeEvent(QResizeEvent *event);
 

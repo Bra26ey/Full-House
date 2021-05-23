@@ -411,7 +411,6 @@ void GameFragment::DisplayWinner(size_t player_id) {
     mOtherPlayers[player_id]->AddMoney(mChips->GetBank());
     text = "Winner is " + mOtherPlayers[player_id]->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
 
-    mChips->Wipe();
     mWinLabel->setText(text);
     mWinLabel->setAlignment(Qt::AlignCenter);
 
@@ -441,6 +440,11 @@ void GameFragment::AddCardToTable(size_t value,  size_t suit,  bool upsided) {
     card->show();
 }
 
+void GameFragment::SetMoneyInBank(size_t money) {
+    mChips->AddToBank(money);
+    mChips->show();
+}
+
 void GameFragment::FlipTableCards() {
     foreach(auto card, CardOnTable) {
         card->Flip();
@@ -450,7 +454,7 @@ void GameFragment::FlipTableCards() {
 }
 
 void GameFragment::DeleteAllCardsFromTable() {
-    CardOnTable.clear();
+    CardOnTable.erase(CardOnTable.begin(), CardOnTable.end());
     this->resizeEvent(nullptr);
     mPlayTable->show();
 }

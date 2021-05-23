@@ -49,6 +49,7 @@ signals:
 
     void EndGame(bool is_admin);
 
+    void SetMoneyInBank(size_t money);
     void FlipTableCards();
     void DeleteAllCardsFromTable();
     void AddCardToTable(size_t value,  size_t suit, bool upsided);
@@ -61,6 +62,7 @@ signals:
 
     void MakeDealer(size_t player_id);
     void DisplayWinner(size_t player_id);
+    void DeleteWinnerDisplay();
     void CurrentTurn(size_t player_id);
     void GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2);
     void FlipCards(size_t player_id);
