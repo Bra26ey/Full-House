@@ -121,6 +121,9 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
 
     if (command == "leave") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
+            is_admin_ = false;
+            is_started_ = false;
+            first_msg_ = true;
             players_.clear();
             back();
         } else {
@@ -145,19 +148,6 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
     }
 }
 
-void Resolver::RoomGameAnswer(pt::ptree const &answer) {
-    auto command = answer.get<std::string>("command");
-
-    if (command == "leave") {
-        if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            back();
-        } else {
-            // FUCK OH NO
-        }
-        return;
-    }
-}
-
 void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     auto parametrs = answer.get_child("parametrs");
     auto status = parametrs.get<std::string>("status");
@@ -167,6 +157,10 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
+        is_admin_ = false;
+        is_started_ = false;
+        first_msg_ = true;
+        players_.clear();
         globalInfo::RoomId = parametrs.get<uint64_t>("id");
         emit navigateTo(GAME_TAG);
         return;
@@ -186,6 +180,10 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
+        is_admin_ = false;
+        is_started_ = false;
+        first_msg_ = true;
+        players_.clear();
         our_server_position_ = parametrs.get<uint8_t>("position");
         navigateTo(GAME_TAG);
         return;
