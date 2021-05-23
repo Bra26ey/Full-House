@@ -11,6 +11,10 @@ constexpr uint8_t WINNER_NOT_DEFINDED = 10;
 constexpr uint8_t MAX_PLAYERS = 6;
 constexpr uint8_t MAX_CARDS = 2;
 
+Resolver::Resolver() : our_server_position_(0), cards_on_board_(0),
+                       current_turn_(MAX_PLAYERS), first_msg_(true), is_admin_(false),
+                       is_started_ (false) {}
+
 void Resolver::ParseAnswer(pt::ptree const &answer) {
     auto command_type = answer.get<std::string>("command-type");
 
@@ -46,7 +50,6 @@ void Resolver::ParseAnswer(pt::ptree const &answer) {
 void Resolver::BaseAnswer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
 
-
     if (command == "registration") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             QMessageBox msgBox;
@@ -65,7 +68,6 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
 
     if (command == "autorisation") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            qDebug("Yo");
             navigateTo(MAIN_TAG);
         } else {
             QMessageBox msgBox;
@@ -133,8 +135,8 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
 
     if (command == "start") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            emit ShowActions();
-            emit BlockActions();
+            // emit ShowActions();
+            // emit BlockActions();
             // DELETE START & LEAVE BUUTTOM
         } else {
             // FUCK OH NO
@@ -184,7 +186,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
-        our_server_position_ = parametrs.get<unsigned short>("position");
+        our_server_position_ = parametrs.get<uint8_t>("position");
         navigateTo(GAME_TAG);
         return;
     }
@@ -212,72 +214,93 @@ static std::vector<bool> GetAvailable(const std::string &str) {
 }
 
 void Resolver::GameAnswer(pt::ptree const &answer) {
-//    if (answer == last_answer) {
-//        return;
-//    }
-
     if (answer.get<std::string>("command") != "game-status") {
         return;
     }
 
     auto parametrs = answer.get_child("parametrs");
+    auto gamestatus = parametrs.get_child("game-status");
+    is_started_ = gamestatus.get<bool>("is-started");
+
     auto admin_pos = parametrs.get<uint8_t>("admin-pos");
-    if (!is_admin && admin_pos == our_server_position_) {
-        is_admin = true;
-        emit ShowStart();
+    if (!is_admin_ && admin_pos == our_server_position_) {
+        HandleAdminChange();
     }
 
-    auto gamestatus = parametrs.get_child("game-status");
+    HandlePlayerChange(gamestatus);
+
+    if (!is_started_) {
+        return;
+    }
+
+    if (first_msg_) {
+        HandleInitGame(gamestatus);
+    }
+
+    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
+    if (current_turn_ != current_turn) {
+        HandleTurnChange(current_turn, gamestatus);
+    }
+
+    if (gamestatus.get<uint8_t>("winner-position") != WINNER_NOT_DEFINDED) {
+        HandleEndOfGame(winner_pos);
+    }
+}
+
+void Resolver::HandleAdminChange() {
+    is_admin_ = true;
+    emit ShowStart();
+}
+
+void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
+    first_msg_ = false;
+    HandlePlayerCards();
+    auto min_bet = gamestatus.get<int>("big-blind-bet");
+    emit ShowActions();
+    emit BlockActions();
+    emit SetMinBet(min_bet);
+    emit SetMaxBet(10 * min_bet);
+}
+
+void Resolver::HandleTurnChange(const uint8_t &current_turn, const pt::ptree &gamestatus) {
+    current_turn_ = current_turn;
+    emit CurrentTurn(current_turn_);
+    if (current_turn_ == 0) {
+        auto avaiable = gamestatus.get<std::string>("current-actions");
+        emit AvaliableActions(GetAvailable(avaiable));
+        emit UnBlockActions();
+    }
+}
+
+void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
+    is_started_ = false;
+    emit DisplayWinner(winner_pos);
+    emit FlipAllCards();
+    emit BlockActions();
+    if (is_admin_) {
+        emit ShowStart();
+    }
+}
+
+void Resolver::HandlePlayerChange(const pt::ptree &gamestatus) {
     auto players = gamestatus.get_child("players");
-
-    is_started = gamestatus.get<bool>("is-started");
-
     std::vector<resolver::Player> new_players;
     GetPlayers(players, new_players);
 
-    if (is_started == false) {
+    if (is_started_ == false) {
         CheckPlayers(new_players);
         return;
     }
 
     players_.clear();
     players_ = std::move(new_players);
-
-    if (first_msg) {
-        first_msg = false;
-        auto board_cards = parametrs.get_child("board-сards");
-        HandleBoardCards(board_cards);
-        HandlePlayerCards();
-        auto min_bet = gamestatus.get<int>("big-blind-bet");
-        emit ShowActions();
-        emit SetMinBet(min_bet);
-        emit SetMaxBet(10 * min_bet);
-        return;
-    }
-
-    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
-    if (current_turn_ != current_turn) {
-        //
-    }
-    if (current_turn_ == 0) {
-        auto avaiable = gamestatus.get<std::string>("current-actions");
-        emit AvaliableActions(GetAvailable(avaiable));
-        emit UnBlockActions();
-    }
-
-    emit CurrentTurn(current_turn);
-
-    auto winner_pos = gamestatus.get<uint8_t>("winner-pos");
-    if (winner_pos != WINNER_NOT_DEFINDED) {
-        emit DisplayWinner(winner_pos);
-        emit FlipAllCards();
-    }
 }
 
 void Resolver::HandlePlayerCards() {
     for (auto &it : players_) {
-        auto card_one = players_.cards_in_hand[0];
-        auto card_two = players_.cards_in_hand[1];
+        auto card_one = it.cards_in_hand[0];
+        auto card_two = it.cards_in_hand[1];
+        qDebug() << card_one.value << card_two.value;
         emit GiveCards(it.position, card_one.value, card_one.suit, 
                                     card_two.value, card_two.suit);
     }
@@ -291,7 +314,7 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         current_player.position = GetTablePos(player.get<uint8_t>("position"));
         current_player.money = 10;
 
-        if (!is_started) {
+        if (!is_started_) {
             new_players.push_back(current_player);
             continue;
         }
@@ -316,11 +339,10 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
     for (size_t i = 0; i < players_.size(); ++i) {
         auto cit = players_.cbegin() + i;
         auto res = std::find_if(new_players.begin(), new_players.end(),
-                      [it](const resolver::Player &current) { return current.name == cit.name; });
+                      [cit](const resolver::Player &current) { return current.name == cit->name; });
         if (res == new_players.end()) {
-            emit DeletePlayer(cit.position);
+            emit DeletePlayer(cit->position);
             players_.erase(cit);
-            continue;
         }
     }
 
@@ -336,6 +358,7 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
 
 
 void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
+    emit DeleteAllCardsFromTable();
     BOOST_FOREACH(const pt::ptree::value_type &vb, board_cards) {
         const pt::ptree card = vb.second;
         auto suit = card.get<uint8_t>("suit");

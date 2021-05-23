@@ -33,7 +33,9 @@ HandProcess::HandProcess(size_t ammount_of_cards) : current_player_pos(0), hand_
 
 void HandProcess::Init(HandConfiguration const &handconfiguration) {
     hand_config = handconfiguration;
-
+    num_cards_on_table_ = 0;
+    is_started_ = false;
+    winer_pos_ = WINNER_NOT_DEFINDED;
     hand_config.players.sort([](const std::shared_ptr<Player>& a, const std::shared_ptr<Player>& b) -> bool {
         return a.get()->position < b.get()->position;
     });
@@ -111,6 +113,7 @@ bool HandProcess::Preflop() {
     for (auto it = board_.cards.cbegin(); it != board_.cards.cend(); ++it) {
         logger->Log("{} dropped on the board_", Card::ToString(it->suit, it->value));
     }
+    num_cards_on_table_ = 3;
     logger->Log("Pot is {}", board_.pot);
     return true;
 }
@@ -137,7 +140,7 @@ bool HandProcess::Flop() {
     deck_.Erase();
     logger->Log("{} dropped on the board_ with the pot {}",
                 Card::ToString((board_.cards.cend() - 1)->suit, (board_.cards.cend() - 1)->value), board_.pot);
-
+    num_cards_on_table_ = 4;
     return true;
 }
 
@@ -163,7 +166,7 @@ bool HandProcess::Turn() {
     deck_.Erase();
     logger->Log("{} dropped on the board_ with the pot {}",
                 Card::ToString((board_.cards.cend() - 1)->suit, (board_.cards.cend() - 1)->value), board_.pot);
-
+    num_cards_on_table_ = 5;
     return true;
 }
 
@@ -425,18 +428,23 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
         return status;
     }
 
+    status.put("current-turn", current_player_pos.load());
+    status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
+    status.put("winner-position", winer_pos_);
+
+    status.put("bank", board_.pot);
+    status.put("num-cards-on-table", num_cards_on_table_);
+
+    if (num_cards_on_table_ == 0) {
+        return status;
+    }
+
     boost::property_tree::ptree board_cards;
     for (auto &it : board_.cards) {
         auto card = GetCardStatus(it);
         board_cards.push_back(std::make_pair("", card));
     }
     status.add_child("board-сards", board_cards);
-
-    status.put("current-turn", current_player_pos.load());
-    status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
-    status.put("winner-position", winer_pos_);
-
-    status.put("bank", board_.pot);
 
     return status;
 }

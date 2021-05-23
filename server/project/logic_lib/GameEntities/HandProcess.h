@@ -76,6 +76,7 @@ namespace logic {
         bool need_next_stage;
 
         bool is_started_;
+        short num_cards_on_table_;
         uint8_t winer_pos_;
         bool check_avaiable_;
 

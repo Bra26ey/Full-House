@@ -27,7 +27,6 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     auto password = parametrs.get<std::string>("password");
 
     auto answer = board_db_.CreateBoard(user->id, password);
-    BOOST_LOG_TRIVIAL(info) << "answer.second: " << answer.second;
     if (answer.second != database::OK) {
         is_remove.store(true);
         return;
@@ -48,7 +47,6 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     board_db_.UpdateHandConfiguration(id, hand_config);
 
     auto code = board_db_.AddUserToBoard(id, user->id, password);
-    BOOST_LOG_TRIVIAL(info) << "code: " << code;
     if (code != database::OK) {
         CreatingFailed(user);
         is_remove.store(true);
@@ -56,7 +54,6 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     }
 
     auto position = positions_.Insert(user->id);
-    BOOST_LOG_TRIVIAL(info) << "position: " << static_cast<int>(position);
     if (position == TPOS_ERROR) {
         CreatingFailed(user);
         is_remove.store(true);
@@ -66,7 +63,6 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
                                         static_cast<size_t>(user->id), 
                                         static_cast<int>(position));
-    BOOST_LOG_TRIVIAL(info) << "code: " << code;
     if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
         CreatingFailed(user);
         is_remove.store(true);
@@ -210,14 +206,12 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     auto password = parametrs.get<std::string>("password");
 
     auto code = board_db_.AddUserToBoard(id, user->id, password);
-    BOOST_LOG_TRIVIAL(info) << "code: " << code;
     if (code != database::OK) {
         JoinPlayerFailed(user);
         return -1;
     }
 
     auto position = positions_.Insert(user->id);
-    BOOST_LOG_TRIVIAL(info) << "position: " << static_cast<int>(position);
     if (position == TPOS_ERROR) {
         board_db_.RemoveUserFromBoard(id, user->id);
         JoinPlayerFailed(user);
@@ -227,15 +221,12 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
                                         static_cast<size_t>(user->id), 
                                         static_cast<int>(position));
-    BOOST_LOG_TRIVIAL(info) << "code: " << code;
 
     if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
         board_db_.RemoveUserFromBoard(id, user->id);
         JoinPlayerFailed(user);
         return -1;
     }
-
-    BOOST_LOG_TRIVIAL(info) << user->name << " accepted to game. room-id: " << id;
 
     users_.push_back(user);
 

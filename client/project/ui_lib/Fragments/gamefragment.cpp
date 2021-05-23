@@ -323,14 +323,17 @@ void GameFragment::DrawMainPlayer() {
 }
 
 void GameFragment::GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2) {
+    qDebug("Cards are given");
+    qDebug() << value1 << value2;
     if (player_id > 0) {
         mOtherPlayers[player_id - 1]->GiveCards(value1, suit1, value2, suit2);
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
+        mOtherPlayers[player_id - 1]->GetCard().first->show();
+        mOtherPlayers[player_id - 1]->GetCard().second->show();
     } else {
         mPlayer->GiveCards(value1, suit1, value2, suit2);
-        this->resizeEvent(nullptr);
-        mPlayer->show();
+        mPlayer->FlipCards();
+        mPlayer->GetCard().first->show();
+        mPlayer->GetCard().second->show();
     }
 }
 
