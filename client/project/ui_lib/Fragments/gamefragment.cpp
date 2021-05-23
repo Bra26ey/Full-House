@@ -382,8 +382,10 @@ void GameFragment::MakeDealer(size_t player_id) {
 
 void GameFragment::FlipAllCards() {
     foreach(auto player, mOtherPlayers) {
-        if (!player->GetCardSide())
-        player->FlipCards();
+        if (player != nullptr) {
+            if (!player->GetCardSide())
+            player->FlipCards();
+        }
     }
     this->resizeEvent(nullptr);
     mPlayTable->show();
