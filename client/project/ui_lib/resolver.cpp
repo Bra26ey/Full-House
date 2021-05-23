@@ -227,8 +227,8 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     }
 
     if (!is_admin && admin_pos == our_server_position_) {
-            is_admin = true;
-            emit ShowStart();
+        is_admin = true;
+        emit ShowStart();
     }
 
     auto gamestatus = parametrs.get_child("game-status");
@@ -256,7 +256,9 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     auto current_cards_on_board = gamestatus.get<short>("num-cards-on-table");
     if (cards_on_board != current_cards_on_board) {
         cards_on_board = current_cards_on_board;
-        auto board_cards = parametrs.get_child("board-сards");
+        qDebug("I am here");
+        auto board_cards = gamestatus.get_child("board-сards");
+        qDebug("I was here");
         HandleBoardCards(board_cards);
     }
 
@@ -285,7 +287,7 @@ void Resolver::HandlePlayerCards() {
     for (auto &it : players_) {
         auto card_one = it.cards_in_hand[0];
         auto card_two = it.cards_in_hand[1];
-        qDebug() << card_one.value << card_two.value;
+        qDebug() << it.position;
         emit GiveCards(it.position, card_one.value, card_one.suit, 
                                     card_two.value, card_two.suit);
     }
@@ -335,7 +337,7 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
     for (auto &it : new_players) {
         auto res = std::find_if(players_.begin(), players_.end(),
                       [it](const resolver::Player &current) { return current.name == it.name; });
-        if (res == players_.end() && it.position != 0) {
+        if (res == players_.end()) {
             players_.push_back(it);
             emit DrawPlayer(it.position, it.name, it.money);
         }
@@ -349,14 +351,15 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
         const pt::ptree card = vb.second;
         auto suit = card.get<uint8_t>("suit");
         auto value = card.get<uint8_t>("value");
-        auto is_opened = card.get<bool>("is-opend");
-        emit AddCardToTable(suit, value, is_opened);
+//        auto is_opened = card.get<bool>("is-opend");
+        emit AddCardToTable(value, suit, true);
     }
 }
 
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
+        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

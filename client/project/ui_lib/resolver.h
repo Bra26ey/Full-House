@@ -72,15 +72,7 @@ signals:
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
 
-    void onBetPressed();
-    void onRaisePressed();
-    void onFoldPressed();
-    void onCheckPressed();
-    void onCallPressed();
 
-    void onLeavePressed();
-    void onSettingsPressed();
-    void onStartPressed();
 
 private:
     void ParseAnswer(pt::ptree const &answer);

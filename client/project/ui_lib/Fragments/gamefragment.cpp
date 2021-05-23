@@ -16,7 +16,7 @@ int min_base_card_coefficient = 166;
 int min_card_move_coefficient = 80;
 
 using namespace screens;
-GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr) {
+GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(6, nullptr) {
     qDebug() << QThread::currentThreadId();
     mPlayTable = new PlayTable;
     mDealerLogo = new DealerLogo;
@@ -127,13 +127,9 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(5, nullptr
     this->setLayout(mainVLayout);
 
     is_active = false;
-
-
-    DrawMainPlayer();
 }
 
 GameFragment::~GameFragment() {
-    delete mPlayer;
     delete mPlayTable;
 
     delete BetButton;
@@ -166,7 +162,7 @@ void GameFragment::onBetPressed() {
         bet = mMinbet;
         BetValue->setText(QString::number(bet));
     }
-    mPlayer->setBet(bet);
+    mOtherPlayers[0]->setBet(bet);
     mChips->AddToBank(bet);
     Client->GameRaise(BetValue->text().toUInt());
     BlockActions();
@@ -277,165 +273,111 @@ void GameFragment::SetMaxBet(int maxbet) {
 
 void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t total_money) {
     OtherPlayer* player = new OtherPlayer(player_id, nickname, total_money);
-    mOtherPlayers[player_id - 1] = player;
-    mOtherPlayers[player_id - 1]->setParent(mPlayTable);
+    mOtherPlayers[player_id] = player;
+    mOtherPlayers[player_id]->setParent(mPlayTable);
     switch (player_id) {
+        case 0: {
+            mOtherPlayers[player_id]->setGeometry(mainplayerpos);
+            mOtherPlayers[player_id]->SetPosition(mainplayerpos);
+        break;
+        }
         case 1: {
-            mOtherPlayers[player_id - 1]->setGeometry(firstpos);
-            mOtherPlayers[player_id - 1]->SetPosition(firstpos);
+            mOtherPlayers[player_id]->setGeometry(firstpos);
+            mOtherPlayers[player_id]->SetPosition(firstpos);
         break;
         }
         case 2: {
-            mOtherPlayers[player_id - 1]->setGeometry(secondpos);
-            mOtherPlayers[player_id - 1]->SetPosition(secondpos);
+            mOtherPlayers[player_id]->setGeometry(secondpos);
+            mOtherPlayers[player_id]->SetPosition(secondpos);
         break;
         }
         case 3: {
-            mOtherPlayers[player_id - 1]->setGeometry(thirdpos);
-            mOtherPlayers[player_id - 1]->SetPosition(thirdpos);
+            mOtherPlayers[player_id]->setGeometry(thirdpos);
+            mOtherPlayers[player_id]->SetPosition(thirdpos);
         break;
         }
         case 4: {
-            mOtherPlayers[player_id - 1]->setGeometry(fouthpos);
-            mOtherPlayers[player_id - 1]->SetPosition(fouthpos);
+            mOtherPlayers[player_id]->setGeometry(fouthpos);
+            mOtherPlayers[player_id]->SetPosition(fouthpos);
         break;
         }
         case 5: {
-            mOtherPlayers[player_id - 1]->setGeometry(fifthpos);
-            mOtherPlayers[player_id - 1]->SetPosition(fifthpos);
+            mOtherPlayers[player_id]->setGeometry(fifthpos);
+            mOtherPlayers[player_id]->SetPosition(fifthpos);
         break;
         }
     }
     this->resizeEvent(nullptr);
-    mOtherPlayers[player_id - 1]->show();
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::DeletePlayer(size_t player_id) {
-    delete mOtherPlayers[player_id - 1];
-    mOtherPlayers[player_id - 1] = nullptr;
-}
-
-void GameFragment::DrawMainPlayer() {
-    mPlayer = new Player(globalInfo::Nickname, globalInfo::Balance);
-    mPlayer->setParent(mPlayTable);
-    mPlayer->setGeometry(mainplayerpos);
-    mPlayer->SetPosition(mainplayerpos);
+    delete mOtherPlayers[player_id];
+    mOtherPlayers[player_id] = nullptr;
 }
 
 void GameFragment::GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2) {
-    qDebug("Cards are given");
-    qDebug() << value1 << value2;
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->GiveCards(value1, suit1, value2, suit2);
-        mOtherPlayers[player_id - 1]->GetCard().first->show();
-        mOtherPlayers[player_id - 1]->GetCard().second->show();
-    } else {
-        mPlayer->GiveCards(value1, suit1, value2, suit2);
-        mPlayer->FlipCards();
-        mPlayer->GetCard().first->show();
-        mPlayer->GetCard().second->show();
+    mOtherPlayers[player_id]->GiveCards(value1, suit1, value2, suit2);
+    if (player_id == 0) {
+        mOtherPlayers[player_id]->FlipCards();
     }
+    mOtherPlayers[player_id]->GetCard().first->show();
+    mOtherPlayers[player_id]->GetCard().second->show();
 }
 
 void GameFragment::SetCall(size_t player_id) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->setCall();
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->setCall();
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+    mOtherPlayers[player_id]->setCall();
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::SetFold(size_t player_id) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->setFold();
-        mOtherPlayers[player_id - 1]->DiscardCards();
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->setFold();
-        mPlayer->DiscardCards();
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+    mOtherPlayers[player_id]->setFold();
+    mOtherPlayers[player_id]->DiscardCards();
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::SetCheck(size_t player_id) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->setCheck();
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->setCheck();
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+    mOtherPlayers[player_id]->setCheck();
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::SetRaise(size_t player_id) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->setRaise();
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->setRaise();
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+    mOtherPlayers[player_id]->setRaise();
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::SetBet(size_t player_id, size_t bet) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->setBet(bet);
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->setBet(bet);
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+    mOtherPlayers[player_id]->setBet(bet);
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::ClearStatus(size_t player_id) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->ClearStatus();
+        mOtherPlayers[player_id]->ClearStatus();
         this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->ClearStatus();
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+        mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::FlipCards(size_t player_id) {
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->FlipCards();
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
-    } else {
-        mPlayer->FlipCards();
-        this->resizeEvent(nullptr);
-        mPlayer->show();
-    }
+    mOtherPlayers[player_id]->FlipCards();
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 
 void GameFragment::MakeDealer(size_t player_id) {
+    mDealerLogo->setParent(mOtherPlayers[player_id]);
     if (player_id > 0) {
-        mDealerLogo->setParent(mOtherPlayers[player_id - 1]);
         mDealerLogo->setGeometry(10, 20, 200, 200);
-        this->resizeEvent(nullptr);
-        mOtherPlayers[player_id - 1]->show();
     } else {
-        mDealerLogo->setParent(mPlayer);
         mDealerLogo->setGeometry(-20, -10, 200, 200);
-        this->resizeEvent(nullptr);
-        mPlayer->show();
     }
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
 }
 
 void GameFragment::FlipAllCards() {
@@ -463,13 +405,9 @@ void GameFragment::UnBlockActions() {
 
 void GameFragment::DisplayWinner(size_t player_id) {
     QString text;
-    if (player_id > 0) {
-        mOtherPlayers[player_id - 1]->AddMoney(mChips->GetBank());
-        text = "Winner is " + mOtherPlayers[player_id - 1]->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
-    } else {
-        mPlayer->AddMoney(mChips->GetBank());
-        text = "Winner is " + mPlayer->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
-    }
+
+    mOtherPlayers[player_id]->AddMoney(mChips->GetBank());
+    text = "Winner is " + mOtherPlayers[player_id]->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
 
     mChips->Wipe();
     mWinLabel->setText(text);
@@ -479,11 +417,10 @@ void GameFragment::DisplayWinner(size_t player_id) {
 }
 
 void GameFragment::CurrentTurn(size_t player_id) {
+    mTurnIndicator->setParent(mOtherPlayers[player_id]);
     if (player_id > 0) {
-        mTurnIndicator->setParent(mOtherPlayers[player_id - 1]);
         mTurnIndicator->setGeometry(90, -80, 300, 300);
     } else {
-        mTurnIndicator->setParent(mPlayer);
         mTurnIndicator->setGeometry(85, -25, 300, 300);
     }
     this->resizeEvent(nullptr);
@@ -535,12 +472,6 @@ void GameFragment::resizeEvent(QResizeEvent *event) {
             RedrawPlayer(player);
         }
     }
-    mPlayer->Resize(this->size());
-    if (mPlayer->HasCards) {
-        mPlayer->GetCard().first->Resize(this->size());
-        mPlayer->GetCard().second->Resize(this->size());
-    }
-    RedrawPlayer(mPlayer);
     int i = 0;
     foreach(auto card, CardOnTable) {
         card->ResizeOnTable(this->size(), i);

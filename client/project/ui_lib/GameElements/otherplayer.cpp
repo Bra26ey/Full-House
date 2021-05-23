@@ -4,6 +4,10 @@
 OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) :  HasCards(0), LowRes(0) {
     mPlayerInfo = new PlayerInfoLabel(nickname, money);
     switch(id) {
+    case 0: {
+        mypix = new QImage(":/players/Kyle");
+        break;
+    }
     case 1: {
         mypix = new QImage(":/players/Cartman");
         break;
@@ -36,7 +40,12 @@ OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) :  HasCa
     this->setStyleSheet("margin:50px;margin-left:100px");
 
     mPlayerInfo->setParent(this);
-    mPlayerInfo->setGeometry(QRect(100, 0, 400, 300));
+
+    if (id == 0) {
+        mPlayerInfo->setGeometry(QRect(100, 50, 400, 300));
+    } else {
+        mPlayerInfo->setGeometry(QRect(100, 0, 400, 300));
+    }
 }
 
 OtherPlayer::~OtherPlayer() {
@@ -192,7 +201,9 @@ void OtherPlayer::setCardPos() {
 
 void OtherPlayer::posChange() {
     if (LowRes) {
-        if (mPos == firstpos) {
+        if (mPos == mainplayerpos) {
+            mPos = mainplayerposmin;
+        } else if (mPos == firstpos) {
             mPos = firstposmin;
         } else if (mPos == secondpos) {
             mPos = secondposmin;
@@ -204,7 +215,9 @@ void OtherPlayer::posChange() {
             mPos = fifthposmin;
         }
     } else {
-        if (mPos == firstposmin) {
+        if (mPos == mainplayerposmin) {
+            mPos = mainplayerpos;
+        } else if (mPos == firstposmin) {
             mPos = firstpos;
         } else if (mPos == secondposmin) {
             mPos = secondpos;

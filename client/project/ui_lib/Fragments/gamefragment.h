@@ -6,7 +6,6 @@
 #include "playtable.h"
 #include "card.h"
 #include "dealerlogo.h"
-#include "player.h"
 #include "turnspark.h"
 #include "winlabel.h"
 #include "client_impl.h"
@@ -74,7 +73,6 @@ private slots:
     void setval();
 
 private:
-    void DrawMainPlayer();
     void DeleteWinnerDisplay();
     void RedrawPlayer(OtherPlayer* player);
     void resizeEvent(QResizeEvent *event);
@@ -84,7 +82,6 @@ private:
 
     bool is_active;
 
-    Player *mPlayer;
     QVector<OtherPlayer*> mOtherPlayers;
     PlayTable *mPlayTable;
     DealerLogo *mDealerLogo;
