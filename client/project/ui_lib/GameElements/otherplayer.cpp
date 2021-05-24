@@ -96,8 +96,8 @@ void OtherPlayer::GiveCards(size_t value1, size_t suit1, size_t value2, size_t s
 
 void OtherPlayer::DiscardCards() {
     HasCards = false;
-    delete mCards.first;
-    delete mCards.second;
+    mCards.first->deleteLater();
+    mCards.second->deleteLater();
     mCards.first = nullptr;
     mCards.second = nullptr;
 }

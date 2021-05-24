@@ -454,7 +454,12 @@ void GameFragment::FlipTableCards() {
 }
 
 void GameFragment::DeleteAllCardsFromTable() {
-    CardOnTable.erase(CardOnTable.begin(), CardOnTable.end());
+    foreach(auto card, CardOnTable) {
+        if (card != nullptr)
+        card->deleteLater();
+    }
+    while(!CardOnTable.empty())
+        CardOnTable.pop_front();
     this->resizeEvent(nullptr);
     mPlayTable->show();
 }

@@ -251,8 +251,6 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         auto board_cards = gamestatus.get_child("board-сards");
         HandleBoardCards(board_cards);
     }
-
-
 }
 
 void Resolver::HandleAdminChange() {
@@ -262,6 +260,7 @@ void Resolver::HandleAdminChange() {
 
 void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
     first_msg_ = false;
+    winner_displayed = false;
     emit DeleteWinnerDisplay();
     emit DeleteAllCardsFromTable();
     HandlePlayerCards();
@@ -285,7 +284,10 @@ void Resolver::HandleTurnChange(const uint8_t &current_turn, const pt::ptree &ga
 }
 
 void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
-    emit DisplayWinner(GetTablePos(winner_pos));
+    if (winner_displayed == false) {
+        emit DisplayWinner(GetTablePos(winner_pos));
+        winner_displayed = true;
+    }
     emit FlipAllCards();
     emit BlockActions();
     if (is_admin_) {

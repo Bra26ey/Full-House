@@ -109,5 +109,6 @@ private:
     bool first_msg_;
     bool is_admin_;
     bool is_started_;
+    bool winner_displayed;
     std::vector<resolver::Player> players_;
 };
