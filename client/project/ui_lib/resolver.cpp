@@ -232,9 +232,13 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         HandleEndOfGame(winner_pos);
     }
 
+
     if (!is_started_) {
         return;
     }
+
+    auto bank = gamestatus.get<size_t>("bank");
+    emit SetMoneyInBank(bank);
 
     if (first_msg_) {
         HandleInitGame(gamestatus);
@@ -259,6 +263,8 @@ void Resolver::HandleAdminChange() {
 }
 
 void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
+    emit ClearBank();
+    current_turn_ = 154; // временный фикс
     first_msg_ = false;
     winner_displayed = false;
     emit DeleteWinnerDisplay();
@@ -314,7 +320,6 @@ void Resolver::HandlePlayerCards() {
     for (auto &it : players_) {
         auto card_one = it.cards_in_hand[0];
         auto card_two = it.cards_in_hand[1];
-        qDebug() << it.position;
         emit GiveCards(it.position, card_one.value, card_one.suit, 
                                     card_two.value, card_two.suit);
     }
@@ -385,6 +390,7 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
+        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

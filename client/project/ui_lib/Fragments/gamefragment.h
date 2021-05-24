@@ -59,6 +59,7 @@ public slots: // все ради многопоточки
     void AvaliableActions(std::vector<bool> buttons);
     void SetMoneyInBank(size_t money);
     void DeleteWinnerDisplay();
+    void ClearBank();
 
 
 private slots:

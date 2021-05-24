@@ -73,6 +73,7 @@ signals:
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
+    void ClearBank();
 
 
 

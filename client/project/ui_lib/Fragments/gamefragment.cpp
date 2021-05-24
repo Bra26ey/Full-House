@@ -441,8 +441,13 @@ void GameFragment::AddCardToTable(size_t value,  size_t suit,  bool upsided) {
 }
 
 void GameFragment::SetMoneyInBank(size_t money) {
+    mChips->Wipe();
     mChips->AddToBank(money);
     mChips->show();
+}
+
+void GameFragment::ClearBank() {
+    mChips->Wipe();
 }
 
 void GameFragment::FlipTableCards() {
