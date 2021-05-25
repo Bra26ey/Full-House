@@ -311,9 +311,9 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 
 void GameTalker::UpdateTableDatabase() {
     auto hand_config = convert(handprocess_.hand_config);
-    board_db_.UpdateHandConfiguration(hand_config);
-    for (auto &it : hand_config.players) {
-        board_db_.SetReservedMoney(id, it->id, it->money)
+    board_db_.UpdateHandConfiguration(id, hand_config);
+    for (auto &it : handprocess_.hand_config.players) {
+        board_db_.SetReservedMoney(id, it->id, it->money);
     }
 }
 

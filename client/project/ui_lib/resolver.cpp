@@ -369,7 +369,7 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         resolver::Player current_player;
         current_player.name = player.get<std::string>("name");
         current_player.position = GetTablePos(player.get<uint8_t>("position"));
-        current_player.money = 10;
+        current_player.money = player.get<int>("money");
 
         if (!is_started_) {
             new_players.push_back(current_player);
