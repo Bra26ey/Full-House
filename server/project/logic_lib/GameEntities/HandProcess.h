@@ -26,7 +26,7 @@ namespace logic {
     constexpr uint8_t RAISE_SIGNAL = 2;
     constexpr uint8_t CHECK_SIGNAL = 3;
 
-    constexpr uint8_t WINNER_NOT_DEFINDED = 10;
+    constexpr uint8_t NOT_DEFINDED = 10;
 
     constexpr uint8_t DECK_SIZE = 52;
 
@@ -79,6 +79,7 @@ namespace logic {
         short num_cards_on_table_;
         uint8_t winer_pos_;
         bool check_avaiable_;
+        PlayerInfo last_command_;
 
         static boost::property_tree::ptree GetCardStatus(const Card &card);
 

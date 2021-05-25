@@ -29,7 +29,7 @@ HandProcess::HandProcess(size_t ammount_of_cards) : current_player_pos(0), hand_
                                                     logger(std::make_shared<Logger>()), deck_(ammount_of_cards),
                                                     board_(),
                                                     is_started_(false),
-                                                    winer_pos_(WINNER_NOT_DEFINDED) {}
+                                                    winer_pos_(NOT_DEFINDED) {}
 
 void HandProcess::Init(HandConfiguration const &handconfiguration) {
     board_.cards.clear();
@@ -37,7 +37,7 @@ void HandProcess::Init(HandConfiguration const &handconfiguration) {
     hand_config = handconfiguration;
     num_cards_on_table_ = 0;
     is_started_ = false;
-    winer_pos_ = WINNER_NOT_DEFINDED;
+    winer_pos_ = NOT_DEFINDED;
     hand_config.players.sort([](const std::shared_ptr<Player>& a, const std::shared_ptr<Player>& b) -> bool {
         return a.get()->position < b.get()->position;
     });
@@ -47,6 +47,7 @@ void HandProcess::Init(HandConfiguration const &handconfiguration) {
     // config_handler.Read();
     // config_handler.HandConfigurationInit(hand_config);
     need_next_stage = true;
+    last_command_ = { NOT_DEFINDED, "", 0 };
     deck_.Init();
     deck_.Shuffle();
 }
@@ -54,7 +55,7 @@ void HandProcess::Init(HandConfiguration const &handconfiguration) {
 void HandProcess::DealCards() {
     mutex.lock();
     is_started_ = true;
-    winer_pos_ = WINNER_NOT_DEFINDED;
+    winer_pos_ = NOT_DEFINDED;
     for (auto it = hand_config.players.cbegin(); it != hand_config.players.cend(); ++it) {
         for (unsigned int i = 0; i < hand_config.count_of_player_cards; ++i) {
             it->get()->cards.push_back(deck_.Peak());
@@ -312,7 +313,7 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
             mutex.lock();
 
             signal = command_[action.command];
-
+            last_command_ = action;
 
 
             switch (signal) {
@@ -434,6 +435,13 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     status.put("current-turn", current_player_pos.load());
     status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
 
+    boost::property_tree::ptree last_command;
+    last_command.put("position", last_command_.pos);
+    last_command.put("command", last_command_.command);
+    if (last_command_.command == "raise") {
+        status.put("sum", last_command_.sum);
+    }
+    status.add_child("last-action", last_command);
 
     status.put("bank", board_.pot);
     status.put("num-cards-on-table", num_cards_on_table_);

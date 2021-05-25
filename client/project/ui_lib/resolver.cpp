@@ -7,7 +7,7 @@
 
 using namespace screens;
 
-constexpr uint8_t WINNER_NOT_DEFINDED = 10;
+constexpr uint8_t NOT_DEFINDED = 10;
 constexpr uint8_t MAX_PLAYERS = 6;
 constexpr uint8_t MAX_CARDS = 2;
 
@@ -228,7 +228,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
     HandlePlayerChange(gamestatus);
 
     auto winner_pos = gamestatus.get<uint8_t>("winner-position");
-    if (winner_pos != WINNER_NOT_DEFINDED) {
+    if (winner_pos != NOT_DEFINDED) {
         HandleEndOfGame(winner_pos);
     }
 
@@ -254,6 +254,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         cards_on_board_ = current_cards_on_board;
         auto board_cards = gamestatus.get_child("board-сards");
         HandleBoardCards(board_cards);
+        ClearAllStatus();
     }
 }
 
@@ -286,6 +287,34 @@ void Resolver::HandleTurnChange(const uint8_t &current_turn, const pt::ptree &ga
         emit SetMoneyInBank(bank);
         emit AvaliableActions(GetAvailable(avaiable));
         emit UnBlockActions();
+    }
+
+    auto last_command = gamestatus.get_child("last-command");
+    auto position = last_command.get<uint8_t>("position");
+    if (position == NOT_DEFINDED) {
+        return;
+    }
+
+    auto action = last_command.get<std::string>("action");
+    if (action == "fold") {
+        emit SetFold(position);
+        return;
+    }
+
+    if (action == "call") {
+        emit SetCall(position);
+        return;
+    }
+
+    if (action == "raise") {
+        auto sum = last_command.get<int>("sum");
+        emit SetRaise(position, sum);
+        return;
+    }
+
+    if (action == "check") {
+        emit SetCheck(position);
+        return;
     }
 }
 
@@ -375,6 +404,11 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
     }
 }
 
+void Resolver::ClearAllStatus() {
+    for (auto &it : players_) {
+        emit ClearStatus(it.position);
+    }
+}
 
 void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
     emit DeleteAllCardsFromTable();

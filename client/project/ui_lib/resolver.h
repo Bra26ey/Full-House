@@ -101,6 +101,7 @@ private:
     uint8_t GetTablePos(const uint8_t &pos);
     void GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &players_vec);
     void CheckPlayers(pt::ptree const &players);
+    void ClearAllStatus();
 
 private:
     uint8_t our_server_position_;
