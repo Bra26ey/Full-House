@@ -55,6 +55,8 @@ namespace logic {
         void PotDistribution();
 
         boost::property_tree::ptree GetGameStatus();
+        uint8_t GetWiner();
+        int GetBank();
 
         std::atomic<unsigned int> current_player_pos;
         HandConfiguration hand_config;

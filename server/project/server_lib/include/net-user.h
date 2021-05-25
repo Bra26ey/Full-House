@@ -38,14 +38,15 @@ class User {
 
     boost::property_tree::ptree last_msg;
 
-    std::string name;
-
     bool is_autorised;
     boost::atomic<bool> is_talking;
     boost::atomic<bool> is_gaming;
 
     uint64_t id;
     uint64_t room_id;
+
+    uint64_t money;
+    std::string name;
 };
 
 }  // namespace network

@@ -102,7 +102,7 @@ void Server::CreateRooms() {
 
     auto user = userbase_.creating_game.Pop();
     BOOST_LOG_TRIVIAL(info) << user->name << " trying to create game";
-    auto gametalker = std::make_shared<GameTalker>(context_, board_db_, user);
+    auto gametalker = std::make_shared<GameTalker>(context_, board_db_, user_db_, user);
 
     gametalkers_mutex_.lock();
     gametalkers_.push_back(gametalker);

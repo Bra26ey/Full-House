@@ -229,7 +229,6 @@ void HandProcess::PotDistribution() {
 
     max_hand_value_player->get()->money += board_.pot;
     logger->Log("Player [{}] won [{}]", max_hand_value_player->get()->name, board_.pot);
-    board_.pot = 0;
     board_.cards.clear();
 
     winer_pos_ = max_hand_value_player->get()->position;
@@ -372,6 +371,15 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
 
         first_round = false;
     }
+}
+
+uint8_t HandProcess::GetWiner() {
+    std::lock_guard<std::mutex> lock(mutex);
+    return winer_pos_;
+}
+int HandProcess::GetBank() {
+    std::lock_guard<std::mutex> lock(mutex);
+    return board_.pot;
 }
 
 boost::property_tree::ptree HandProcess::GetCardStatus(Card const &card) {

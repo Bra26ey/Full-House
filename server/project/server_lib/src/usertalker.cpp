@@ -58,6 +58,7 @@ void UserTalker::HandleAutorisation() {
     if (user_->is_autorised) {
         user_->name = name;
         user_->id = answer.first.id;
+        user_->money = static_cast<uint64_t>(answer.first.money);
         user_->out << MsgServer::AutorisationDone();
         BOOST_LOG_TRIVIAL(info) << "user is autorised. name: " << user_->name;
     } else {
@@ -115,6 +116,7 @@ void UserTalker::HandleAddMoney() {
 
     if (code == database::OK) {
         user_->out << MsgServer::AddMoneyDone();
+        user_->money += sum;
     } else {
         user_->out << MsgServer::AddMoneyFailed();
     }
@@ -125,8 +127,7 @@ void UserTalker::HandleAddMoney() {
 void UserTalker::HandleMoneyInfo() {
     BOOST_LOG_TRIVIAL(info) << user_->name << " asking for money";
 
-    auto user = user_db_.GetUser(user_->id);
-    user_->out << MsgServer::MoneyInfo(static_cast<uint64_t>(user.money));
+    user_->out << MsgServer::MoneyInfo(user_->money);
 
     async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
 }

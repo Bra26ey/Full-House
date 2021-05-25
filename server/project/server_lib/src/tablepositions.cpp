@@ -43,5 +43,18 @@ uint8_t TablePositions::GetPosition(uint64_t const &id) {
     return std::distance(positions.begin(), it);
 }
 
+uint64_t TablePositions::GetId(uint8_t const &position) {
+    const std::lock_guard<std::mutex> lock(mutex);
+
+    auto it = std::find_if(positions.begin(), positions.end(),
+                           [position](const Position &current) { return current.position == position; });
+
+    if (it == positions.end()) {
+        return __UINT64_MAX__;
+    }
+
+    return it.id;
+}
+
 
 

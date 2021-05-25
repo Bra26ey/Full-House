@@ -20,7 +20,7 @@ namespace network {
 
 class GameTalker : public boost::asio::coroutine {
  public:
-    GameTalker(io_context &context, database::Board &board, std::shared_ptr<User> &user);
+    GameTalker(io_context &context, database::Board &board_db, database::User &user_db, std::shared_ptr<User> &user);
     ~GameTalker();
     int JoinPlayer(std::shared_ptr<User> &user);
 
@@ -53,6 +53,7 @@ class GameTalker : public boost::asio::coroutine {
     io_context &context_;
 
     database::Board &board_db_;
+    database::User &user_db_;
 
     logic::HandProcess handprocess_;
 

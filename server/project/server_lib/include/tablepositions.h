@@ -22,6 +22,7 @@ class TablePositions {
     uint8_t Insert(uint64_t const &id);
     void Delete(uint64_t const &id);
     uint8_t GetPosition(uint64_t const &id);
+    uint64_t GetId(uint8_t const &position);
 
  private:
     std::array<Position, TABLE_SIZE> positions;

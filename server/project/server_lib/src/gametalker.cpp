@@ -16,13 +16,15 @@ namespace pt = boost::property_tree;
 
 namespace network {
 
-GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_ptr<User> &user)
-           : is_remove(false),
-             is_gaming(false),
-             context_(context),
-             board_db_(board),
-             handprocess_(logic::DECK_SIZE),
-             is_deleting_(false) {
+GameTalker::GameTalker(io_context &context, database::Board &board_db,
+                       database::User &user_db, std::shared_ptr<User> &user)
+                       : is_remove(false),
+                         is_gaming(false),
+                         context_(context),
+                         board_db_(board_db),
+                         user_db_(user_db),
+                         handprocess_(logic::DECK_SIZE),
+                         is_deleting_(false) {
     const pt::ptree &parametrs = user->last_msg.get_child("parametrs");
     auto password = parametrs.get<std::string>("password");
 
@@ -53,6 +55,13 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
     code = board_db_.UpdateUserPosition(static_cast<size_t>(id),
                                         static_cast<size_t>(user->id), 
                                         static_cast<int>(position));
+    if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
+        CreatingFailed(user);
+        is_remove.store(true);
+        return;
+    }
+
+    code = board_db_.SetReservedMoney(id, user->id, user->money);
     if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
         CreatingFailed(user);
         is_remove.store(true);
@@ -218,6 +227,13 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
         return -1;
     }
 
+    code = board_db_.SetReservedMoney(id, user->id, user->money);
+    if (code != database::OK && code != database::OBJECT_NOT_UPDATED) {
+        board_db_.RemoveUserFromBoard(id, user->id);
+        JoinPlayerFailed(user);
+        return -1;
+    }
+
     users_.push_back(user);
 
     user->is_gaming.store(true);
@@ -312,9 +328,8 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 void GameTalker::UpdateTableDatabase() {
     auto hand_config = convert(handprocess_.hand_config);
     board_db_.UpdateHandConfiguration(id, hand_config);
-    for (auto &it : handprocess_.hand_config.players) {
-        board_db_.SetReservedMoney(id, it->id, it->money);
-    }
+    auto winer_id = positions_.GetId(handprocess_.GetWiner());
+    user_db_.UpdateMoney(winer_id, handprocess_.GetBank());
 }
 
 void GameTalker::HandleGameProcess() {
