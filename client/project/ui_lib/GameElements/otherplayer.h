@@ -44,6 +44,7 @@ public:
 
     size_t GetBet();
     bool GetCardSide();
+    bool GetHasCards();
 
     //status interface
     void setRaise(size_t bet);
@@ -60,7 +61,7 @@ public:
     QRect GetPos();
 
     QPair<Card*, Card*> GetCard();
-    bool HasCards;
+
 
 protected:
     void setCardPos();
@@ -74,6 +75,7 @@ protected:
     QImage player;
     size_t mTextureId;
 private:
+    bool HasCards;
     void posChange();
     bool LowRes;
 };

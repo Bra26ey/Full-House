@@ -363,9 +363,11 @@ void GameFragment::ClearStatus(size_t player_id) {
 }
 
 void GameFragment::FlipCards(size_t player_id) {
-    mOtherPlayers[player_id]->FlipCards();
-    this->resizeEvent(nullptr);
-    mOtherPlayers[player_id]->show();
+    if (mOtherPlayers[player_id]->GetHasCards()) {
+        mOtherPlayers[player_id]->FlipCards();
+        this->resizeEvent(nullptr);
+        mOtherPlayers[player_id]->show();
+    }
 }
 
 
@@ -469,6 +471,15 @@ void GameFragment::DeleteAllCardsFromTable() {
     mPlayTable->show();
 }
 
+void GameFragment::DeleteAllPlayersCards() {
+    foreach(auto player, mOtherPlayers) {
+        if (player != nullptr)
+        if (player->GetHasCards()) {
+            player->DiscardCards();
+        }
+    }
+}
+
 void GameFragment::RedrawPlayer(OtherPlayer* player) {
     auto pos = player->GetPos();
     player->setGeometry(pos);
@@ -481,7 +492,7 @@ void GameFragment::resizeEvent(QResizeEvent *event) {
     foreach(auto player, mOtherPlayers) {
         if (player != nullptr) {
             player->Resize(this->size());
-            if(player->HasCards) {
+            if(player->GetHasCards()) {
                 player->GetCard().first->Resize(this->size());
                 player->GetCard().second->Resize(this->size());
             }

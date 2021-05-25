@@ -39,6 +39,7 @@ public slots: // все ради многопоточки
     void DeleteAllCardsFromTable();
     void AddCardToTable(size_t value,  size_t suit, bool upsided);
     void FlipAllCards();
+    void DeleteAllPlayersCards();
 
     void ShowActions();
     void BlockActions();

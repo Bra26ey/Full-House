@@ -428,6 +428,16 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
 
     status.add_child("players", players_status);
     status.put("winner-position", winer_pos_);
+    if (is_started_ || winer_pos_ != NOT_DEFINDED) {
+        boost::property_tree::ptree last_command;
+        last_command.put("position", last_command_.pos);
+        last_command.put("command", last_command_.command);
+        if (last_command_.command == "raise") {
+            last_command.put("sum", last_command_.sum);
+        }
+        status.add_child("last-action", last_command);
+
+    }
 
     if (!is_started_) {
         return status;
@@ -436,14 +446,6 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     status.put("num-actions", num_actions_);
     status.put("current-turn", current_player_pos.load());
     status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
-
-    boost::property_tree::ptree last_command;
-    last_command.put("position", last_command_.pos);
-    last_command.put("command", last_command_.command);
-    if (last_command_.command == "raise") {
-        last_command.put("sum", last_command_.sum);
-    }
-    status.add_child("last-action", last_command);
 
     status.put("bank", board_.pot);
     status.put("num-cards-on-table", num_cards_on_table_);

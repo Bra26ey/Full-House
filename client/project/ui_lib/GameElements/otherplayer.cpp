@@ -1,7 +1,7 @@
 ﻿#include "otherplayer.h"
 #include <QDebug>
 
-OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) :  HasCards(0), LowRes(0) {
+OtherPlayer::OtherPlayer(size_t id, std::string nickname, size_t money) :  HasCards(false), LowRes(0) {
     mPlayerInfo = new PlayerInfoLabel(nickname, money);
     switch(id) {
     case 0: {
@@ -95,25 +95,29 @@ void OtherPlayer::GiveCards(size_t value1, size_t suit1, size_t value2, size_t s
 }
 
 void OtherPlayer::DiscardCards() {
-    HasCards = false;
-    mCards.first->deleteLater();
-    mCards.second->deleteLater();
-    mCards.first = nullptr;
-    mCards.second = nullptr;
+    if (HasCards == true) {
+        HasCards = false;
+        mCards.first->deleteLater();
+        mCards.second->deleteLater();
+    }
 }
 
 void OtherPlayer::FlipCards() {
-    if (mCards.first != nullptr && mCards.second != nullptr) {
+    if (HasCards) {
         mCards.first->Flip();
         mCards.second->Flip();
     }
 }
 
 bool OtherPlayer::GetCardSide() {
-    if (mCards.first != nullptr && mCards.second != nullptr) {
+    if (HasCards) {
         return mCards.first->GetSide();
     }
     return false;
+}
+
+bool OtherPlayer::GetHasCards() {
+    return HasCards;
 }
 
 size_t OtherPlayer::GetBet() {

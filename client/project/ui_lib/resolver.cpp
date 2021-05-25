@@ -229,6 +229,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
 
     auto winner_pos = gamestatus.get<uint8_t>("winner-position");
     if (winner_pos != NOT_DEFINDED) {
+        HandleActions(gamestatus);
         HandleEndOfGame(winner_pos);
     }
 
@@ -268,11 +269,12 @@ void Resolver::HandleAdminChange() {
 void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
     emit ClearBank();
     num_actions_ = 0;
-    current_turn_ = NOT_DEFINDED; // временный фикс
+    current_turn_ = NOT_DEFINDED;
     first_msg_ = false;
     winner_displayed = false;
     emit DeleteWinnerDisplay();
     emit DeleteAllCardsFromTable();
+    emit DeleteAllPlayersCards();
     HandlePlayerCards();
     auto min_bet = gamestatus.get<int>("big-blind-bet");
     emit ShowActions();
@@ -291,7 +293,10 @@ void Resolver::HandleTurnChange(const uint8_t &current_turn, const pt::ptree &ga
         emit AvaliableActions(GetAvailable(avaiable));
         emit UnBlockActions();
     }
+    HandleActions(gamestatus);
+}
 
+void Resolver::HandleActions(const pt::ptree &gamestatus) {
     auto last_command = gamestatus.get_child("last-action");
     auto position = last_command.get<uint8_t>("position");
     position = GetTablePos(position);
@@ -428,7 +433,6 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
-        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

@@ -41,6 +41,7 @@ public:
     void Run();
 
 signals:
+    void DeleteAllPlayersCards();
     void DeletePlayer(size_t player_id);
     void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
 
@@ -97,11 +98,13 @@ private:
     void HandlePlayerChange(const pt::ptree &gamestatus);
     void HandleEndOfGame(const uint8_t &winner_pos);
     void HandleTurnChange(const uint8_t &current_turn, const pt::ptree &gamestatus);
+    void HandleActions(const pt::ptree &gamestatus);
 
     uint8_t GetTablePos(const uint8_t &pos);
     void GetPlayers(pt::ptree const &players, std::vector<resolver::Player> &players_vec);
     void CheckPlayers(pt::ptree const &players);
     void ClearAllStatus();
+
 
 private:
     uint8_t our_server_position_;
