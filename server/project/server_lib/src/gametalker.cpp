@@ -36,16 +36,6 @@ GameTalker::GameTalker(io_context &context, database::Board &board, std::shared_
 
     admin_id_.store(user->id);
 
-    database::hand_configuration_t hand_config;
-    hand_config.button_pos = 0;
-    hand_config.small_blind_pos = 0;
-    hand_config.big_blind_pos = 1;
-    hand_config.small_blind_bet = 1;
-    hand_config.big_blind_bet = 2;
-    hand_config.max_size_of_players = USERS_MAX;
-    hand_config.count_of_player_cards = 2;
-    board_db_.UpdateHandConfiguration(id, hand_config);
-
     auto code = board_db_.AddUserToBoard(id, user->id, password);
     if (code != database::OK) {
         CreatingFailed(user);
@@ -317,6 +307,14 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
     user->out << MsgServer::GameStatus(handprocess_.GetGameStatus(), admin_pos);
 
     async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+}
+
+void GameTalker::UpdateTableDatabase() {
+    auto hand_config = convert(handprocess_.hand_config);
+    board_db_.UpdateHandConfiguration(hand_config);
+    for (auto &it : hand_config.players) {
+        board_db_.SetReservedMoney(id, it->id, it->money)
+    }
 }
 
 void GameTalker::HandleGameProcess() {

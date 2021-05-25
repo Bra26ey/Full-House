@@ -47,6 +47,8 @@ class GameTalker : public boost::asio::coroutine {
     void Start();
     void HandleGameProcess();
 
+    void UpdateTableDatabase();
+
  private:
     io_context &context_;
 

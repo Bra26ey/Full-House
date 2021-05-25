@@ -9,18 +9,27 @@
 
 namespace database {
 
+enum class Configuration {
+    button_pos = 0,
+    small_blind_pos = 0,
+    big_blind_pos = 1,
+    small_blind_bet = 1,
+    big_blind_bet = 2,
+    max_size_of_players = 6,
+    count_of_player_cards = 2
+};
 
 typedef struct hand_configuration hand_configuration_t;
 struct hand_configuration {
-    unsigned int button_pos;
-    unsigned int small_blind_pos;
-    unsigned int big_blind_pos;
+    unsigned int button_pos = static_cast<unsigned int>(Configuration::button_pos);
+    unsigned int small_blind_pos = static_cast<unsigned int>(Configuration::small_blind_pos);
+    unsigned int big_blind_pos = static_cast<unsigned int>(Configuration::big_blind_pos);
 
-    int small_blind_bet;
-    int big_blind_bet;
+    int small_blind_bet = static_cast<int>(Configuration::small_blind_bet);
+    int big_blind_bet = static_cast<int>(Configuration::big_blind_bet);
 
-    unsigned int max_size_of_players;
-    unsigned int count_of_player_cards;
+    unsigned int max_size_of_players = static_cast<unsigned int>(Configuration::max_size_of_players);
+    unsigned int count_of_player_cards = static_cast<unsigned int>(Configuration::count_of_player_cards);
 
     hand_configuration() : button_pos(0), small_blind_pos(0), big_blind_pos(0), small_blind_bet(0),
                             big_blind_bet(0), max_size_of_players(0), count_of_player_cards(0) {}
