@@ -74,7 +74,6 @@ bool HandProcess::Preflop() {
     std::list<std::shared_ptr<Player> >::iterator position_of_big_blind;
 
     for (auto it = hand_config.players.begin(); it != hand_config.players.end(); ++it) {
-        std::cout << "player here" << std::endl;
         it->get()->in_pot = true;
         if (it->get()->position == hand_config.small_blind_pos) {
             it->get()->Call(hand_config.small_blind_bet);

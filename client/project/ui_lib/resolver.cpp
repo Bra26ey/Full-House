@@ -377,7 +377,6 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         }
 
         current_player.in_pot = player.get<bool>("in-pot");
-        current_player.money = player.get<uint64_t>("current-stage-money-in-pot");  // NOT MONEY
         auto cards = player.get_child("cards");
         BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
             const pt::ptree card = vc.second;

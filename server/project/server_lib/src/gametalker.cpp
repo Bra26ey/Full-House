@@ -35,7 +35,15 @@ GameTalker::GameTalker(io_context &context, database::Board &board_db,
     }
 
     id = answer.first;
-
+    database::hand_configuration_t hand_config;
+        hand_config.button_pos = 0;
+        hand_config.small_blind_pos = 0;
+        hand_config.big_blind_pos = 1;
+        hand_config.small_blind_bet = 1;
+        hand_config.big_blind_bet = 2;
+        hand_config.max_size_of_players = USERS_MAX;
+        hand_config.count_of_player_cards = 2;
+        board_db_.UpdateHandConfiguration(id, hand_config);
     admin_id_.store(user->id);
 
     auto code = board_db_.AddUserToBoard(id, user->id, password);
@@ -328,8 +336,11 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 void GameTalker::UpdateTableDatabase() {
     auto hand_config = convert(handprocess_.hand_config);
     board_db_.UpdateHandConfiguration(id, hand_config);
-    auto winer_id = positions_.GetId(handprocess_.GetWiner());
-    user_db_.UpdateMoney(winer_id, handprocess_.GetBank());
+    auto winner_id = positions_.GetId(handprocess_.GetWiner());
+    auto bank = handprocess_.GetBank();
+    user_db_.UpdateMoney(winner_id, bank);
+    auto winner = std::find_if(users_.begin(), users_.end(), [winner_id](std::shared_ptr<User> user) {return user->id == winner_id;});
+    winner->get()->money += bank;
 }
 
 void GameTalker::HandleGameProcess() {
