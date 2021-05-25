@@ -389,7 +389,7 @@ boost::property_tree::ptree HandProcess::GetPlayerStatus(const std::shared_ptr<P
 
     status.put("name", player->name);
     status.put("position", player->position);
-    status.put("current-stage-money-in-pot", player->current_stage_money_in_pot);
+    status.put("money", player->money);
 
     if (!is_started_) {
         return status;
