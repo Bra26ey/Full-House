@@ -34,6 +34,7 @@ HandProcess::HandProcess(size_t ammount_of_cards) : current_player_pos(0), hand_
 void HandProcess::Init(HandConfiguration const &handconfiguration) {
     board_.cards.clear();
     board_.pot = 0;
+    num_actions_ = 0;
     hand_config = handconfiguration;
     num_cards_on_table_ = 0;
     is_started_ = false;
@@ -305,7 +306,7 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
 
             current_player_pos = it->get()->position;
             PlayerInfo action;
-
+            num_actions_++;
             mutex.unlock();
             do {
                 action = command_queue.pop();  // block-function
@@ -432,6 +433,7 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
         return status;
     }
 
+    status.put("num-actions", num_actions_);
     status.put("current-turn", current_player_pos.load());
     status.put("current-actions", check_avaiable_ ? "raise-check" : "fold-call-raise");
 
@@ -439,7 +441,7 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     last_command.put("position", last_command_.pos);
     last_command.put("command", last_command_.command);
     if (last_command_.command == "raise") {
-        status.put("sum", last_command_.sum);
+        last_command.put("sum", last_command_.sum);
     }
     status.add_child("last-action", last_command);
 

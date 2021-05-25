@@ -244,9 +244,11 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         HandleInitGame(gamestatus);
     }
 
-    auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
-    if (current_turn_ != current_turn) {
+    auto num_actions = gamestatus.get<uint16_t>("num-actions");
+    if (num_actions_ != num_actions) {
+        auto current_turn = GetTablePos(gamestatus.get<uint8_t>("current-turn"));
         HandleTurnChange(current_turn, gamestatus);
+        num_actions_ = num_actions;
     }
 
     auto current_cards_on_board = gamestatus.get<short>("num-cards-on-table");
@@ -254,7 +256,7 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         cards_on_board_ = current_cards_on_board;
         auto board_cards = gamestatus.get_child("board-сards");
         HandleBoardCards(board_cards);
-        ClearAllStatus();
+//        ClearAllStatus();
     }
 }
 
@@ -265,7 +267,8 @@ void Resolver::HandleAdminChange() {
 
 void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
     emit ClearBank();
-    current_turn_ = 154; // временный фикс
+    num_actions_ = 0;
+    current_turn_ = NOT_DEFINDED; // временный фикс
     first_msg_ = false;
     winner_displayed = false;
     emit DeleteWinnerDisplay();
@@ -289,13 +292,14 @@ void Resolver::HandleTurnChange(const uint8_t &current_turn, const pt::ptree &ga
         emit UnBlockActions();
     }
 
-    auto last_command = gamestatus.get_child("last-command");
+    auto last_command = gamestatus.get_child("last-action");
     auto position = last_command.get<uint8_t>("position");
+    position = GetTablePos(position);
     if (position == NOT_DEFINDED) {
         return;
     }
 
-    auto action = last_command.get<std::string>("action");
+    auto action = last_command.get<std::string>("command");
     if (action == "fold") {
         emit SetFold(position);
         return;

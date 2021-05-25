@@ -50,12 +50,14 @@ public slots: // все ради многопоточки
     void CurrentTurn(size_t player_id);
     void GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2);
     void FlipCards(size_t player_id);
+
     void SetBet(size_t player_id, size_t bet);
     void SetFold(size_t player_id);
     void SetCall(size_t player_id);
-    void SetRaise(size_t player_id);
+    void SetRaise(size_t player_id, size_t bet);
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
+
     void AvaliableActions(std::vector<bool> buttons);
     void SetMoneyInBank(size_t money);
     void DeleteWinnerDisplay();

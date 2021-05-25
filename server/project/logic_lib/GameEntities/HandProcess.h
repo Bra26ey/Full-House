@@ -78,6 +78,7 @@ namespace logic {
         bool is_started_;
         short num_cards_on_table_;
         uint8_t winer_pos_;
+        uint16_t num_actions_;
         bool check_avaiable_;
         PlayerInfo last_command_;
 

@@ -69,7 +69,7 @@ signals:
     void SetBet(size_t player_id, size_t bet);
     void SetFold(size_t player_id);
     void SetCall(size_t player_id);
-    void SetRaise(size_t player_id);
+    void SetRaise(size_t player_id, size_t bet);
     void SetCheck(size_t player_id);
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
@@ -108,6 +108,7 @@ private:
     uint8_t admin_position_;
     uint8_t cards_on_board_;
     uint8_t current_turn_;
+    uint16_t num_actions_;
     bool first_msg_;
     bool is_admin_;
     bool is_started_;

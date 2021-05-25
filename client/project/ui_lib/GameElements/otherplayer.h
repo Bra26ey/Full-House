@@ -46,7 +46,7 @@ public:
     bool GetCardSide();
 
     //status interface
-    void setRaise();
+    void setRaise(size_t bet);
     void setFold();
     void setCheck();
     void setCall();

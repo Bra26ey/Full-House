@@ -12,7 +12,7 @@ public:
     ~PlayerInfoLabel();
     void setBet(size_t bet);
     void setFold();
-    void setRaise();
+    void setRaise(size_t bet);
     void setCheck();
     void setCall();
     void ClearStatus();

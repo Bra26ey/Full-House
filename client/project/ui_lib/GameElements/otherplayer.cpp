@@ -65,8 +65,8 @@ void OtherPlayer::setFold() {
     mPlayerInfo->setFold();
 }
 
-void OtherPlayer::setRaise() {
-    mPlayerInfo->setRaise();
+void OtherPlayer::setRaise(size_t bet) {
+    mPlayerInfo->setRaise(bet);
 }
 
 void OtherPlayer::ClearStatus() {

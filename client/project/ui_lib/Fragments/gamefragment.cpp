@@ -162,7 +162,7 @@ void GameFragment::onBetPressed() {
         bet = mMinbet;
         BetValue->setText(QString::number(bet));
     }
-    mOtherPlayers[0]->setBet(bet);
+    SetBet(0, bet);
     mChips->AddToBank(bet);
     Client->GameRaise(BetValue->text().toUInt());
     BlockActions();
@@ -193,7 +193,7 @@ void GameFragment::onRaisePressed() {
         bet = mMinbet;
         BetValue->setText(QString::number(bet));
     }
-    SetRaise(0);
+    SetRaise(0, bet);
     mChips->AddToBank(bet);
     Client->GameRaise(BetValue->text().toUInt());
     BlockActions();
@@ -344,8 +344,8 @@ void GameFragment::SetCheck(size_t player_id) {
     mOtherPlayers[player_id]->show();
 }
 
-void GameFragment::SetRaise(size_t player_id) {
-    mOtherPlayers[player_id]->setRaise();
+void GameFragment::SetRaise(size_t player_id, size_t bet) {
+    mOtherPlayers[player_id]->setRaise(bet);
     this->resizeEvent(nullptr);
     mOtherPlayers[player_id]->show();
 }
