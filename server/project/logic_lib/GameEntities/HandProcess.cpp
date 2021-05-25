@@ -32,6 +32,8 @@ HandProcess::HandProcess(size_t ammount_of_cards) : current_player_pos(0), hand_
                                                     winer_pos_(WINNER_NOT_DEFINDED) {}
 
 void HandProcess::Init(HandConfiguration const &handconfiguration) {
+    board_.cards.clear();
+    board_.pot = 0;
     hand_config = handconfiguration;
     num_cards_on_table_ = 0;
     is_started_ = false;
