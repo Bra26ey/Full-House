@@ -13,8 +13,8 @@ using boost::asio::ip::address;
 
 constexpr uint32_t PING_TIME = 500;
 
-constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local
-// constexpr std::string_view SERVER_IP = "89.19.190.83";  // for public
+// constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local
+constexpr std::string_view SERVER_IP = "89.19.190.83";  // for public
 constexpr size_t SERVER_PORT = 5000;
 
 namespace network {

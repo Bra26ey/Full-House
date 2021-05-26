@@ -86,24 +86,16 @@ void Server::StartAccepting() {
 
 void Server::HandleAcception(std::shared_ptr<User> &user) {
     BOOST_LOG_TRIVIAL(info) << "waiting for acception";
-    acceptor_.accept(user->socket);
-    BOOST_LOG_TRIVIAL(info) << "user accepted";
-    auto usertalker = std::make_shared<UserTalker>(user, userbase_, user_db_);
-    usertalkers_mutex_.lock();
-    usertalkers_.push_back(usertalker);
-    usertalkers_mutex_.unlock();
-    auto new_user = std::make_shared<User>(context_);
-    context_.post(boost::bind(&Server::HandleAcception, this, new_user));
-    // acceptor_.async_accept(user->socket, [&](bs::error_code error) {
-    //     if (!error) {
-    //         AcceptionDone(user);
-    //     } else {
-    //         AcceptionFailed();
-    //     }
-    // });
+    acceptor_.async_accept(user->socket, [this, user](bs::error_code error) {
+        if (!error) {
+            AcceptionDone(user);
+        } else {
+            AcceptionFailed();
+        }
+    });
 }
 
-void Server::AcceptionDone(std::shared_ptr<User> &user) {
+void Server::AcceptionDone(std::shared_ptr<User> user) {
     BOOST_LOG_TRIVIAL(info) << "user accepted";
     auto usertalker = std::make_shared<UserTalker>(user, userbase_, user_db_);
     BOOST_LOG_TRIVIAL(info) << "make usertalker";
