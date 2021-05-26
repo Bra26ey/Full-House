@@ -11,7 +11,7 @@ FileHandler::FileHandler() {
 
 std::map<std::string, std::string> FileHandler::Parse(const std::string& filename) {
     std::map<std::string, std::string> parser;
-    std::ifstream cfile("/home/aleksandr/techn/Full-House/server/project/database_lib/FileHandler/config.txt");
+    std::ifstream cfile(absolute_path_ + FILE_DIR + filename);
 
     if (!cfile.is_open()) {
         parser["status"] = FILE_NOT_OPENED_MSG;
