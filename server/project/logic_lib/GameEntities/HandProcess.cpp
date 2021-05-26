@@ -205,6 +205,8 @@ void HandProcess::PotDistribution() {
         auto it = std::find_if(hand_config.players.begin(), hand_config.players.end(),
                                [](std::shared_ptr<Player> &current) { return current->in_pot; });
         winner_pos_ = it->get()->position;
+//        it->get()->money += board_.pot;
+        board_.pot = 0;
         is_started_ = false;
         mutex.unlock();
         return;
@@ -357,15 +359,6 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
 
         first_round = false;
     }
-}
-
-uint8_t HandProcess::GetWinner() {
-    std::lock_guard<std::mutex> lock(mutex);
-    return winner_pos_;
-}
-int HandProcess::GetBank() {
-    std::lock_guard<std::mutex> lock(mutex);
-    return board_.pot;
 }
 
 boost::property_tree::ptree HandProcess::GetCardStatus(Card const &card) {

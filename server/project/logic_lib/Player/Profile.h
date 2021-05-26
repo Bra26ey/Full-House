@@ -9,7 +9,7 @@
 namespace logic {
 
 struct Profile {
-    int id;
+    uint64_t id;
     std::string name;
     int avatar;
     int money;  // money is the entire player cash in client

@@ -59,8 +59,8 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
             emit back();
         } else {
             QMessageBox msgBox;
-            msgBox.setText("Ты инвалид");
-            msgBox.setWindowTitle("Ошибка регистрация");
+            msgBox.setText("Such username is existing");
+            msgBox.setWindowTitle("Autorisation error");
             msgBox.exec();
         }
         return;
@@ -71,8 +71,8 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
             emit navigateTo(MAIN_TAG);
         } else {
             QMessageBox msgBox;
-            msgBox.setText("Ты инвалид");
-            msgBox.setWindowTitle("Ошибка авторизации");
+            msgBox.setText("Info is incorrect");
+            msgBox.setWindowTitle("Autorisation error");
             msgBox.exec();
         }
         return;
@@ -82,7 +82,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             emit back();
         } else {
-            // FUCK OH NO
+            // error
         }
         return;
     }
@@ -91,7 +91,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             // exit(0);
         } else {
-            // FUCK OH NO
+            // error
         }
         return;
     }
@@ -127,7 +127,7 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
             players_.clear();
             emit back();
         } else {
-            // FUCK OH NO
+            // error
         }
         return;
     }
@@ -138,11 +138,8 @@ void Resolver::RoomAdminAnswer(pt::ptree const &answer) {
 
     if (command == "start") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            // emit ShowActions();
-            // emit BlockActions();
-            // DELETE START & LEAVE BUUTTOM
         } else {
-            // FUCK OH NO
+            // error
         }
         return;
     }
@@ -157,6 +154,13 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
+        our_server_position_ = 0;
+        admin_position_ = 0;
+        cards_on_board_ = 0;
+        current_turn_ = 0;
+        num_actions_ = 0;
+
+        winner_displayed = false;
         is_admin_ = false;
         is_started_ = false;
         first_msg_ = true;
@@ -167,7 +171,7 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "fail") {
-        // FUCK!
+        // error
     }
 }
 
@@ -180,6 +184,13 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
+        our_server_position_ = 0;
+        admin_position_ = 0;
+        cards_on_board_ = 0;
+        current_turn_ = 0;
+        num_actions_ = 0;
+
+        winner_displayed = false;
         is_admin_ = false;
         is_started_ = false;
         first_msg_ = true;
@@ -190,7 +201,10 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "fail") {
-        // FUCK!
+        QMessageBox msgBox;
+        msgBox.setText("Cannot connect to room");
+        msgBox.setWindowTitle("Join error");
+        msgBox.exec();
     }
 }
 
@@ -257,7 +271,6 @@ void Resolver::GameAnswer(pt::ptree const &answer) {
         cards_on_board_ = current_cards_on_board;
         auto board_cards = gamestatus.get_child("board-сards");
         HandleBoardCards(board_cards);
-//        ClearAllStatus();
     }
 }
 
@@ -330,8 +343,6 @@ void Resolver::HandleActions(const pt::ptree &gamestatus) {
 void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
     if (winner_displayed == false) {
         emit DisplayWinner(GetTablePos(winner_pos));
-        auto win_player = std::find_if(players_.begin(), players_.end(), [&winner_pos](const resolver::Player &player) {return player.position == winner_pos; });
-        emit SetMoney(winner_pos, win_player->money);
         winner_displayed = true;
     }
     emit FlipAllCards();
@@ -372,6 +383,10 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         current_player.name = player.get<std::string>("name");
         current_player.position = GetTablePos(player.get<uint8_t>("position"));
         current_player.money = player.get<int>("money");
+
+        if (current_player.position == 0) {
+            globalInfo::Balance = current_player.money;
+        }
 
 
         if (!is_started_) {
@@ -428,7 +443,6 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
         const pt::ptree card = vb.second;
         auto suit = card.get<uint8_t>("suit");
         auto value = card.get<uint8_t>("value");
-//        auto is_opened = card.get<bool>("is-opend");
         emit AddCardToTable(value, suit, true);
     }
 }
