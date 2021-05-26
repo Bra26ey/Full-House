@@ -3,7 +3,6 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/atomic.hpp>
-#include <boost/asio/coroutine.hpp>
 
 #include "definitions.h"
 #include "userbase.h"
@@ -16,7 +15,7 @@ using boost::asio::io_context;
 
 namespace network {
 
-class UserTalker : public boost::asio::coroutine {
+class UserTalker {
  public:
     UserTalker(std::shared_ptr<User> &user, Userbase &userbase, database::User &user_db);
     ~UserTalker() = default;
@@ -27,12 +26,16 @@ class UserTalker : public boost::asio::coroutine {
     boost::atomic<bool> is_remove;
 
  private:
+    void OnHandleRequest();
+    void HandleRequest();
+
+    void SendAnswer();
+
     void HandleAutorisation();
     void HandleRegistration();
     void HandlePlayers();
     void JoinPlayer();
     void CreateGame();
-    void HandleRequest();
     void HandlePing();
     void HandleError();
     void HandleAddMoney();

@@ -13,6 +13,7 @@ using boost::asio::async_write;
 constexpr uint8_t USERS_MAX = 6;
 
 namespace pt = boost::property_tree;
+namespace bs = boost::system;
 
 namespace network {
 
@@ -85,13 +86,20 @@ GameTalker::GameTalker(io_context &context, database::Board &board_db,
     auto hand = convert(board_db_.GetActiveBoard(id));
     handprocess_.Init(hand);
 
-    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    read_until(user->socket, user->read_buffer, std::string(MSG_END));
     pt::read_json(user->in, user->last_msg);
 
     user->out << MsgServer::CreateRoomDone(id, password);
-    write(user->socket, user->write_buffer);
-
-    boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));
+    async_write(user->socket, user->write_buffer, [this, user](bs::error_code error, size_t len) {
+        if (!error) {
+            // boost::asio::post(context_, boost::bind(&UserTalker::OnHandleRequest, this));
+            OnHandleUserRequest(user);
+        } else {
+            // boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
+            CreatingFailed(user);
+            is_remove.store(true);
+        }
+    });
 }
 
 GameTalker::~GameTalker() {
@@ -103,7 +111,18 @@ void GameTalker::Start() {
     boost::asio::post(context_, boost::bind(&GameTalker::HandleGameProcess, this));
 }
 
-void GameTalker::HandleAdminRequest(std::shared_ptr<User> &user) {
+void GameTalker::SendAnswer(std::shared_ptr<User> user) {
+    async_write(user->socket, user->write_buffer, [this, user](bs::error_code error, size_t len) {
+        if (!error) {
+            OnHandleUserRequest(user);
+        } else {
+            // add clever handle
+            OnHandleUserRequest(user);
+        }
+    });
+}
+
+void GameTalker::HandleAdminRequest(std::shared_ptr<User> user) {
     BOOST_LOG_TRIVIAL(info) << "GameRoom handleing admin request: ";
 
     std::string command = user->last_msg.get<std::string>("command");
@@ -118,25 +137,34 @@ void GameTalker::HandleAdminRequest(std::shared_ptr<User> &user) {
         } else {
             user->out << MsgServer::StartGameFailed();
         }
-        async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+        boost::asio::post(context_, boost::bind(&GameTalker::SendAnswer, this, user));
         return;
     }
 
     boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
 }
 
-void GameTalker::HandleUserRequest(std::shared_ptr<User> &user) {
-    async_read_until(user->socket, user->read_buffer, "\n\r\n\r", boost::bind(&GameTalker::OnHandleUserRequest, this, user));
+void GameTalker::OnHandleUserRequest(std::shared_ptr<User> user) {
+    async_read_until(user->socket, user->read_buffer, std::string(MSG_END), [this, user](bs::error_code error, size_t len) {
+        if (!error) {
+            // boost::bind(&GameTalker::HandleUserRequest, this, user);
+            HandleUserRequest(user);
+        } else {
+            // add timer
+            OnHandleUserRequest(user);
+            // handle leaving
+        }
+    });
 }
 
-void GameTalker::HandleGameStatus(std::shared_ptr<User> &user) {
+void GameTalker::HandleGameStatus(std::shared_ptr<User> user) {
     auto admin_pos = positions_.GetPosition(admin_id_.load());
     user->out << MsgServer::GameStatus(handprocess_.GetGameStatus(), admin_pos);
-    async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+    boost::asio::post(context_, boost::bind(&GameTalker::SendAnswer, this, user));
     return;
 }
 
-void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
+void GameTalker::HandleUserRequest(std::shared_ptr<User> user) {
     if (is_remove) {
         boost::asio::post(context_, boost::bind(&GameTalker::HandleLeaving, this, user));
         return;
@@ -176,19 +204,19 @@ void GameTalker::OnHandleUserRequest(std::shared_ptr<User> &user) {
     boost::asio::post(context_, boost::bind(&GameTalker::HandleError, this, user));
 }
 
-void GameTalker::CreatingFailed(std::shared_ptr<User> &user) {
+void GameTalker::CreatingFailed(std::shared_ptr<User> user) {
     BOOST_LOG_TRIVIAL(info) << "creating game failed";
     user->room_id = __UINT64_MAX__;
-    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    read_until(user->socket, user->read_buffer, std::string(MSG_END));
     pt::read_json(user->in, user->last_msg);
     user->out << MsgServer::CreateRoomFailed();
     write(user->socket, user->write_buffer);
     user->is_talking.store(false);
 }
 
-void GameTalker::JoinPlayerFailed(std::shared_ptr<User> &user) {
+void GameTalker::JoinPlayerFailed(std::shared_ptr<User> user) {
     BOOST_LOG_TRIVIAL(info) << "joining game failed. room-id: " << id;
-    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    read_until(user->socket, user->read_buffer, std::string(MSG_END));
     pt::read_json(user->in, user->last_msg);
     user->out << MsgServer::JoinRoomFailed(user->room_id);
     write(user->socket, user->write_buffer);
@@ -251,19 +279,19 @@ int GameTalker::JoinPlayer(std::shared_ptr<User> &user) {
     auto hand_config = convert(board_db_.GetActiveBoard(id));
     handprocess_.Init(hand_config);
 
-    read_until(user->socket, user->read_buffer, "\n\r\n\r");
+    read_until(user->socket, user->read_buffer, std::string(MSG_END));
     pt::read_json(user->in, user->last_msg);
 
     user->out << MsgServer::JoinRoomDone(id, position);
     write(user->socket, user->write_buffer);
 
-    boost::asio::post(context_, boost::bind(&GameTalker::HandleUserRequest, this, user));
+    boost::asio::post(context_, boost::bind(&GameTalker::OnHandleUserRequest, this, user));
     return 0;
 }
 
-void GameTalker::HandleError(std::shared_ptr<User> &user) {
+void GameTalker::HandleError(std::shared_ptr<User> user) {
     user->out << MsgServer::Error();
-    async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+    boost::asio::post(context_, boost::bind(&GameTalker::SendAnswer, this, user));
     BOOST_LOG_TRIVIAL(info) << user->name << "'s request is unknown";
 }
 
@@ -272,7 +300,7 @@ void GameTalker::Delete() {
     BOOST_LOG_TRIVIAL(info) << "deleting room. room-id: " << id;
 }
 
-void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
+void GameTalker::HandleLeaving(std::shared_ptr<User> user) {
     BOOST_LOG_TRIVIAL(info) << user->name << " leave room";
     users_mutex_.lock();
     for (size_t i = 0; i < users_.size(); ++i) {
@@ -307,7 +335,7 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
     }
 }
 
-void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
+void GameTalker::HandleGameRequest(std::shared_ptr<User> user) {
     BOOST_LOG_TRIVIAL(info) << user->name << " send game-request";
     auto command = user->last_msg.get<std::string>("command");
 
@@ -327,8 +355,7 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 
     auto admin_pos = positions_.GetPosition(admin_id_.load());
     user->out << MsgServer::GameStatus(handprocess_.GetGameStatus(), admin_pos);
-
-    async_write(user->socket, user->write_buffer, boost::bind(&GameTalker::HandleUserRequest, this, user));
+    boost::asio::post(context_, boost::bind(&GameTalker::SendAnswer, this, user));
 }
 
 void GameTalker::UpdateTableDatabase() {

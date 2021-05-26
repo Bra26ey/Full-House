@@ -9,6 +9,7 @@ using boost::asio::async_read;
 using boost::asio::async_write;
 
 namespace pt = boost::property_tree;
+namespace bs = boost::system;
 
 namespace network {
 
@@ -22,7 +23,7 @@ UserTalker::UserTalker(std::shared_ptr<User> &user, Userbase &userbase, database
 void UserTalker::Start() {
     user_->is_talking.store(true);
     BOOST_LOG_TRIVIAL(info) << "UserTalker start work with connection";
-    boost::asio::post(context_, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::OnHandleRequest, this));
 }
 
 bool UserTalker::IsUserWorks() const {
@@ -44,7 +45,7 @@ void UserTalker::HandleRegistration() {
         BOOST_LOG_TRIVIAL(info) << "registration: failed";
     }
 
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
 }
 
 void UserTalker::HandleAutorisation() {
@@ -65,13 +66,22 @@ void UserTalker::HandleAutorisation() {
         user_->out << MsgServer::AutorisationFailed();
         BOOST_LOG_TRIVIAL(info) << "autorisation: invalid data";
     }
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
 }
 
 void UserTalker::CreateGame() {
     BOOST_LOG_TRIVIAL(info) << user_->name << " trying to create room";
     user_->out << MsgServer::CreateRoomOn();
-    async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.creating_game, user_));
+    async_write(user_->socket, user_->write_buffer, [this](bs::error_code error, size_t len) {
+        if (!error) {
+            userbase_.creating_game.Push(user_);
+            // boost::bind(&user_queue::Push, &userbase_.creating_game, user_);
+        } else {
+            // boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
+            Disconnect();
+        }
+    });
 }
 
 
@@ -83,27 +93,37 @@ void UserTalker::JoinPlayer() {
     BOOST_LOG_TRIVIAL(info) << user_->room_id;
 
     user_->out << MsgServer::JoinRoomOn(user_->room_id);
-    async_write(user_->socket, user_->write_buffer, boost::bind(&user_queue::Push, &userbase_.accepting_game, user_));
+    async_write(user_->socket, user_->write_buffer, [this](bs::error_code error, size_t len) {
+        if (!error) {
+            userbase_.accepting_game.Push(user_);
+            // boost::bind(&user_queue::Push, &userbase_.accepting_game, user_);
+        } else {
+            // boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
+            Disconnect();
+        }
+    });
 }
 
 void UserTalker::HandleError() {
     BOOST_LOG_TRIVIAL(info) << user_->name << "'s request is unknown";
 
     user_->out << MsgServer::Error();
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
 }
 
 void UserTalker::HandlePing() {
     user_->out << MsgServer::Ping();
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
 }
 
 void UserTalker::Disconnect() {
     BOOST_LOG_TRIVIAL(info) << user_->name << "is disconnected";
 
     user_->out << MsgServer::Disconnect();
-    write(user_->socket, user_->write_buffer);
-    is_remove.store(true);
+    async_write(user_->socket, user_->write_buffer, [this](bs::error_code error, size_t len) {
+        user_->socket.close();
+        is_remove.store(true);
+    });
 }
 
 void UserTalker::HandleAddMoney() {
@@ -121,7 +141,7 @@ void UserTalker::HandleAddMoney() {
         user_->out << MsgServer::AddMoneyFailed();
     }
 
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
 }
 
 void UserTalker::HandleMoneyInfo() {
@@ -129,7 +149,7 @@ void UserTalker::HandleMoneyInfo() {
 
     user_->out << MsgServer::MoneyInfo(user_->money);
 
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
 }
 
 void UserTalker::Logout() {
@@ -139,60 +159,79 @@ void UserTalker::Logout() {
     user_->is_autorised = false;
 
     user_->out << MsgServer::Logout();
-    async_write(user_->socket, user_->write_buffer, boost::bind(&UserTalker::HandleRequest, this));
+    boost::asio::post(context_, boost::bind(&UserTalker::SendAnswer, this));
+}
+
+void UserTalker::OnHandleRequest() {
+    async_read_until(user_->socket, user_->read_buffer, std::string(MSG_END), [this](bs::error_code error, size_t len) {
+        if (!error) {
+            HandleRequest();
+            // boost::asio::post(context_, boost::bind(&UserTalker::HandleRequest, this));
+        } else {
+            // add timer here
+            OnHandleRequest();
+            // boost::asio::post(context_, boost::bind(&UserTalker::OnHandleRequest, this));
+            // Disconnect();
+        }
+    });
+}
+
+void UserTalker::SendAnswer() {
+    async_write(user_->socket, user_->write_buffer, [this](bs::error_code error, size_t len) {
+        if (!error) {
+            // boost::asio::post(context_, boost::bind(&UserTalker::OnHandleRequest, this));
+            OnHandleRequest();
+        } else {
+            // boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
+            Disconnect();
+        }
+    }); 
 }
 
 void UserTalker::HandleRequest() {
-    reenter(this) {
-        while (true) {
-            yield async_read_until(user_->socket, user_->read_buffer, "\n\r\n\r", boost::bind(&UserTalker::HandleRequest, this));
-            yield {
-                pt::read_json(user_->in, user_->last_msg);
-                std::string command_type = user_->last_msg.get<std::string>("command-type");
+    pt::read_json(user_->in, user_->last_msg);
+    std::string command_type = user_->last_msg.get<std::string>("command-type");
 
-                if (command_type == "ping") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::HandlePing, this));
-                    return;
-                }
+    if (command_type == "ping") {
+        boost::asio::post(context_, boost::bind(&UserTalker::HandlePing, this));
+        return;
+    }
 
-                if (command_type != "basic") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
-                    return;
-                }
+    if (command_type != "basic") {
+        boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
+        return;
+    }
 
-                std::string command = user_->last_msg.get<std::string>("command");
+    std::string command = user_->last_msg.get<std::string>("command");
 
-                if (command == "disconnect") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
-                    return;
-                }
+    if (command == "disconnect") {
+        boost::asio::post(context_, boost::bind(&UserTalker::Disconnect, this));
+        return;
+    }
 
-                if (!user_->is_autorised) {
-                    if (command == "autorisation") {
-                        boost::asio::post(context_, boost::bind(&UserTalker::HandleAutorisation, this));
-                    } else if (command == "registration") {
-                        boost::asio::post(context_, boost::bind(&UserTalker::HandleRegistration, this));
-                    } else {
-                        boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
-                    }
-                    return;
-                }
-
-                if (command == "create-room") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::CreateGame, this));
-                } else if (command == "add-money") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::HandleAddMoney, this));
-                } else if (command == "money-info") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::HandleMoneyInfo, this));
-                } else if (command == "join-room") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::JoinPlayer, this));
-                } else if (command == "logout") {
-                    boost::asio::post(context_, boost::bind(&UserTalker::Logout, this));
-                } else {
-                    boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
-                }
-            }
+    if (!user_->is_autorised) {
+        if (command == "autorisation") {
+            boost::asio::post(context_, boost::bind(&UserTalker::HandleAutorisation, this));
+        } else if (command == "registration") {
+            boost::asio::post(context_, boost::bind(&UserTalker::HandleRegistration, this));
+        } else {
+            boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
         }
+        return;
+    }
+
+    if (command == "create-room") {
+        boost::asio::post(context_, boost::bind(&UserTalker::CreateGame, this));
+    } else if (command == "add-money") {
+        boost::asio::post(context_, boost::bind(&UserTalker::HandleAddMoney, this));
+    } else if (command == "money-info") {
+        boost::asio::post(context_, boost::bind(&UserTalker::HandleMoneyInfo, this));
+    } else if (command == "join-room") {
+        boost::asio::post(context_, boost::bind(&UserTalker::JoinPlayer, this));
+    } else if (command == "logout") {
+        boost::asio::post(context_, boost::bind(&UserTalker::Logout, this));
+    } else {
+        boost::asio::post(context_, boost::bind(&UserTalker::HandleError, this));
     }
 }
 

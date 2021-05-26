@@ -30,17 +30,19 @@ class GameTalker : public boost::asio::coroutine {
     boost::atomic<bool> is_gaming;
 
  private:
-    void HandleUserRequest(std::shared_ptr<User> &user);
-    void OnHandleUserRequest(std::shared_ptr<User> &user);
+    void OnHandleUserRequest(std::shared_ptr<User> user);
+    void HandleUserRequest(std::shared_ptr<User> user);
 
-    void JoinPlayerFailed(std::shared_ptr<User> &user);
-    void CreatingFailed(std::shared_ptr<User> &user);
+    void SendAnswer(std::shared_ptr<User> user);
 
-    void HandleAdminRequest(std::shared_ptr<User> &user);
-    void HandleGameRequest(std::shared_ptr<User> &user);
-    void HandleLeaving(std::shared_ptr<User> &user);
-    void HandleError(std::shared_ptr<User> &user);
-    void HandleGameStatus(std::shared_ptr<User> &user);
+    void JoinPlayerFailed(std::shared_ptr<User> user);
+    void CreatingFailed(std::shared_ptr<User> user);
+
+    void HandleAdminRequest(std::shared_ptr<User> user);
+    void HandleGameRequest(std::shared_ptr<User> user);
+    void HandleLeaving(std::shared_ptr<User> user);
+    void HandleError(std::shared_ptr<User> user);
+    void HandleGameStatus(std::shared_ptr<User> user);
 
     void Delete();
 

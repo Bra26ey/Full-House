@@ -8,10 +8,12 @@
 
 #include "msgmaker.h"
 
+namespace bs = boost::system;
+
 namespace network {
 
 Server::Server() : context_(),
-                   endpoint_(address::from_string("127.0.1.0"), PORT),
+                   endpoint_(address::from_string(std::string(SERVER_IP)), PORT),
                    acceptor_(context_) {}
 
 Server::~Server() {}
@@ -43,7 +45,7 @@ void Server::StartListen(size_t thread_count) {
 void Server::CleanUserTalkers() {
     usertalkers_mutex_.lock();
     for (size_t i = 0; i < usertalkers_.size(); ++i) {
-        if (usertalkers_[i]->is_remove) {
+        if (usertalkers_[i]->is_remove.load()) {
             usertalkers_.erase(usertalkers_.begin() + i);
             BOOST_LOG_TRIVIAL(info) << "disconnected user is removed";
         } else if (!usertalkers_[i]->IsUserWorks()) {
@@ -58,14 +60,14 @@ void Server::CleanUserTalkers() {
 void Server::CleanGameTalkers() {
     gametalkers_mutex_.lock();
 
-    auto it = std::find_if(gametalkers_.begin(), gametalkers_.end(),
-                           [](const std::shared_ptr<GameTalker> &current) { return current->is_remove.load(); });
+    // auto it = std::find_if(gametalkers_.begin(), gametalkers_.end(),
+    //                        [](const std::shared_ptr<GameTalker> &current) { return current->is_remove.load(); });
 
-    if (it != gametalkers_.end()) {
-        gametalkers_.erase(it);
-    }
+    // if (it != gametalkers_.end()) {
+    //     gametalkers_.erase(it);
+    // }
 
-    // std::erase_if(gametalkers_, [](const std::shared_ptr<GameTalker> &current) { return current->is_remove.load(); });
+    std::erase_if(gametalkers_, [](const std::shared_ptr<GameTalker> &current) { return current->is_remove.load(); });
     // uncomment later. It works, but vscode image an error
 
     gametalkers_mutex_.unlock();
@@ -90,6 +92,34 @@ void Server::HandleAcception(std::shared_ptr<User> &user) {
     usertalkers_mutex_.lock();
     usertalkers_.push_back(usertalker);
     usertalkers_mutex_.unlock();
+    auto new_user = std::make_shared<User>(context_);
+    context_.post(boost::bind(&Server::HandleAcception, this, new_user));
+    // acceptor_.async_accept(user->socket, [&](bs::error_code error) {
+    //     if (!error) {
+    //         AcceptionDone(user);
+    //     } else {
+    //         AcceptionFailed();
+    //     }
+    // });
+}
+
+void Server::AcceptionDone(std::shared_ptr<User> &user) {
+    BOOST_LOG_TRIVIAL(info) << "user accepted";
+    auto usertalker = std::make_shared<UserTalker>(user, userbase_, user_db_);
+    BOOST_LOG_TRIVIAL(info) << "make usertalker";
+    usertalkers_mutex_.lock();
+    BOOST_LOG_TRIVIAL(info) << "before push to queue";
+    usertalkers_.push_back(usertalker);
+    BOOST_LOG_TRIVIAL(info) << "push to queue";
+    usertalkers_mutex_.unlock();
+    BOOST_LOG_TRIVIAL(info) << "make new user";
+    auto new_user = std::make_shared<User>(context_);
+    BOOST_LOG_TRIVIAL(info) << "before new accepting";
+    context_.post(boost::bind(&Server::HandleAcception, this, new_user));
+}
+
+void Server::AcceptionFailed() {
+    BOOST_LOG_TRIVIAL(info) << "user not accepted";
     auto new_user = std::make_shared<User>(context_);
     context_.post(boost::bind(&Server::HandleAcception, this, new_user));
 }
@@ -125,9 +155,9 @@ void Server::JoinPlayers() {
     auto it = std::find_if(gametalkers_.begin(), gametalkers_.end(),
                           [user](const std::shared_ptr<GameTalker> &current) { return current->id == user->room_id; });
 
-    if (it == gametalkers_.end()) {
+    if (it == gametalkers_.end()) {  // must be reworked!
         BOOST_LOG_TRIVIAL(info) << user->name << " not accepted to game. can't find room-id: " << user->room_id;
-        read_until(user->socket, user->read_buffer, "\n\r\n\r");
+        read_until(user->socket, user->read_buffer, std::string(MSG_END));
         boost::property_tree::read_json(user->in, user->last_msg);
         user->out << MsgServer::JoinRoomFailed(user->room_id);
         write(user->socket, user->write_buffer);
@@ -137,7 +167,7 @@ void Server::JoinPlayers() {
         return;
     }
 
-    (*it)->JoinPlayer(user);
+    it->get()->JoinPlayer(user);
 
     context_.post(boost::bind(&Server::JoinPlayers, this));
 }

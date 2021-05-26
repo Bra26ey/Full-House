@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string_view>
+
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
@@ -16,6 +18,7 @@ using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
 
+constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local game
 constexpr uint16_t PORT = 5000;
 
 namespace network {
@@ -33,10 +36,13 @@ class Server {
     void CleanUserTalkers();
     void CleanGameTalkers();
     void StartAccepting();
-    void HandleAcception(std::shared_ptr<User> &user);
+    
     void CreateRooms();
     void JoinPlayers();
-    
+
+    void HandleAcception(std::shared_ptr<User> &user);
+    void AcceptionDone(std::shared_ptr<User> &user);
+    void AcceptionFailed();
 
  private:
     io_context context_;

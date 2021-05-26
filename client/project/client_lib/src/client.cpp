@@ -13,8 +13,8 @@ using boost::asio::ip::address;
 
 constexpr uint32_t PING_TIME = 500;
 
-// constexpr std::string_view SERVER_IP = "127.0.0.1";
-// constexpr std::string_view SERVER_IP = "89.19.190.83";
+constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local
+// constexpr std::string_view SERVER_IP = "89.19.190.83";  // for public
 constexpr size_t SERVER_PORT = 5000;
 
 namespace network {
@@ -24,10 +24,14 @@ Client::~Client() {
 }
 
 bool Client::Connect() {
-    // tcp::endpoint endpoint(address::from_string(SERVER_IP), SERVER_PORT);
-    std::cout << "try connect" << std::endl;
-    tcp::endpoint endpoint(address::from_string("127.0.1.0"), SERVER_PORT);
-    socket_.connect(endpoint);
+    tcp::endpoint endpoint(address::from_string(std::string(SERVER_IP)), SERVER_PORT);
+    boost::system::error_code error;
+    socket_.connect(endpoint, error);
+    if (error) {
+        std::cout << error.message() << std::endl;
+        return false;
+    }
+
     is_closeing.store(false);
     std::cout << "connection done on ep = " << endpoint << std::endl;
     last_ping = boost::posix_time::microsec_clock::local_time();
@@ -60,7 +64,7 @@ void Client::Run() {
 
         boost::asio::write(socket_, write_buffer_);
 
-        boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
+        boost::asio::read_until(socket_, read_buffer_, std::string(MSG_END));
 
         std::string answer(std::istreambuf_iterator<char>(in_), {});
         answers_queue_.Push(answer);
@@ -73,7 +77,7 @@ void Client::Run() {
 
         boost::asio::write(socket_, write_buffer_);
 
-        boost::asio::read_until(socket_, read_buffer_, "\n\r\n\r");
+        boost::asio::read_until(socket_, read_buffer_, std::string(MSG_END));
 
         std::string answer(std::istreambuf_iterator<char>(in_), {});
         answers_queue_.Push(answer);

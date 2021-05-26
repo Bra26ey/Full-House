@@ -2,8 +2,11 @@
 
 #include <string>
 #include <vector>
+#include <string_view>
 
 #include <boost/property_tree/ptree.hpp>
+
+constexpr std::string_view MSG_END = "\n\r\n\r";
 
 class MsgFabric {
  public:
