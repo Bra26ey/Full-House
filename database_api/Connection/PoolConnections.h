@@ -23,16 +23,17 @@ public:
     int GetConnection(Connection& conn);
     void ReturnConnection(Connection& conn, int& ind);
 
+    ~PoolConnections()=default;
+
 private:
     PoolConnections();
-    ~PoolConnections()=default;
 
     bool GrowPool();
 
     std::vector<std::pair<Connection, bool>> pool_;
     config_t config_params_;
 
-    static PoolConnections* instance_;
+    static std::unique_ptr<PoolConnections> instance_;//
     static std::mutex my_mutex_;
 
 };

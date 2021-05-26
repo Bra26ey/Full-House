@@ -12,9 +12,9 @@ PoolConnections::PoolConnections() {
 PoolConnections* PoolConnections::GetInstance() {
     std::lock_guard<std::mutex> lock(my_mutex_);
     if (instance_ == nullptr) {
-        instance_ = new PoolConnections();
+        instance_ = std::unique_ptr<PoolConnections>(new PoolConnections());
     }
-    return instance_;
+    return instance_.get();
 }
 
 

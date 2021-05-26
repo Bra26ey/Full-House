@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <../Connection/SafetyConnection.h>
 #include <../Models/Board.h>
 #include <../Models/User.h>
 

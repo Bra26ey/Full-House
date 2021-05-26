@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
-#include "../Connection/Connection.h"
-#include "../Connection/PoolConnections.h"
-#include "../Connection/SafetyConnection.h"
+#include "Connection.h"
+#include "PoolConnections.h"
+#include "SafetyConnection.h"
 
 
-PoolConnections* PoolConnections::instance_{nullptr};
+std::unique_ptr<PoolConnections> PoolConnections::instance_;//
 std::mutex PoolConnections::my_mutex_;
 
 

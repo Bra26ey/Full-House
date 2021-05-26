@@ -147,31 +147,11 @@ int Board::SaveActiveBoard(const active_board_t &active_brd) {
             delete pstmt;
             return OBJECT_NOT_EXIST;
         }
+        delete pstmt;
     }
 
-    delete pstmt;
     return OK;
 }
-
-/*
-user_t Board::GetUserId(const std::string &login) {
-    user_t u;
-
-    if (login.empty()) {
-        u.status_code = EMPTY_DATA;
-        return u;
-    }
-
-    User usr;
-
-    if (!usr.IsExist(login)) {
-        u.status_code = OBJECT_NOT_EXIST;
-        return u;
-    }
-
-    u = usr.GetUser(login, false);
-    return u;
-}*/
 
 
 std::pair<std::size_t, int> Board::CreateBoard(const std::size_t &user_id, const std::string& password) {
@@ -280,8 +260,6 @@ int Board::UpdateHandConfiguration(const std::size_t &board_id, const hand_confi
         return DATABASE_NOT_CONNECTED;
     }
 
-    //board.button_pos, board.small_blind_pos, board.big_blind_pos, board.small_blind_bet, board.big_blind_bet, "
-    //                               "board.max_size_of_players, board.count_of_player_cards
     std::string query_string = "UPDATE board SET button_pos = ?, small_blind_pos = ?, big_blind_pos = ?, small_blind_bet = ?, "
                                "big_blind_bet = ?, max_size_of_players = ?, count_of_player_cards = ? WHERE id = ?";
     sql::PreparedStatement *pstmt;
