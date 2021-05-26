@@ -286,6 +286,7 @@ void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
     first_msg_ = false;
     winner_displayed = false;
     emit DeleteWinnerDisplay();
+    emit ClearAllStatus();
     emit DeleteAllCardsFromTable();
     emit DeleteAllPlayersCards();
     HandlePlayerCards();
@@ -387,8 +388,8 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
 
         if (current_player.position == 0) {
             globalInfo::Balance = current_player.money;
+            emit SetMaxBet(current_player.money);
         }
-
 
         if (!is_started_) {
             new_players.push_back(current_player);
@@ -451,7 +452,7 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
-        std::cout << m;
+//        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);
