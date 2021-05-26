@@ -289,8 +289,6 @@ void GameTalker::HandleLeaving(std::shared_ptr<User> &user) {
     users_mutex_.unlock();
     positions_.Delete(user->id);
 
-    positions_.Delete(user->id);
-
     board_db_.RemoveUserFromBoard(id, user->id);
 
     auto hand_config = convert(board_db_.GetActiveBoard(id));
@@ -334,13 +332,17 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 }
 
 void GameTalker::UpdateTableDatabase() {
+    users_mutex_.lock();
+
     auto hand_config = convert(handprocess_.hand_config);
     board_db_.UpdateHandConfiguration(id, hand_config);
-    auto winner_id = positions_.GetId(handprocess_.GetWinner());
-    auto bank = handprocess_.GetBank();
-    user_db_.UpdateMoney(winner_id, bank);
-    auto winner = std::find_if(users_.begin(), users_.end(), [winner_id](std::shared_ptr<User> user) {return user->id == winner_id;});
-    winner->get()->money += bank;
+
+    for (auto &it : handprocess_.hand_config.players) {
+        auto user = std::find_if(users_.begin(), users_.end(),
+                                 [it](std::shared_ptr<User> &user) { return it->id == user->id; });
+        user->get()->money = it->money;
+        user_db_.UpdateMoney(it->id, it->money);
+    }
 }
 
 void GameTalker::HandleGameProcess() {

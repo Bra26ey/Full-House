@@ -359,15 +359,6 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
     }
 }
 
-uint8_t HandProcess::GetWinner() {
-    std::lock_guard<std::mutex> lock(mutex);
-    return winner_pos_;
-}
-int HandProcess::GetBank() {
-    std::lock_guard<std::mutex> lock(mutex);
-    return board_.pot;
-}
-
 boost::property_tree::ptree HandProcess::GetCardStatus(Card const &card) {
     boost::property_tree::ptree status;
 
