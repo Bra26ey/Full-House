@@ -13,7 +13,7 @@ bool User::IsExist(const std::size_t& id) {
     }
 
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
-    pstmt->setInt(1, (int)id);
+    pstmt->setInt(1, static_cast<int>(id));
 
     try {
         res = pstmt->executeQuery();
@@ -92,7 +92,7 @@ user_t User::GetUser(const std::size_t& id, bool with_password) {
     sql::PreparedStatement *pstmt;
     sql::ResultSet *res;
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
-    pstmt->setInt(1, (int)id);
+    pstmt->setInt(1, static_cast<int>(id));
 
     try {
         res = pstmt->executeQuery();
@@ -112,7 +112,7 @@ user_t User::GetUser(const std::size_t& id, bool with_password) {
         }
         u.username = res->getString("username");
         u.avatar = res->getString("avatar");
-        u.money = (double) res->getDouble("money");
+        u.money = static_cast<double>(res->getDouble("money"));
         u.status_code = OK;
     } catch (sql::SQLException &e) {
         delete pstmt;
@@ -158,7 +158,7 @@ user_t User::GetUser(const std::string & login, bool with_password) {
         }
         u.username = res->getString("username");
         u.avatar = res->getString("avatar");
-        u.money = (double) res->getDouble("money");
+        u.money = static_cast<double>(res->getDouble("money"));
         u.status_code = OK;
     } catch (sql::SQLException &e) {
         delete pstmt;
@@ -243,7 +243,7 @@ int User::UpdateStringField(const std::string &field_name, const std::size_t &id
     std::string query_string = "UPDATE user SET " + field_name + " = ? WHERE id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setString(1, data);
-    pstmt->setInt(2, (int) id);
+    pstmt->setInt(2, static_cast<int>(id));
 
     try {
         if (pstmt->executeUpdate() == 0) {
@@ -314,7 +314,7 @@ int User::UpdateMoney(const size_t &id, const double& money, const std::string& 
 
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
     pstmt->setDouble(1, money);
-    pstmt->setInt(2, (int) id);
+    pstmt->setInt(2, static_cast<int>(id));
 
     try {
         if (pstmt->executeUpdate() == 0) {
@@ -341,7 +341,7 @@ int User::DeleteUser(const size_t &id) {
 
     std::string query_string = "DELETE FROM user WHERE id = ?";
     pstmt = conn_.GetConnection().PrepareQuery(query_string);
-    pstmt->setInt(1, (int) id);
+    pstmt->setInt(1, static_cast<int>(id));
 
     try {
         if (pstmt->executeUpdate() == 0) {

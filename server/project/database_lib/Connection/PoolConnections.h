@@ -16,6 +16,7 @@ public:
     // prohibit copying the object
     PoolConnections(const PoolConnections&) = delete;
     Connection operator=(const PoolConnections&) = delete;
+    ~PoolConnections()=default;
 
     static PoolConnections* GetInstance();
 
@@ -25,14 +26,13 @@ public:
 
 private:
     PoolConnections();
-    ~PoolConnections()=default;
 
     bool GrowPool();
 
     std::vector<std::pair<Connection, bool>> pool_;
     config_t config_params_;
 
-    static PoolConnections* instance_;
+    static std::unique_ptr<PoolConnections> instance_;
     static std::mutex my_mutex_;
 
 };
