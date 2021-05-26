@@ -99,6 +99,12 @@ int GameSearchFragment::CheckData() {
     }
 }
 
+void GameSearchFragment::WrongDataRoomJoin() {
+    QMessageBox msgBox;
+    msgBox.setText("Cannot join to room");
+    msgBox.setWindowTitle("Joining error");
+    msgBox.exec();
+}
 
 void GameSearchFragment::onMenuPressed() {
     QSound::play(":/music/click");
@@ -110,7 +116,12 @@ void GameSearchFragment::onHostPressed() {
     if (CheckData()) {
         QMessageBox msgBox;
         msgBox.setText("Id and/or password incorrect");
-        msgBox.setWindowTitle("Error finding room");
+        msgBox.setWindowTitle("Error Hosting room");
+        msgBox.exec();
+    } else if ( globalInfo::Balance < 2) {
+        QMessageBox msgBox;
+        msgBox.setText("Go find some money, buddy");
+        msgBox.setWindowTitle("Error Hosting room");
         msgBox.exec();
     } else {
          Client->CreateRoom(passwordEdit->text().toStdString());
@@ -123,6 +134,11 @@ void GameSearchFragment::onSearchPressed() {
     if (CheckData()) {
         QMessageBox msgBox;
         msgBox.setText("Id and/or password incorrect");
+        msgBox.setWindowTitle("Error finding room");
+        msgBox.exec();
+    } else if ( globalInfo::Balance < 2) {
+        QMessageBox msgBox;
+        msgBox.setText("Go find some money, buddy");
         msgBox.setWindowTitle("Error finding room");
         msgBox.exec();
     } else {

@@ -15,6 +15,8 @@ public:
     LoginFragment();
     ~LoginFragment();
 public slots:
+    void WrongData();
+private slots:
     void onLoginPressed();
     void onExitPressed();
     void onRegistrationPressed();

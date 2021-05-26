@@ -1,8 +1,6 @@
 #include "navigator.h"
 #include "screenfactory.h"
 
-
-
 using namespace screens;
 
 FragmentNavigator::FragmentNavigator(
@@ -10,16 +8,15 @@ FragmentNavigator::FragmentNavigator(
         BaseScreensFactory *screensFactory,
         Resolver* resolver) : mResolver(resolver) {
 
-    qDebug("create navigator");
     this->screensFactory = screensFactory;
     this->currentContainer = container;
-    qDebug("create start fragment");
     BaseFragment* startFragment = getStartScreen();
-    qDebug("append start fragment");
     connectFragment(resolver);
-    this->stack.push_back(startFragment);
 
-    qDebug("add widget");
+    auto tmp = static_cast<LoginFragment*>(startFragment);
+    connect(mResolver, &Resolver::WrongDataAutorisation, tmp, &LoginFragment::WrongData, Qt::QueuedConnection);
+
+    this->stack.push_back(startFragment);
     currentContainer->addWidget(stack.back());
     currentContainer->setCurrentIndex(0);
 }
@@ -74,6 +71,13 @@ void FragmentNavigator::navigateTo(QString tag) {
         connect(mResolver, &Resolver::ClearBank, game, &GameFragment::ClearBank, Qt::QueuedConnection);
         connect(mResolver, &Resolver::DeleteAllPlayersCards, game, &GameFragment::DeleteAllPlayersCards, Qt::QueuedConnection);
         connect(mResolver, &Resolver::SetMoney, game, &GameFragment::SetMoney, Qt::QueuedConnection);
+    } else if (tag == REGISTRATION_TAG) {
+        RegistrationFragment* reg = static_cast<RegistrationFragment*>(newFragment);
+        connect(mResolver, &Resolver::WrongDataRegistration, reg, &RegistrationFragment::WrongDataRegistration, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::RightDataRegistration, reg, &RegistrationFragment::RightDataRegistration, Qt::QueuedConnection);
+    } else if (tag == SEARCH_TAG) {
+        GameSearchFragment* src = static_cast<GameSearchFragment*>(newFragment);
+        connect(mResolver, &Resolver::WrongDataRoomJoin, src, &GameSearchFragment::WrongDataRoomJoin, Qt::QueuedConnection);
     }
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);
@@ -85,7 +89,6 @@ BaseFragment* FragmentNavigator::Front() {
 }
 
 void FragmentNavigator::back() {
-    qDebug("Navigator back");
     currentContainer->removeWidget(stack.back());
     delete stack.back();
     stack.pop_back();
@@ -97,13 +100,11 @@ void FragmentNavigator::back() {
 
 
 void FragmentNavigator::newRootScreen(QString tag) {
-    qDebug("Navigator newRootScreen");
     BaseFragment *newFragment = this->screensFactory->create(tag);
     disconnectFragment(stack.back());
     stack.clear();
     connectFragment(newFragment);
-    for(int i = currentContainer->count(); i >= 0; i--)
-    {
+    for(int i = currentContainer->count(); i >= 0; i--) {
         QWidget* widget = currentContainer->widget(i);
         currentContainer->removeWidget(widget);
         widget->deleteLater();
@@ -119,7 +120,6 @@ BaseFragment* FragmentNavigator::getStartScreen() {
 
 
 void FragmentNavigator::connectFragment(BaseFragment *fragment) {
-    qDebug("Navigator connect slots");
     connect(fragment, &BaseFragment::back, this, &FragmentNavigator::back);
     connect(fragment, &BaseFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     connect(fragment, &BaseFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
@@ -127,7 +127,6 @@ void FragmentNavigator::connectFragment(BaseFragment *fragment) {
 }
 
 void FragmentNavigator::disconnectFragment(BaseFragment *fragment) {
-    qDebug("Navigator disconnect slots");
     disconnect(fragment, &BaseFragment::back, this, &FragmentNavigator::back);
     disconnect(fragment, &BaseFragment::navigateTo, this, &FragmentNavigator::navigateTo);
     disconnect(fragment, &BaseFragment::newRootScreen, this, &FragmentNavigator::newRootScreen);
@@ -136,7 +135,6 @@ void FragmentNavigator::disconnectFragment(BaseFragment *fragment) {
 
 BaseFragment* FragmentNavigator::createAndConnect(QString tag) {
     BaseFragment *fragment = this->screensFactory->create(tag);
-    qDebug("Navigator create screen");
     connectFragment(fragment);
     return fragment;
 }

@@ -85,7 +85,7 @@ void CreditMenuFragment::onEquationsPressed() {
 void CreditMenuFragment::onMinerPressed() {
     QSound::play(":/music/click");
     QMessageBox msgBox;
-     msgBox.setText("Just kidding, where is no viruses 😉");
+     msgBox.setText("Just kidding, there are no viruses 😉");
      msgBox.setWindowTitle("BITCOIN MINER HAS BEEN INSTALLED");
      msgBox.exec();
 }

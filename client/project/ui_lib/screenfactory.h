@@ -3,6 +3,17 @@
 
 #include "basescreensfactory.h"
 
+#include "loginfragment.h"
+#include "registrationfragment.h"
+#include "menufragment.h"
+#include "settingsfragment.h"
+#include "gamesearchfragment.h"
+#include "gamefragment.h"
+#include "rulesfragment.h"
+#include "creditmenufragment.h"
+#include "equationsfragment.h"
+
+
 namespace screens {
     static const QString LOGIN_TAG = "login";
     static const QString REGISTRATION_TAG = "registration";

@@ -126,6 +126,13 @@ void LoginFragment::onExitPressed() {
     QApplication::quit();
 }
 
+void LoginFragment::WrongData() {
+    QMessageBox msgBox;
+    msgBox.setText("Info is incorrect");
+    msgBox.setWindowTitle("Autorisation error");
+    msgBox.exec();
+}
+
 int LoginFragment::CheckData() {
     if (loginEdit->text().length() < 5 && passwordEdit->text().length() < 5) {
         return 1;

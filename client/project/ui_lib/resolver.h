@@ -41,6 +41,11 @@ public:
     void Run();
 
 signals:
+    void WrongDataAutorisation();
+    void WrongDataRegistration();
+    void RightDataRegistration();
+    void WrongDataRoomJoin();
+
     void DeleteAllPlayersCards();
     void DeletePlayer(size_t player_id);
     void DrawPlayer(size_t player_id, std::string nickname, size_t total_money);
@@ -117,5 +122,6 @@ private:
     bool is_admin_;
     bool is_started_;
     bool winner_displayed;
+    uint8_t winner_pos;
     std::vector<resolver::Player> players_;
 };

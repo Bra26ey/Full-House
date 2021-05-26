@@ -1,13 +1,4 @@
 #include "screenfactory.h"
-#include "loginfragment.h"
-#include "registrationfragment.h"
-#include "menufragment.h"
-#include "settingsfragment.h"
-#include "gamesearchfragment.h"
-#include "gamefragment.h"
-#include "rulesfragment.h"
-#include "creditmenufragment.h"
-#include "equationsfragment.h"
 
 
 using namespace screens;

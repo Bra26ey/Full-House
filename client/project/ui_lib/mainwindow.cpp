@@ -41,8 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
         client_thread = std::make_unique<std::thread>([&] { Client->Run(); });
         client_thread->detach();
 
-
-
         resolver_thread = std::make_unique<std::thread>([&] { resolver.Run(); });
         resolver_thread->detach();
 

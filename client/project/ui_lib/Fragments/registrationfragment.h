@@ -14,6 +14,10 @@ public:
     ~RegistrationFragment();
 
 public slots:
+    void WrongDataRegistration();
+    void RightDataRegistration();
+
+private slots:
     void onRegistrationPressed();
     int CheckData();
 

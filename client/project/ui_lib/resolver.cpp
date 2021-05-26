@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <QDebug>
+#include <QApplication>
 
 #include "client_impl.h"
 
@@ -52,16 +53,10 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
 
     if (command == "registration") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            QMessageBox msgBox;
-            msgBox.setText("Registration succesfully done");
-            msgBox.setWindowTitle("Success");
-            msgBox.exec();
+            emit RightDataRegistration();
             emit back();
         } else {
-            QMessageBox msgBox;
-            msgBox.setText("Such username is existing");
-            msgBox.setWindowTitle("Autorisation error");
-            msgBox.exec();
+            emit WrongDataRegistration();
         }
         return;
     }
@@ -70,10 +65,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             emit navigateTo(MAIN_TAG);
         } else {
-            QMessageBox msgBox;
-            msgBox.setText("Info is incorrect");
-            msgBox.setWindowTitle("Autorisation error");
-            msgBox.exec();
+            emit WrongDataAutorisation();
         }
         return;
     }
@@ -201,10 +193,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "fail") {
-        QMessageBox msgBox;
-        msgBox.setText("Cannot connect to room");
-        msgBox.setWindowTitle("Join error");
-        msgBox.exec();
+        emit WrongDataRoomJoin();
     }
 }
 
@@ -286,6 +275,7 @@ void Resolver::HandleInitGame(const pt::ptree &gamestatus) {
     first_msg_ = false;
     winner_displayed = false;
     emit DeleteWinnerDisplay();
+    emit ClearAllStatus();
     emit DeleteAllCardsFromTable();
     emit DeleteAllPlayersCards();
     HandlePlayerCards();
@@ -342,7 +332,8 @@ void Resolver::HandleActions(const pt::ptree &gamestatus) {
 
 void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
     if (winner_displayed == false) {
-        emit DisplayWinner(GetTablePos(winner_pos));
+        auto converted_winner = GetTablePos(winner_pos);
+        emit DisplayWinner(converted_winner);
         winner_displayed = true;
     }
     emit FlipAllCards();
@@ -386,8 +377,8 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
 
         if (current_player.position == 0) {
             globalInfo::Balance = current_player.money;
+            emit SetMaxBet(current_player.money);
         }
-
 
         if (!is_started_) {
             new_players.push_back(current_player);
@@ -450,7 +441,7 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
-        std::cout << m;
+//        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

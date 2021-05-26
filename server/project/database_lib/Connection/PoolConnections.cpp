@@ -2,7 +2,7 @@
 
 namespace database {
 
-PoolConnections* PoolConnections::instance_(nullptr);
+std::unique_ptr<PoolConnections> PoolConnections::instance_(nullptr);
 std::mutex PoolConnections::my_mutex_;
 
 PoolConnections::PoolConnections() {
@@ -16,9 +16,9 @@ PoolConnections::PoolConnections() {
 PoolConnections* PoolConnections::GetInstance() {
     std::lock_guard<std::mutex> lock(my_mutex_);
     if (instance_ == nullptr) {
-        instance_ = new PoolConnections();
+        instance_ = std::unique_ptr<PoolConnections>(new PoolConnections());
     }
-    return instance_;
+    return instance_.get();
 }
 
 
@@ -26,7 +26,7 @@ int PoolConnections::SetParams(const std::string& filename = "config.txt") {
     std::lock_guard<std::mutex> lock(my_mutex_);
     FileHandler fh;
     config_params_ = fh.ParseConfig(filename);
-    return (int) config_params_.status_code;
+    return static_cast<int>(config_params_.status_code);
 }
 
 
@@ -64,7 +64,7 @@ int PoolConnections::GetConnection(Connection& conn) {
     if (out) {
         conn = std::move(pool_[old_size].first);
         pool_[old_size].second = BUSY_CONN;
-        return (int) old_size;
+        return static_cast<int>(old_size);
     }
     else {
         return -1;
