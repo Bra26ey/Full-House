@@ -25,7 +25,7 @@ bool Connection::Connect(const std::string &url, const std::string &password,
             conn_ = driver->connect(url, user, password);
             conn_->setSchema(dbase_name);
 
-            return InitSchema() == OK ? true : false;
+            return InitSchema() == OK;
         } catch (sql::SQLException & e) {
             std::cout << "Could not to connect to database '"<< dbase_name << "'" << std::endl;
             return false;
@@ -58,7 +58,7 @@ int Connection::InitSchema() {
         FileHandler fh;
         schemas_ = fh.ParseDbSchema();
         if (schemas_.status_code != OK) {
-            return (int) schemas_.status_code;
+            return static_cast<int>(schemas_.status_code);
         }
     }
 
@@ -71,7 +71,7 @@ int Connection::InitSchema() {
     stmt->execute(schemas_.active_board);
 
     delete stmt;
-    return (int) schemas_.status_code;
+    return static_cast<int>(schemas_.status_code);
 }
 
 

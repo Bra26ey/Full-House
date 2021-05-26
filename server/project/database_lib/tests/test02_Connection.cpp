@@ -4,7 +4,7 @@
 #include "../Connection/SafetyConnection.h"
 
 
-PoolConnections* PoolConnections::instance_{nullptr};
+std::unique_ptr<PoolConnections> PoolConnections::instance_{nullptr};
 std::mutex PoolConnections::my_mutex_;
 
 
