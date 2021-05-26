@@ -11,8 +11,10 @@ class GameSearchFragment: public BaseFragment {
 public:
     GameSearchFragment();
     ~GameSearchFragment();
-
 public slots:
+   void WrongDataRoomJoin();
+
+private slots:
     void onSearchPressed();
     int CheckData();
     void onMenuPressed();

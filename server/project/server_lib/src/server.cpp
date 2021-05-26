@@ -11,7 +11,7 @@
 namespace network {
 
 Server::Server() : context_(),
-                   endpoint_(address::from_string("127.0.1.0"), PORT),
+                   endpoint_(address::from_string("0.0.0.0"), PORT),
                    acceptor_(context_) {}
 
 Server::~Server() {}

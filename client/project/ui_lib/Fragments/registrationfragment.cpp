@@ -89,6 +89,19 @@ RegistrationFragment::RegistrationFragment() {
 }
 
 
+void RegistrationFragment::WrongDataRegistration() {
+    QMessageBox msgBox;
+    msgBox.setText("Info is incorrect");
+    msgBox.setWindowTitle("Registration error");
+    msgBox.exec();
+}
+
+void RegistrationFragment::RightDataRegistration() {
+    QMessageBox msgBox;
+    msgBox.setText("Registration succesfully done");
+    msgBox.setWindowTitle("Success");
+    msgBox.exec();
+}
 
 void RegistrationFragment::onRegistrationPressed() {
     QSound::play(":/music/click");

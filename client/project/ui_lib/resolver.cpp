@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <QDebug>
+#include <QApplication>
 
 #include "client_impl.h"
 
@@ -52,16 +53,10 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
 
     if (command == "registration") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            QMessageBox msgBox;
-            msgBox.setText("Registration succesfully done");
-            msgBox.setWindowTitle("Success");
-            msgBox.exec();
+            emit RightDataRegistration();
             emit back();
         } else {
-            QMessageBox msgBox;
-            msgBox.setText("Such username is existing");
-            msgBox.setWindowTitle("Autorisation error");
-            msgBox.exec();
+            emit WrongDataRegistration();
         }
         return;
     }
@@ -70,10 +65,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
             emit navigateTo(MAIN_TAG);
         } else {
-            QMessageBox msgBox;
-            msgBox.setText("Info is incorrect");
-            msgBox.setWindowTitle("Autorisation error");
-            msgBox.exec();
+            emit WrongDataAutorisation();
         }
         return;
     }
@@ -201,10 +193,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
     }
 
     if (status == "fail") {
-        QMessageBox msgBox;
-        msgBox.setText("Cannot connect to room");
-        msgBox.setWindowTitle("Join error");
-        msgBox.exec();
+        emit WrongDataRoomJoin();
     }
 }
 
