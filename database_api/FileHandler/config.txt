@@ -1,0 +1,4 @@
+url=localhost
+user=root
+password=Erm!n2000
+database=poker_database
