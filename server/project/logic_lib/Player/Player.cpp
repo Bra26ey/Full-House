@@ -9,18 +9,18 @@
 
 namespace logic {
 
-enum class Combination {
-    HIGHEST_CARD = 1,
+namespace Combination {
+    double HIGHEST_CARD = 1,
     ONE_PAIR = 10,
     TWO_PAIRS = 100,
-    SET = 1000,
-    STRAIGHT = 10000,
-    FLUSH = 100000,
-    FULL_HOUSE = 1000000,
-    QUADS = 10000000,
-    STRAIGHT_FLUSH = 100000000,
-    ROYAL_FLUSH = 1000000000,
-};
+    SET = 10000,
+    STRAIGHT = 100000,
+    FLUSH = 1000000,
+    FULL_HOUSE = 10000000,
+    QUADS = 100000000,
+    STRAIGHT_FLUSH = 1000000000,
+    ROYAL_FLUSH = 10000000000;
+}
 
 
 Player::Player(): in_pot(false), current_stage_money_in_pot(0), position(0) {}
@@ -149,9 +149,16 @@ int Player::CountComb(std::vector<Card>& combination_detect, int how_many_comb, 
             ++counter_of_current_card;
             if (counter_of_current_card == ammount_of_cards) {
                 ++counter_of_combs;
-                if (static_cast<int>(it->value) > max_value) {
+                if (how_many_comb == 2 && ammount_of_cards == 2) {
+                    if (max_value == 0) {
+                        max_value += static_cast<int>(it->value) * 15;
+                    } else {
+                        max_value += static_cast<int>(it->value);
+                    }
+                } else if (static_cast<int>(it->value) > max_value) {
                     max_value = static_cast<int>(it->value);
                 }
+
             }
         }
         counter_of_current_card = 0;

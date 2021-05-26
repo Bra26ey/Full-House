@@ -26,7 +26,7 @@ Client::~Client() {
 bool Client::Connect() {
     // tcp::endpoint endpoint(address::from_string(SERVER_IP), SERVER_PORT);
     std::cout << "try connect" << std::endl;
-    tcp::endpoint endpoint(address::from_string("127.0.1.0"), SERVER_PORT);
+    tcp::endpoint endpoint(address::from_string("89.19.190.83"), SERVER_PORT);
     socket_.connect(endpoint);
     is_closeing.store(false);
     std::cout << "connection done on ep = " << endpoint << std::endl;
