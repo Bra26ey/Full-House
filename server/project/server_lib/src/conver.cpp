@@ -18,7 +18,6 @@ logic::HandConfiguration convert(database::active_board const &board) {
         player->id = it.id;
         player->name = it.username;
         player->money = it.reserved_money;
-        std::cout << it.reserved_money << "\n";
         player->position = it.position;
         hand_config.players.push_back(player);
     }

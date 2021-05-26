@@ -336,7 +336,7 @@ void GameTalker::HandleGameRequest(std::shared_ptr<User> &user) {
 void GameTalker::UpdateTableDatabase() {
     auto hand_config = convert(handprocess_.hand_config);
     board_db_.UpdateHandConfiguration(id, hand_config);
-    auto winner_id = positions_.GetId(handprocess_.GetWiner());
+    auto winner_id = positions_.GetId(handprocess_.GetWinner());
     auto bank = handprocess_.GetBank();
     user_db_.UpdateMoney(winner_id, bank);
     auto winner = std::find_if(users_.begin(), users_.end(), [winner_id](std::shared_ptr<User> user) {return user->id == winner_id;});
@@ -373,6 +373,7 @@ void GameTalker::HandleGameProcess() {
             }
             yield {
                 handprocess_.PotDistribution();
+                UpdateTableDatabase();
                 is_gaming.store(false);
             }
         }

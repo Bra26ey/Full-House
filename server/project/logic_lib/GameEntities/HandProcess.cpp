@@ -29,7 +29,7 @@ HandProcess::HandProcess(size_t ammount_of_cards) : current_player_pos(0), hand_
                                                     logger(std::make_shared<Logger>()), deck_(ammount_of_cards),
                                                     board_(),
                                                     is_started_(false),
-                                                    winer_pos_(NOT_DEFINDED) {}
+                                                    winner_pos_(NOT_DEFINDED) {}
 
 void HandProcess::Init(HandConfiguration const &handconfiguration) {
     board_.cards.clear();
@@ -38,7 +38,7 @@ void HandProcess::Init(HandConfiguration const &handconfiguration) {
     hand_config = handconfiguration;
     num_cards_on_table_ = 0;
     is_started_ = false;
-    winer_pos_ = NOT_DEFINDED;
+    winner_pos_ = NOT_DEFINDED;
     hand_config.players.sort([](const std::shared_ptr<Player>& a, const std::shared_ptr<Player>& b) -> bool {
         return a.get()->position < b.get()->position;
     });
@@ -56,7 +56,7 @@ void HandProcess::Init(HandConfiguration const &handconfiguration) {
 void HandProcess::DealCards() {
     mutex.lock();
     is_started_ = true;
-    winer_pos_ = NOT_DEFINDED;
+    winner_pos_ = NOT_DEFINDED;
     for (auto it = hand_config.players.cbegin(); it != hand_config.players.cend(); ++it) {
         for (unsigned int i = 0; i < hand_config.count_of_player_cards; ++i) {
             it->get()->cards.push_back(deck_.Peak());
@@ -204,7 +204,7 @@ void HandProcess::PotDistribution() {
         need_next_stage = false;
         auto it = std::find_if(hand_config.players.begin(), hand_config.players.end(),
                                [](std::shared_ptr<Player> &current) { return current->in_pot; });
-        winer_pos_ = it->get()->position;
+        winner_pos_ = it->get()->position;
         is_started_ = false;
         mutex.unlock();
         return;
@@ -230,7 +230,7 @@ void HandProcess::PotDistribution() {
     logger->Log("Player [{}] won [{}]", max_hand_value_player->get()->name, board_.pot);
     board_.cards.clear();
 
-    winer_pos_ = max_hand_value_player->get()->position;
+    winner_pos_ = max_hand_value_player->get()->position;
     is_started_ = false;
     mutex.unlock();
 }
@@ -302,9 +302,9 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
                 check_avaiable_ = false;
             }
 
+            ++num_actions_;
             current_player_pos = it->get()->position;
             PlayerInfo action;
-            num_actions_++;
             mutex.unlock();
             do {
                 action = command_queue.pop();  // block-function
@@ -314,27 +314,18 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
             signal = command_[action.command];
             last_command_ = action;
 
-
             switch (signal) {
                 case (FOLD_SIGNAL):
                     it->get()->Fold();
-
-                    {
-                        // std::lock_guard<std::mutex> lock(mutex);
-                        it->get()->in_pot = false;
-                        players_in_pot -= 1;
-                    }
+                    it->get()->in_pot = false;
+                    players_in_pot -= 1;
 
                     logger->Log("[{}] folded\n\n", it->get()->name);
                     break;
 
                 case (CALL_SIGNAL):
-
-                    {
-                        // std::lock_guard<std::mutex> lock(mutex);
-                        buf = it->get()->Call(raised_money - it->get()->current_stage_money_in_pot);  // pot money
-                        board_.pot += it->get()->current_stage_money_in_pot - buf;
-                    }
+                    buf = it->get()->Call(raised_money - it->get()->current_stage_money_in_pot);  // pot money
+                    board_.pot += it->get()->current_stage_money_in_pot - buf;
 
                     logger->Log("[{}] called from [{}] to [{}]\n\n", it->get()->name, buf,
                                 it->get()->current_stage_money_in_pot);
@@ -342,12 +333,8 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
 
                 case (RAISE_SIGNAL):
                     buf = it->get()->current_stage_money_in_pot;
-
-                    {
-                        // std::lock_guard<std::mutex> lock(mutex);
-                        raised_money = it->get()->Raise(raised_money, action.sum);
-                        board_.pot += raised_money - buf;
-                    }
+                    raised_money = it->get()->Raise(raised_money, action.sum);
+                    board_.pot += raised_money - buf;
 
                     someone_raised = true;
                     position_of_raiser = it;
@@ -372,9 +359,9 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
     }
 }
 
-uint8_t HandProcess::GetWiner() {
+uint8_t HandProcess::GetWinner() {
     std::lock_guard<std::mutex> lock(mutex);
-    return winer_pos_;
+    return winner_pos_;
 }
 int HandProcess::GetBank() {
     std::lock_guard<std::mutex> lock(mutex);
@@ -434,8 +421,8 @@ boost::property_tree::ptree HandProcess::GetGameStatus() {
     }
 
     status.add_child("players", players_status);
-    status.put("winner-position", winer_pos_);
-    if (is_started_ || winer_pos_ != NOT_DEFINDED) {
+    status.put("winner-position", winner_pos_);
+    if (is_started_ || winner_pos_ != NOT_DEFINDED) {
         boost::property_tree::ptree last_command;
         last_command.put("position", last_command_.pos);
         last_command.put("command", last_command_.command);

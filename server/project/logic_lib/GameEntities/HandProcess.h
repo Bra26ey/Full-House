@@ -55,7 +55,7 @@ namespace logic {
         void PotDistribution();
 
         boost::property_tree::ptree GetGameStatus();
-        uint8_t GetWiner();
+        uint8_t GetWinner();
         int GetBank();
 
         std::atomic<unsigned int> current_player_pos;
@@ -79,7 +79,7 @@ namespace logic {
 
         bool is_started_;
         short num_cards_on_table_;
-        uint8_t winer_pos_;
+        uint8_t winner_pos_;
         uint16_t num_actions_;
         bool check_avaiable_;
         PlayerInfo last_command_;
