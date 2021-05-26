@@ -36,14 +36,14 @@ GameTalker::GameTalker(io_context &context, database::Board &board_db,
 
     id = answer.first;
     database::hand_configuration_t hand_config;
-        hand_config.button_pos = 0;
-        hand_config.small_blind_pos = 0;
-        hand_config.big_blind_pos = 1;
-        hand_config.small_blind_bet = 1;
-        hand_config.big_blind_bet = 2;
-        hand_config.max_size_of_players = USERS_MAX;
-        hand_config.count_of_player_cards = 2;
-        board_db_.UpdateHandConfiguration(id, hand_config);
+    hand_config.button_pos = 0;
+    hand_config.small_blind_pos = 0;
+    hand_config.big_blind_pos = 1;
+    hand_config.small_blind_bet = 1;
+    hand_config.big_blind_bet = 2;
+    hand_config.max_size_of_players = USERS_MAX;
+    hand_config.count_of_player_cards = 2;
+    board_db_.UpdateHandConfiguration(id, hand_config);
     admin_id_.store(user->id);
 
     auto code = board_db_.AddUserToBoard(id, user->id, password);
@@ -344,10 +344,17 @@ void GameTalker::UpdateTableDatabase() {
     users_mutex_.unlock();
 }
 
+void GameTalker::InitReservedMoney() {
+    for (auto &it : users_) {
+        board_db_.SetReservedMoney(id, it->id, it->money);
+    }
+}
+
 void GameTalker::HandleGameProcess() {
     reenter(this) {
         while (true) {
             yield {
+                InitReservedMoney();
                 auto hand_config = convert(board_db_.GetActiveBoard(id));
                 handprocess_.Init(hand_config);
                 boost::asio::post(boost::bind(&GameTalker::HandleGameProcess, this));
