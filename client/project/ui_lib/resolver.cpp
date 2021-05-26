@@ -342,7 +342,8 @@ void Resolver::HandleActions(const pt::ptree &gamestatus) {
 
 void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
     if (winner_displayed == false) {
-        emit DisplayWinner(GetTablePos(winner_pos));
+        auto converted_winner = GetTablePos(winner_pos);
+        emit DisplayWinner(converted_winner);
         winner_displayed = true;
     }
     emit FlipAllCards();

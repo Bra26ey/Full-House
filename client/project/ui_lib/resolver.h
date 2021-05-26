@@ -117,5 +117,6 @@ private:
     bool is_admin_;
     bool is_started_;
     bool winner_displayed;
+    uint8_t winner_pos;
     std::vector<resolver::Player> players_;
 };
