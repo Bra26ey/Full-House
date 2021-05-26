@@ -73,6 +73,7 @@ void FragmentNavigator::navigateTo(QString tag) {
         connect(mResolver, &Resolver::DeleteWinnerDisplay, game, &GameFragment::DeleteWinnerDisplay, Qt::QueuedConnection);
         connect(mResolver, &Resolver::ClearBank, game, &GameFragment::ClearBank, Qt::QueuedConnection);
         connect(mResolver, &Resolver::DeleteAllPlayersCards, game, &GameFragment::DeleteAllPlayersCards, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::SetMoney, game, &GameFragment::SetMoney, Qt::QueuedConnection);
     }
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);

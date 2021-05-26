@@ -72,6 +72,7 @@ signals:
     void SetCall(size_t player_id);
     void SetRaise(size_t player_id, size_t bet);
     void SetCheck(size_t player_id);
+    void SetMoney(size_t player_id, size_t money);
     void ClearStatus(size_t player_id);
     void AvaliableActions(std::vector<bool> buttons);
     void ClearBank();

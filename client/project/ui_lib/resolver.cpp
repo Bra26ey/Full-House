@@ -56,7 +56,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
             msgBox.setText("Registration succesfully done");
             msgBox.setWindowTitle("Success");
             msgBox.exec();
-            back();
+            emit back();
         } else {
             QMessageBox msgBox;
             msgBox.setText("Ты инвалид");
@@ -68,7 +68,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
 
     if (command == "autorisation") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            navigateTo(MAIN_TAG);
+            emit navigateTo(MAIN_TAG);
         } else {
             QMessageBox msgBox;
             msgBox.setText("Ты инвалид");
@@ -80,7 +80,7 @@ void Resolver::BaseAnswer(pt::ptree const &answer) {
 
     if (command == "logout") {
         if (answer.get_child("parametrs").get<std::string>("status") == "done") {
-            back();
+            emit back();
         } else {
             // FUCK OH NO
         }
@@ -125,7 +125,7 @@ void Resolver::RoomBasicAnswer(pt::ptree const &answer) {
             is_started_ = false;
             first_msg_ = true;
             players_.clear();
-            back();
+            emit back();
         } else {
             // FUCK OH NO
         }
@@ -185,7 +185,7 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
         first_msg_ = true;
         players_.clear();
         our_server_position_ = parametrs.get<uint8_t>("position");
-        navigateTo(GAME_TAG);
+        emit navigateTo(GAME_TAG);
         return;
     }
 
@@ -371,11 +371,13 @@ void Resolver::GetPlayers(pt::ptree const &players, std::vector<resolver::Player
         current_player.position = GetTablePos(player.get<uint8_t>("position"));
         current_player.money = player.get<int>("money");
 
+
         if (!is_started_) {
             new_players.push_back(current_player);
             continue;
         }
 
+        emit SetMoney(current_player.position, current_player.money);
         current_player.in_pot = player.get<bool>("in-pot");
         auto cards = player.get_child("cards");
         BOOST_FOREACH(const pt::ptree::value_type &vc, cards) {
@@ -432,6 +434,7 @@ void Resolver::HandleBoardCards(pt::ptree const &board_cards) {
 void Resolver::Run() {
     while (Client->IsConnected()) {
         auto m = Client->GetLastMsg();
+        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

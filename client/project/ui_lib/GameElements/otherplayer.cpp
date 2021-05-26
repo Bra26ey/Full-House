@@ -77,6 +77,10 @@ void OtherPlayer::setCall() {
     mPlayerInfo->setCall();
 }
 
+void OtherPlayer::setMoney(size_t money) {
+    mPlayerInfo->setMoney(money);
+}
+
 void OtherPlayer::SetPosition(QRect &pos) {
     mPos = pos;
 }
@@ -184,8 +188,8 @@ void OtherPlayer::setCardPos() {
                 mCards.first->setGeometry(35, -45, 220, 220);
                 mCards.second->setGeometry(85, -45, 220, 220);
             } else if (mPos == firstposmin) {
-                mCards.first->setGeometry(160, 60, 220, 220);
-                mCards.second->setGeometry(200, 60, 220, 220);
+                mCards.first->setGeometry(160, 80, 220, 220);
+                mCards.second->setGeometry(200, 80, 220, 220);
             } else if (mPos == secondposmin) {
                 mCards.first->setGeometry(130, 210, 220, 220);
                 mCards.second->setGeometry(190, 210, 220, 220);

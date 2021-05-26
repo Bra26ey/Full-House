@@ -34,17 +34,16 @@ void PlayerInfoLabel::setTotal(size_t total) {
 
 void PlayerInfoLabel::setBet(size_t bet) {
     QString total = "Bet 🌝: " + QString::number(bet);
-    TotalMoney -= bet;
-    QString totalm = "Bank 💰: " + QString::number(TotalMoney);
-    mTotalMoney->setText(totalm);
     mStatus->setText(total);
+}
+
+void PlayerInfoLabel::setMoney(size_t money) {
+    QString totalm = "Bank 💰: " + QString::number(money);
+    mTotalMoney->setText(totalm);
 }
 
 void PlayerInfoLabel::setRaise(size_t bet) {
     QString total = "Raise 🌝: " + QString::number(bet);
-    TotalMoney -= bet;
-    QString totalm = "Bank 💰: " + QString::number(TotalMoney);
-    mTotalMoney->setText(totalm);
     mStatus->setText(total);
 }
 

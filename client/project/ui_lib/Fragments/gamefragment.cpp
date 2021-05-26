@@ -356,6 +356,12 @@ void GameFragment::SetBet(size_t player_id, size_t bet) {
     mOtherPlayers[player_id]->show();
 }
 
+void GameFragment::SetMoney(size_t player_id, size_t money) {
+    mOtherPlayers[player_id]->setMoney(money);
+    this->resizeEvent(nullptr);
+    mOtherPlayers[player_id]->show();
+}
+
 void GameFragment::ClearStatus(size_t player_id) {
         mOtherPlayers[player_id]->ClearStatus();
         this->resizeEvent(nullptr);

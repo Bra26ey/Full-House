@@ -29,7 +29,6 @@ Card::Card(size_t const& value, size_t const&  suit, bool const& upsided): mUpSi
 
 
 Card::~Card() {
-    qDebug("Card is destroyed");
     delete mDownTexture;
     delete mUpTexture;
 }

@@ -53,6 +53,7 @@ public:
     void setCall();
     void ClearStatus();
     void setBet(size_t bet);
+    void setMoney(size_t money);
 
     QString GetName();
     void AddMoney(size_t add);

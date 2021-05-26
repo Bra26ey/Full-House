@@ -15,6 +15,7 @@ public:
     void setRaise(size_t bet);
     void setCheck();
     void setCall();
+    void setMoney(size_t money);
     void ClearStatus();
 
     void setTotal(size_t total);

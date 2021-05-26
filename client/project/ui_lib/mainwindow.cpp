@@ -13,8 +13,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     try {
-        qDebug() << QThread::currentThreadId();
-        qDebug("create main window");
         container = new QStackedWidget;
         container->setObjectName("ui");
 
@@ -56,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-    qDebug("MainWindowDest");
     Client->Disconnect();
     delete navigator;
     delete container;
