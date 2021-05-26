@@ -416,7 +416,7 @@ void GameFragment::UnBlockActions() {
 void GameFragment::DisplayWinner(size_t player_id) {
     QString text;
 
-    mOtherPlayers[player_id]->AddMoney(mChips->GetBank());
+//    mOtherPlayers[player_id]->AddMoney(mChips->GetBank());
     text = "Winner is " + mOtherPlayers[player_id]->GetName() + ". Won " + QString::number(mChips->GetBank()) + "$";
 
     mWinLabel->setText(text);

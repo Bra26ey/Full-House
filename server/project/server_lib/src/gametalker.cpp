@@ -338,7 +338,7 @@ void GameTalker::UpdateTableDatabase() {
     board_db_.UpdateHandConfiguration(id, hand_config);
     auto winner_id = positions_.GetId(handprocess_.GetWinner());
     auto bank = handprocess_.GetBank();
-    user_db_.UpdateMoney(winner_id, bank);
+    user_db_.UpdateMoneyByDelta(winner_id, bank);
     auto winner = std::find_if(users_.begin(), users_.end(), [winner_id](std::shared_ptr<User> user) {return user->id == winner_id;});
     winner->get()->money += bank;
 }

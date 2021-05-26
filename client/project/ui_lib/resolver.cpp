@@ -330,6 +330,8 @@ void Resolver::HandleActions(const pt::ptree &gamestatus) {
 void Resolver::HandleEndOfGame(const uint8_t &winner_pos) {
     if (winner_displayed == false) {
         emit DisplayWinner(GetTablePos(winner_pos));
+        auto win_player = std::find_if(players_.begin(), players_.end(), [&winner_pos](const resolver::Player &player) {return player.position == winner_pos; });
+        emit SetMoney(winner_pos, win_player->money);
         winner_displayed = true;
     }
     emit FlipAllCards();
