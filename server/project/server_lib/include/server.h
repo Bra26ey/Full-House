@@ -18,8 +18,10 @@ using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
 
-//constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local game
- constexpr std::string_view SERVER_IP = "0.0.0.0";  // for public game
+
+// constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local game
+constexpr std::string_view SERVER_IP = "0.0.0.0";  // for public game
+
 constexpr uint16_t PORT = 5000;
 
 namespace network {
@@ -42,7 +44,7 @@ class Server {
     void JoinPlayers();
 
     void HandleAcception(std::shared_ptr<User> &user);
-    void AcceptionDone(std::shared_ptr<User> &user);
+    void AcceptionDone(std::shared_ptr<User> user);
     void AcceptionFailed();
 
  private:
