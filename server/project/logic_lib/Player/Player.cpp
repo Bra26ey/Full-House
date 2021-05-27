@@ -9,8 +9,8 @@
 
 namespace logic {
 
-namespace Combination {
-    double HIGHEST_CARD = 1,
+enum class Combination {
+    HIGHEST_CARD = 1,
     ONE_PAIR = 10,
     TWO_PAIRS = 100,
     SET = 10000,
@@ -19,8 +19,8 @@ namespace Combination {
     FULL_HOUSE = 10000000,
     QUADS = 100000000,
     STRAIGHT_FLUSH = 1000000000,
-    ROYAL_FLUSH = 10000000000;
-}
+    ROYAL_FLUSH = 1000000000,
+};
 
 
 Player::Player(): in_pot(false), current_stage_money_in_pot(0), position(0) {}
