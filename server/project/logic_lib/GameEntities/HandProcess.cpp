@@ -218,6 +218,9 @@ void HandProcess::PotDistribution() {
     std::list<std::shared_ptr<Player> >::iterator max_hand_value_player;
 
     for (auto it = hand_config.players.begin(); it != hand_config.players.end(); ++it) {
+        if (!it->get()->in_pot) {
+            continue;
+        }
         int buf = it->get()->HandValue(board_.cards);
         if (buf > max_hand_value) {
             max_hand_value = buf;
