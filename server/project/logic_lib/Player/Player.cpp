@@ -159,13 +159,15 @@ int Player::CountComb(std::vector<Card>& combination_detect, int how_many_comb, 
                     max_value = static_cast<int>(current_card.value);
                 }
 
+                if (counter_of_combs == how_many_comb) {
+                    return max_value;
+                }
+
             }
         }
         counter_of_current_card = 0;
     }
-    if (counter_of_combs == how_many_comb) {
-        return max_value;
-    }
+
     return 0;
 }
 
