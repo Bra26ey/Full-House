@@ -63,8 +63,6 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(6, nullptr
     BetSlider->setMaximumWidth(500);
     BetSlider->setStyleSheet("color:#242424;margin-top:50px");
 
-
-
     BetSlider->setRange(mMinbet, mMaxbet);
     BetSlider->setTickInterval(1);
     QString value = QString::number(mMinbet);
@@ -116,7 +114,6 @@ GameFragment::GameFragment() : mMinbet(1), mMaxbet(10), mOtherPlayers(6, nullptr
     ShowRoomInfo = new QPushButton("Show Info");
     ShowRoomInfo->setStyleSheet("color:#242424;font-size:24px");
     connect(ShowRoomInfo, &QPushButton::clicked, this, &GameFragment::onInfoPressed);
-
 
     extraHLayout->addWidget(SettingsButton);
     extraHLayout->addWidget(StartGameButton);
@@ -312,8 +309,10 @@ void GameFragment::DrawPlayer(size_t player_id, std::string nickname, size_t tot
 }
 
 void GameFragment::DeletePlayer(size_t player_id) {
-    delete mOtherPlayers[player_id];
-    mOtherPlayers[player_id] = nullptr;
+    if ((player_id > 0 && player_id < 6) || mOtherPlayers[player_id] != nullptr) {
+        delete mOtherPlayers[player_id];
+        mOtherPlayers[player_id] = nullptr;
+    }
 }
 
 void GameFragment::GiveCards(size_t player_id, size_t value1, size_t suit1, size_t value2, size_t suit2) {
