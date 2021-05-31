@@ -13,13 +13,11 @@
 
 namespace logic {
 
-bool HandProcess::one_player_in_pot(HandConfiguration &hand_config) {
+bool HandProcess::one_player_in_pot() {
     size_t count_of_players_in_pot = 0;
-    for (auto it = hand_config.players.cbegin(); it != hand_config.players.cend(); ++it) {
-        if (it->get()->in_pot) {
-            ++count_of_players_in_pot;
-        }
-    }
+    std::count_if(hand_config.players.begin(), hand_config.players.end(), [](const std::shared_ptr<Player>& pl) {
+        return pl.get()->in_pot;
+    });
 
     return count_of_players_in_pot == 1;
 }
@@ -54,7 +52,7 @@ void HandProcess::Init(HandConfiguration const &handconfiguration) {
 }
 
 void HandProcess::DealCards() {
-    mutex.lock();
+    std::lock_guard<std::mutex> l(mutex);
     is_started_ = true;
     winner_pos_ = NOT_DEFINDED;
     for (auto it = hand_config.players.cbegin(); it != hand_config.players.cend(); ++it) {
@@ -104,7 +102,7 @@ bool HandProcess::Preflop() {
         it->get()->current_stage_money_in_pot = 0;
     }
 
-    if (one_player_in_pot(hand_config)) {
+    if (one_player_in_pot()) {
         need_next_stage = false;
         return false;
     }
@@ -134,7 +132,7 @@ bool HandProcess::Flop() {
         it->get()->current_stage_money_in_pot = 0;
     }
 
-    if (one_player_in_pot(hand_config)) {
+    if (one_player_in_pot()) {
         need_next_stage = false;
         return false;
     }
@@ -160,7 +158,7 @@ bool HandProcess::Turn() {
         it->get()->current_stage_money_in_pot = 0;
     }
 
-    if (one_player_in_pot(hand_config)) {
+    if (one_player_in_pot()) {
         need_next_stage = false;
         return false;
     }
@@ -191,7 +189,7 @@ bool HandProcess::River() {
         it->get()->current_stage_money_in_pot = 0;
     }
 
-    if (one_player_in_pot(hand_config)) {
+    if (one_player_in_pot()) {
         need_next_stage = false;
         return false;
     }
@@ -200,10 +198,13 @@ bool HandProcess::River() {
 }
 
 void HandProcess::PotDistribution() {
-    if (one_player_in_pot(hand_config)) {
+    if (one_player_in_pot()) {
         need_next_stage = false;
         auto it = std::find_if(hand_config.players.begin(), hand_config.players.end(),
                                [](std::shared_ptr<Player> &current) { return current->in_pot; });
+        if (it == hand_config.players.end()) {
+            return;
+        }
         winner_pos_ = it->get()->position;
 //        it->get()->money += board_.pot;
         board_.pot = 0;
@@ -226,9 +227,10 @@ void HandProcess::PotDistribution() {
             max_hand_value = buf;
             max_hand_value_player = it;
         }
-        it->get()->current_stage_money_in_pot = 0;
-        it->get()->cards.clear();
-        it->get()->in_pot = false;
+        auto* player = it->get();
+        player->current_stage_money_in_pot = 0;
+        player->cards.clear();
+        player->in_pot = false;
     }
 
     max_hand_value_player->get()->money += board_.pot;
@@ -283,7 +285,7 @@ void HandProcess::GameLoop(bool &someone_raised, bool &first_round,
         someone_raised = false;
         auto it = first_player;
         for (size_t players = 0; players < hand_config.players.size(); it = CircularNext(hand_config.players, it), ++players) {
-            if (one_player_in_pot(hand_config)) {
+            if (one_player_in_pot()) {
                 need_next_stage = false;
                 break;
             }
