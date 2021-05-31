@@ -5,38 +5,31 @@ namespace database {
 bool User::IsExist(const std::size_t& id) {
     std::string query_string = "SELECT id FROM user WHERE id = ?";
 
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
+    std::shared_ptr<sql::PreparedStatement> pstmt;
+    std::shared_ptr<sql::ResultSet> res;
 
     if (!conn_.GetConnection().IsOpen()) {
         return false;
     }
 
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setInt(1, static_cast<int>(id));
 
     try {
-        res = pstmt->executeQuery();
+        res.reset(pstmt->executeQuery());
         if (!res->next()) {
-            delete pstmt;
-            delete res;
             return false;
         }
 
         std::size_t res_id = res->getInt("id");
         if (res_id != id) {
-            delete pstmt;
-            delete res;
             return false;
         }
 
     } catch (sql::SQLException &e) {
-        delete pstmt;
-        delete res;
         return false;
     }
-    delete pstmt;
-    delete res;
+
     return true;
 }
 
@@ -44,38 +37,31 @@ bool User::IsExist(const std::size_t& id) {
 bool User::IsExist(const std::string &login) {
     std::string query_string = "SELECT login FROM user WHERE login = ?";
 
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
+    std::shared_ptr<sql::PreparedStatement> pstmt;
+    std::shared_ptr<sql::ResultSet> res;
 
     if (!conn_.GetConnection().IsOpen()) {
         return false;
     }
 
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setString(1, login);
 
     try {
-        res = pstmt->executeQuery();
+        res.reset(pstmt->executeQuery());
         if (!res->next()) {
-            delete pstmt;
-            delete res;
             return false;
         }
 
         std::string res_login = res->getString("login");
         if (res_login != login) {
-            delete pstmt;
-            delete res;
             return false;
         }
 
     } catch (sql::SQLException &e) {
-        delete pstmt;
-        delete res;
         return false;
     }
-    delete pstmt;
-    delete res;
+
     return true;
 }
 
@@ -89,17 +75,15 @@ user_t User::GetUser(const std::size_t& id, bool with_password) {
     }
 
     std::string query_string = "SELECT * FROM user WHERE id = ?";
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    std::shared_ptr<sql::PreparedStatement> pstmt;
+    std::shared_ptr<sql::ResultSet> res;
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setInt(1, static_cast<int>(id));
 
     try {
-        res = pstmt->executeQuery();
+        res.reset(pstmt->executeQuery());
         if (!res->next()) {
             u.status_code = OBJECT_NOT_EXIST;
-            delete pstmt;
-            delete res;
             return u;
         }
 
@@ -115,13 +99,10 @@ user_t User::GetUser(const std::size_t& id, bool with_password) {
         u.money = static_cast<double>(res->getDouble("money"));
         u.status_code = OK;
     } catch (sql::SQLException &e) {
-        delete pstmt;
-        delete res;
         u.status_code = OBJECT_NOT_EXIST;
         return u;
     }
-    delete pstmt;
-    delete res;
+
     return u;
 }
 
@@ -135,17 +116,15 @@ user_t User::GetUser(const std::string & login, bool with_password) {
     }
 
     std::string query_string = "SELECT * FROM user WHERE login = ?";
-    sql::PreparedStatement *pstmt;
-    sql::ResultSet *res;
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    std::shared_ptr<sql::PreparedStatement> pstmt;
+    std::shared_ptr<sql::ResultSet> res;
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setString(1, login);
 
     try {
-        res = pstmt->executeQuery();
+        res.reset(pstmt->executeQuery());
         if (!res->next()) {
             u.status_code = OBJECT_NOT_EXIST;
-            delete pstmt;
-            delete res;
             return u;
         }
 
@@ -161,13 +140,9 @@ user_t User::GetUser(const std::string & login, bool with_password) {
         u.money = static_cast<double>(res->getDouble("money"));
         u.status_code = OK;
     } catch (sql::SQLException &e) {
-        delete pstmt;
-        delete res;
         u.status_code = OBJECT_NOT_EXIST;
         return u;
     }
-    delete pstmt;
-    delete res;
     return u;
 }
 
@@ -203,8 +178,8 @@ std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std
     std::string avatar = DEFAULT_PATH_TO_IMAGE;
     double money = 0.0;
 
-    sql::PreparedStatement *pstmt;
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    std::shared_ptr<sql::PreparedStatement> pstmt;
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setString(1, login);
     pstmt->setString(2, password);
     pstmt->setString(3, username);
@@ -214,21 +189,19 @@ std::pair<std::size_t, int> User::InsertUser(const std::string &login, const std
     try {
         pstmt->executeUpdate();
     } catch (sql::SQLException &e) {
-        delete pstmt;
         return std::pair<std::size_t, int> (0, OBJECT_ALREADY_EXIST);
     }
 
     query_string = "SELECT MAX(id) from user";
-    sql::Statement *stmt = conn_.GetConnection().SetQuery(query_string);
-    sql::ResultSet *res = stmt->executeQuery(query_string);
+    std::shared_ptr<sql::Statement> stmt;
+    stmt.reset(conn_.GetConnection().SetQuery(query_string));
+    std::shared_ptr<sql::ResultSet> res;
+    res.reset(stmt->executeQuery(query_string));
     std::size_t last_id = 0;
     if (res->next()) {
         last_id = res->getInt(1);
     }
 
-    delete pstmt;
-    delete stmt;
-    delete res;
     return std::pair<std::size_t, int> (last_id, OK);
 }
 
@@ -239,23 +212,20 @@ int User::UpdateStringField(const std::string &field_name, const std::size_t &id
         return DATABASE_NOT_CONNECTED;
     }
 
-    sql::PreparedStatement *pstmt;
+    std::shared_ptr<sql::PreparedStatement> pstmt;
     std::string query_string = "UPDATE user SET " + field_name + " = ? WHERE id = ?";
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setString(1, data);
     pstmt->setInt(2, static_cast<int>(id));
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            delete pstmt;
             return OBJECT_NOT_UPDATED;
         }
     } catch (sql::SQLException &e) {
-        delete pstmt;
         return OBJECT_NOT_EXIST;
     }
 
-    delete pstmt;
     return OK;
 }
 
@@ -307,26 +277,23 @@ int User::UpdateMoneyByDelta(const std::size_t &id, const double &delta_money) {
 int User::UpdateMoney(const size_t &id, const double& money, const std::string& query_string) {
     std::lock_guard<std::mutex> lock(conn_.GetMutex());
 
-    sql::PreparedStatement *pstmt;
+    std::shared_ptr<sql::PreparedStatement> pstmt;
     if (!conn_.GetConnection().IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setDouble(1, money);
     pstmt->setInt(2, static_cast<int>(id));
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            delete pstmt;
             return OBJECT_NOT_UPDATED;
         }
     } catch (sql::SQLException &e) {
-        delete pstmt;
         return OBJECT_NOT_EXIST;
     }
 
-    delete pstmt;
     return OK;
 }
 
@@ -334,26 +301,23 @@ int User::UpdateMoney(const size_t &id, const double& money, const std::string& 
 int User::DeleteUser(const size_t &id) {
     std::lock_guard<std::mutex> lock(conn_.GetMutex());
 
-    sql::PreparedStatement *pstmt;
+    std::shared_ptr<sql::PreparedStatement> pstmt;
     if (!conn_.GetConnection().IsOpen()) {
         return DATABASE_NOT_CONNECTED;
     }
 
     std::string query_string = "DELETE FROM user WHERE id = ?";
-    pstmt = conn_.GetConnection().PrepareQuery(query_string);
+    pstmt.reset(conn_.GetConnection().PrepareQuery(query_string));
     pstmt->setInt(1, static_cast<int>(id));
 
     try {
         if (pstmt->executeUpdate() == 0) {
-            delete pstmt;
             return OBJECT_NOT_EXIST;
         }
     } catch (sql::SQLException &e) {
-        delete pstmt;
         return OBJECT_NOT_EXIST;
     }
 
-    delete pstmt;
     return OK;
 }
 

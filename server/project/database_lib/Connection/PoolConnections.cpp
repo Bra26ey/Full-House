@@ -86,10 +86,10 @@ bool PoolConnections::GrowPool() {
         return false;
     }
     pool_.resize(2 * pool_size);
-    for (std::size_t i = pool_size; i < pool_.size(); ++i) {
+    std::generate(pool_.begin(), pool_.end(), [](){
         Connection conn;
-        pool_[i] = std::pair<Connection, int> (conn, FREE_CONN);
-    }
+        return std::make_pair(conn, FREE_CONN);
+    });
     return true;
 }
 

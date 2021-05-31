@@ -18,16 +18,16 @@ Connection& Connection::operator=(Connection&& c) noexcept {
 
 
 bool Connection::Connect(const std::string &url, const std::string &password,
-             const std::string &user, const std::string &dbase_name) {
+                         const std::string &user, const std::string &dbase_name) {
     if (conn_ == nullptr || conn_->isClosed()) {
         try {
             sql::Driver *driver = get_driver_instance();
-            conn_ = driver->connect(url, user, password);
+            conn_.reset(driver->connect(url, user, password));
             conn_->setSchema(dbase_name);
 
             return InitSchema() == OK;
-        } catch (sql::SQLException & e) {
-            std::cout << "Could not to connect to database '"<< dbase_name << "'" << std::endl;
+        } catch (sql::SQLException &e) {
+            std::cout << "Could not to connect to database '" << dbase_name << "'" << std::endl;
             return false;
         }
     }
@@ -48,8 +48,6 @@ void Connection::Close() {
     if (!conn_->isClosed()) {
         conn_->close();
     }
-    delete conn_;
-    conn_ = nullptr;
 }
 
 

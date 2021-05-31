@@ -32,7 +32,7 @@ public:
     sql::PreparedStatement* PrepareQuery(const std::string& query);
 
 private:
-    sql::Connection* conn_;
+    std::shared_ptr<sql::Connection> conn_;
     db_schemas_t schemas_;
 
 };

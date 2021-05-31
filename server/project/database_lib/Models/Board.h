@@ -32,7 +32,7 @@ struct hand_configuration {
     unsigned int count_of_player_cards = static_cast<unsigned int>(Configuration::count_of_player_cards);
 
     hand_configuration() : button_pos(0), small_blind_pos(0), big_blind_pos(0), small_blind_bet(0),
-                            big_blind_bet(0), max_size_of_players(0), count_of_player_cards(0) {}
+                           big_blind_bet(0), max_size_of_players(0), count_of_player_cards(0) {}
     ~hand_configuration()=default;
 };
 
@@ -109,7 +109,7 @@ private:
 
     template<class T>
     int UpdateField(const std::size_t& board_id, const std::size_t& player_id, const std::string &field_name,
-                    const T& data, void (*functor)(sql::PreparedStatement *&, const T&));
+                    const T& data, void (*functor)(std::shared_ptr<sql::PreparedStatement>&, const T&));
 
     SafetyConnection conn_;
 
