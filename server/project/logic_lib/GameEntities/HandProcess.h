@@ -106,7 +106,7 @@ namespace logic {
             return std::prev(it) == l.cbegin() ? l.cend() : std::prev(it);
         }
 
-        bool one_player_in_pot();
+        bool one_player_in_pot(HandConfiguration &hand_config);
 
         void GameStage();  // TODO: while loop pos_of_raiser == start_pos
         void GameLoop(bool &someone_raised, bool &first_round,
