@@ -1,5 +1,5 @@
 # Full-House
 
-## Ссылка на схему
+## Gameplay video
 
-https://app.diagrams.net/#G18KtTnjfdbSf5CZAjCv-BLjyigmHzHUnL
+[![gameplay video](https://img.youtube.com/vi/gRJYlz1Wv9E/0.jpg)](https://www.youtube.com/watch?v=gRJYlz1Wv9E)
