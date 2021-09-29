@@ -1,0 +1,11 @@
+/server/build/
+/server/server_lib/Testind/
+/client/build/
+/client/client_lib/Testind/
+/.vscode/
+/App/build/
+/database_api/cmake-build-debug
+/database_api/.idea
+/database_api/build
+/.idea
+*.out

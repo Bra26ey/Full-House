@@ -1,0 +1,4 @@
+ignore:
+    - "project/src/main.c"
+    - "client/project/client_lib/tests/**/*"
+    - "server/project/server_lib/tests/**/*"

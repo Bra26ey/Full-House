@@ -1,0 +1,6 @@
+1 2 4 1 2 8 2
+1 Sasha 100 5
+2 Edin 100 8
+3 Andrey 100 4
+4 Aleksandr 100 2
+5 Aleksei 100 1

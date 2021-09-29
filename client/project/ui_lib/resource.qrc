@@ -1,0 +1,82 @@
+<RCC>
+    <qresource prefix="/music">
+        <file>Media/BackGround.mp3</file>
+        <file>Media/EasterEgg.mp3</file>
+        <file alias="click">Media/click.wav</file>
+    </qresource>
+    <qresource prefix="/other_textures">
+        <file>Media/table.png</file>
+        <file alias="DealerLogo">Media/DealerLogo.png</file>
+        <file alias="chips">Media/chips.png</file>
+        <file alias="icon">Media/icon.ico</file>
+        <file alias="spark">Media/spark.png</file>
+    </qresource>
+    <qresource prefix="/players">
+        <file alias="Cartman">Media/Players/Cartman.png</file>
+        <file alias="Kenny">Media/Players/Kenny.png</file>
+        <file alias="Stan">Media/Players/Stan.png</file>
+        <file alias="Wendy">Media/Players/Wendy.png</file>
+        <file alias="Dougie">Media/Players/south_park_PNG38.png</file>
+        <file alias="Kyle">Media/Players/Kyle.png</file>
+    </qresource>
+    <qresource prefix="/cards">
+        <file>Media/Cards/k53.png</file>
+        <file>Media/Cards/k52.png</file>
+        <file>Media/Cards/k51.png</file>
+        <file>Media/Cards/k50.png</file>
+        <file>Media/Cards/k49.png</file>
+        <file>Media/Cards/k48.png</file>
+        <file>Media/Cards/k47.png</file>
+        <file>Media/Cards/k46.png</file>
+        <file>Media/Cards/k45.png</file>
+        <file>Media/Cards/k44.png</file>
+        <file>Media/Cards/k43.png</file>
+        <file>Media/Cards/k42.png</file>
+        <file>Media/Cards/k41.png</file>
+        <file>Media/Cards/k40.png</file>
+        <file>Media/Cards/k39.png</file>
+        <file>Media/Cards/k38.png</file>
+        <file>Media/Cards/k37.png</file>
+        <file>Media/Cards/k36.png</file>
+        <file>Media/Cards/k35.png</file>
+        <file>Media/Cards/k34.png</file>
+        <file>Media/Cards/k33.png</file>
+        <file>Media/Cards/k32.png</file>
+        <file>Media/Cards/k31.png</file>
+        <file>Media/Cards/k30.png</file>
+        <file>Media/Cards/k29.png</file>
+        <file>Media/Cards/k28.png</file>
+        <file>Media/Cards/k27.png</file>
+        <file>Media/Cards/k26.png</file>
+        <file>Media/Cards/k25.png</file>
+        <file>Media/Cards/k24.png</file>
+        <file>Media/Cards/k23.png</file>
+        <file>Media/Cards/k22.png</file>
+        <file>Media/Cards/k21.png</file>
+        <file>Media/Cards/k20.png</file>
+        <file>Media/Cards/k19.png</file>
+        <file>Media/Cards/k18.png</file>
+        <file>Media/Cards/k17.png</file>
+        <file>Media/Cards/k16.png</file>
+        <file>Media/Cards/k15.png</file>
+        <file>Media/Cards/k14.png</file>
+        <file>Media/Cards/k13.png</file>
+        <file>Media/Cards/k12.png</file>
+        <file>Media/Cards/k11.png</file>
+        <file>Media/Cards/k10.png</file>
+        <file>Media/Cards/k9.png</file>
+        <file>Media/Cards/k8.png</file>
+        <file>Media/Cards/k7.png</file>
+        <file>Media/Cards/k6.png</file>
+        <file>Media/Cards/k5.png</file>
+        <file>Media/Cards/k4.png</file>
+        <file>Media/Cards/k3.png</file>
+        <file>Media/Cards/k2.png</file>
+        <file>Media/Cards/k0.png</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file alias="rules1">Media/rules</file>
+        <file alias="rules2">Media/rules_pt2</file>
+        <file alias="equations">Media/equations.txt</file>
+    </qresource>
+</RCC>
